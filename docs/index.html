@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>🍡 Mochi rzmong — Instalasi</title>
+<title>🍡 Mochi rzmong — Instalasi ESP32</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍡</text></svg>"/>
 <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
 <style>
@@ -23,6 +23,7 @@ nav a.pri{background:var(--acc);border-color:var(--acc);color:#fff}
 .wm{position:fixed;right:14px;bottom:10px;opacity:.28;font-size:12px;letter-spacing:.18em;text-transform:uppercase;pointer-events:none}
 .feats{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin:10px 0 28px}
 .feat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:14px}
+.feat b{display:block;margin-bottom:6px;font-size:15px}
 .note{font-size:12px;color:var(--muted)}
 footer{color:var(--muted);font-size:12px;padding:8px 22px 40px}
 </style>
@@ -32,9 +33,9 @@ footer{color:var(--muted);font-size:12px;padding:8px 22px 40px}
 <header>
   <div class="kicker">instalasi · github.com/rz7mong</div>
   <h1>🍡 Mochi rzmong</h1>
-  <p class="sub">Clone Dasai Mochi untuk ESP32-C3 + ST7789 240×240. Napa firmware dari browser, pilih tema, unggah GIF/MP4, ganti SFX, putar MP3 dari SD. Watermark <b>rzmong</b>.</p>
+  <p class="sub">Clone Dasai Mochi untuk ESP32-C3 + ST7789 240×240. Instal firmware dari browser, lalu pilih tema.</p>
   <nav>
-    <a class="pri" href="#flash">🔌 Napa firmware</a>
+    <a class="pri" href="#flash">🔌 Instalasi ESP32</a>
     <a href="studio.html">🎨 Studio tema</a>
     <a href="thietlap.html">⚙️ Pengaturan</a>
     <a href="https://github.com/rz7mong/mochi-rzmong">🐙 GitHub</a>
@@ -42,7 +43,7 @@ footer{color:var(--muted);font-size:12px;padding:8px 22px 40px}
 </header>
 <main>
   <div class="feats">
-    <div class="feat"><b>🎭 Tema</b>Wajah, Gundam (bagian), Mobil+polisi, Neon, Anime, Makanan, Musik, Intro</div>
+    <div class="feat"><b>🎭 Tema</b>Wajah, Gundam, Mobil, Neon, Anime, Makanan, Musik, Intro</div>
     <div class="feat"><b>🎲 Acak / tetap</b>Satu kategori atau acak semua</div>
     <div class="feat"><b>👇 Sentuh</b>1× bagian · 2× menu · tahan bisu</div>
     <div class="feat"><b>🎵 SD</b>SFX per GIF + /music/*.mp3</div>
@@ -51,14 +52,13 @@ footer{color:var(--muted);font-size:12px;padding:8px 22px 40px}
   </div>
   <div class="grid" id="flash">
     <div class="card">
-      <h2>🔌 Napa seperti Huykhong</h2>
+      <h2>🔌 Instalasi ESP32 by rzmong</h2>
       <ol>
-        <li>Chrome / Edge.</li>
-        <li>Tahan <b>BOOT</b>, colok USB-C.</li>
-        <li>Tekan tombol, pilih port COM.</li>
-        <li>AP <code>Mochi-rzmong</code> password <code>rzmong24</code>.</li>
+        <li>Buka di Chrome atau Edge.</li>
+        <li>Tahan <b>BOOT</b> di ESP32-C3, colok USB-C.</li>
+        <li>Tekan tombol instal, pilih port.</li>
+        <li>Wi-Fi AP: <code>Mochi-rzmong</code> / <code>rzmong24</code>.</li>
       </ol>
-      <p class="note">Compile PlatformIO dulu, taruh firmware.bin di docs/firmware/.</p>
       <p style="margin-top:16px"><esp-web-install-button manifest="./firmware/manifest.json"></esp-web-install-button></p>
     </div>
     <div class="card">
@@ -70,6 +70,6 @@ footer{color:var(--muted);font-size:12px;padding:8px 22px 40px}
     </div>
   </div>
 </main>
-<footer>© rzmong · inspirasi Dasai + Huykhong · bukan produk resmi Dasai</footer>
+<footer>© rzmong</footer>
 </body>
 </html>
