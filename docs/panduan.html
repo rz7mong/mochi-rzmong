@@ -31,93 +31,91 @@ ul{margin:6px 0 0;padding-left:18px;line-height:1.55;color:#d5dbe6}
 <h2>👆 Kontrol sentuh</h2>
 <table>
 <tr><th>Gestur</th><th>Yang terjadi</th></tr>
-<tr><td>👆 Ketuk 1×</td><td>Ganti <b>bagian GIF</b> dalam tema yang sedang aktif. Contoh tema Gundam: kokpit → helm → isyarat → pilot → tembak.</td></tr>
+<tr><td>👆 Ketuk 1×</td><td>Ganti <b>bagian GIF</b> dalam tema yang sedang aktif.</td></tr>
 <tr><td>👆👆 Ketuk 2× cepat</td><td>Buka <b>menu LCD</b>.</td></tr>
 <tr><td>⏳ Tahan ±1 detik</td><td><b>Bisu / bunyi</b> SFX.</td></tr>
-<tr><td>Di dalam menu · ketuk 1×</td><td>Pindah baris menu.</td></tr>
-<tr><td>Di dalam menu · ketuk 2×</td><td>Jalankan baris yang dipilih.</td></tr>
 </table>
-<p style="color:#8b95a7;font-size:13px;margin:10px 0 0">Sensor: TTP223 ke GPIO1. Sentuh permukaan kepala / case, bukan layar.</p>
+<p style="color:#8b95a7;font-size:13px;margin:10px 0 0">Sensor TTP223 di kepala / case. Bukan layar sentuh — jangan digeser.</p>
 </div>
 
 <div class="card">
-<h2>🎮 Menu di LCD</h2>
+<h2>↕️ Cara jalan / “scrol” menu</h2>
+<p>Menu <b>tidak bisa digeser</b>. Yang bergerak hanya tanda <code>></code> tiap kali kepala diketuk.</p>
+<ol style="color:#d5dbe6;line-height:1.6">
+<li>👆👆 Ketuk 2× — menu muncul, baris pertama ada <code>></code>.</li>
+<li>👆 Ketuk 1× — <code>></code> pindah ke baris bawah. Sampai bawah, ketuk lagi kembali ke atas.</li>
+<li>👆👆 Ketuk 2× — menjalankan baris yang ada <code>></code>.</li>
+<li>Pilih <b>Tutup</b> kalau hanya ingin keluar tanpa ganti apa pun.</li>
+</ol>
+<p>Urutan baris: Tema berikutnya → Mode acak → Musik → Bisu → Chronos → Tentang rzmong → Tutup.</p>
+</div>
+
+<div class="card">
+<h2>🎮 Isi menu LCD</h2>
 <ul>
-<li>🎭 <b>Tema berikutnya</b> — wajah → gundam → mobil → neon → anime → makanan → musik → intro → ulang.</li>
+<li>🎭 <b>Tema berikutnya</b> — wajah → gundam → mobil → neon → anime → makanan → musik → intro.</li>
 <li>🎲 <b>Mode acak</b> — ketuk 1× bisa loncat lintas tema.</li>
 <li>🎵 <b>Musik /music</b> — putar MP3 dari kartu SD.</li>
 <li>🔇 <b>Bisu / bunyi</b> — matikan SFX tanpa ganti tema.</li>
-<li>🗺️ <b>Chronos</b> — nyalakan peta &amp; notifikasi HP.</li>
-<li>💧 <b>Tentang rzmong</b> — layar boot bermerek.</li>
+<li>🗺️ <b>Chronos</b> — peta & notifikasi HP.</li>
+<li>💧 <b>Tentang rzmong</b> — layar boot.</li>
 <li>✖ <b>Tutup</b> — kembali ke GIF.</li>
 </ul>
 </div>
 
 <div class="card">
 <h2>🎭 Ganti tema</h2>
-<p>Tema = folder, seperti tema HP. Pilih <b>Gundam</b> hanya GIF Gundam yang jalan. Pilih <b>Mobil</b> hanya mesin, lampu, polisi.</p>
+<p>Tema seperti tema HP. Gundam hanya GIF Gundam. Mobil hanya mesin, lampu, polisi.</p>
 <ul>
-<li>📱 Di Mochi: ketuk 2× → <b>Tema berikutnya</b>.</li>
-<li>🌐 Di web: sambung Wi-Fi <code>Mochi-rzmong</code> / <code>rzmong24</code> → buka <a href="thietlap.html">Pengaturan</a> → ketuk chip tema → Simpan.</li>
-<li>🎲 Mode putar: <b>Tetap di kategori</b> · <b>Acak semua tema</b> · <b>Acak dalam tema</b>.</li>
+<li>📱 Di Mochi: ketuk 2× → jalankan <b>Tema berikutnya</b>.</li>
+<li>🌐 Di web: Wi-Fi <code>Mochi-rzmong</code> / <code>rzmong24</code> → <a href="thietlap.html">Pengaturan</a> → pilih chip tema → Simpan.</li>
+<li>🎲 Mode: tetap kategori · acak semua · acak dalam tema.</li>
 </ul>
 </div>
 
 <div class="card">
 <h2>🤪 Pasang / ganti ekspresi GIF</h2>
-<p>Setiap file = satu bagian. Jangan gabung helm+kokpit+tembak jadi 1 GIF.</p>
+<p>Satu file = satu bagian. Jangan gabung helm+kokpit+tembak.</p>
 <ul>
-<li>📁 Struktur SD:<br>
-<code>/gif/wajah/happy.gif</code><br>
-<code>/sfx/wajah/happy.wav</code> (nama sama)<br>
-<code>/gif/gundam/kokpit.gif</code></li>
-<li>🎨 Buat sendiri: buka <a href="studio.html">Studio</a> → unggah GIF atau MP4 → pilih tema → pasang SFX MP3/WAV → ikuti path yang muncul → salin ke SD.</li>
-<li>🎬 MP4 harus diubah ke GIF 240×240 (perintah ffmpeg ada di Studio).</li>
-<li>🔄 Cabut-pasang SD atau restart Mochi setelah menambah file.</li>
+<li>📁 <code>/gif/wajah/happy.gif</code> + <code>/sfx/wajah/happy.wav</code></li>
+<li>🎨 Unggah lewat <a href="studio.html">Studio</a>, salin ke SD, restart Mochi.</li>
+<li>🎬 MP4 ubah ke GIF 240×240 dulu.</li>
 </ul>
-<p>Tema bawaan: wajah, gundam, mobil, neon, anime, makanan, musik, intro.</p>
 </div>
 
 <div class="card">
 <h2>🎵 Musik</h2>
 <ul>
-<li>Taruh file <code>.mp3</code> di folder SD <code>/music/</code>.</li>
-<li>Menu LCD → <b>Musik /music</b>, atau aktifkan “Izinkan MP3” di Pengaturan.</li>
+<li>MP3 di <code>/music/</code>.</li>
+<li>Menu → <b>Musik /music</b>.</li>
 <li>Ketuk 1× = lagu berikutnya. Tahan = bisu.</li>
-<li>SFX ekspresi tetap di <code>/sfx/&lt;tema&gt;/</code>, terpisah dari lagu.</li>
 </ul>
 </div>
 
 <div class="card">
-<h2>🗺️ Chronos — peta &amp; notifikasi</h2>
+<h2>🗺️ Chronos</h2>
 <ul>
-<li>Pasang aplikasi <b>Chronos</b> (Android, fbiego) di HP.</li>
-<li>Nyalakan Chronos di menu LCD atau Pengaturan web.</li>
-<li>Di aplikasi: pilih perangkat ESP32, izinkan notifikasi, aktifkan navigasi peta.</li>
-<li>Panggilan / chat / belok di maps bisa tampil di Mochi saat mode Chronos hidup.</li>
+<li>App Chronos (Android, fbiego), izinkan notifikasi + peta.</li>
+<li>Nyalakan Chronos di menu atau Pengaturan web.</li>
 </ul>
 </div>
 
 <div class="card">
-<h2>💾 Isi kartu SD</h2>
-<pre style="background:#0b0e13;padding:12px;border-radius:10px;overflow:auto">/themes.json
-/gif/wajah/*.gif
-/gif/gundam/*.gif
-/gif/mobil/*.gif
-/sfx/wajah/*.wav
-/sfx/gundam/*.wav
-/music/lagu1.mp3</pre>
-<p>Format kartu: <b>FAT32</b>. Paket jadi: file <code>mochi-themes.zip</code> di percakapan / rilis repo.</p>
+<h2>💾 Kartu SD</h2>
+<pre style="background:#0b0e13;padding:12px;border-radius:10px">/themes.json
+/gif/<tema>/*.gif
+/sfx/<tema>/*.wav
+/music/*.mp3</pre>
+<p>Format FAT32.</p>
 </div>
 
 <div class="card">
 <h2>❓ Kalau tidak jalan</h2>
 <ul>
-<li>📻 LCD hitam — cek kabel ST7789 (MOSI 6, SCLK 4, CS 7, DC 10, RST 8).</li>
-<li>🖼️ Tidak ada wajah — SD belum kebaca atau folder <code>/gif/&lt;tema&gt;/</code> kosong.</li>
-<li>🔊 Tidak ada suara — cek bisu, file SFX nama sama dengan GIF, modul MAX98357.</li>
-<li>🔌 Gagal napa — tahan BOOT sebelum colok, pakai Chrome, cabut kabel lain.</li>
-<li>📶 Tidak muncul Wi-Fi — tekan Reset setelah flash selesai.</li>
+<li>LCD hitam — cek kabel ST7789.</li>
+<li>Tidak ada wajah — folder <code>/gif/<tema>/</code> kosong / SD belum kebaca.</li>
+<li>Tidak ada suara — cek bisu dan nama SFX.</li>
+<li>Gagal instal — tahan BOOT sebelum colok, pakai Chrome.</li>
 </ul>
 </div>
 
