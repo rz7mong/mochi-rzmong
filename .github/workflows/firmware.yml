@@ -16,8 +16,8 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Install PlatformIO
-        run: pip install -U platformio
+      - name: Install tools
+        run: pip install -U platformio pillow
       - name: Embed default GIF + jingle
         run: python firmware/tools/embed_assets.py
       - name: Build ESP32-C3
@@ -26,13 +26,14 @@ jobs:
       - name: Merge flash image
         run: |
           B=firmware/.pio/build/esp32-c3-super-mini
-          ls -la $B
-          BOOTAPP=$(find ~/.platformio/packages/framework-arduinoespressif32 -name boot_app0.bin | head -1)
+          ls -la "$B"
+          BOOTAPP=$(find "$HOME/.platformio/packages" -name boot_app0.bin | head -1)
+          echo "boot_app0=$BOOTAPP"
           python -m esptool --chip esp32c3 merge_bin -o docs/firmware/firmware.bin --flash_mode dio --flash_size 4MB \
-            0x0 $B/bootloader.bin \
-            0x8000 $B/partitions.bin \
-            0xe000 ${BOOTAPP:-$B/boot_app0.bin} \
-            0x10000 $B/firmware.bin
+            0x0 "$B/bootloader.bin" \
+            0x8000 "$B/partitions.bin" \
+            0xe000 "$BOOTAPP" \
+            0x10000 "$B/firmware.bin"
           ls -la docs/firmware/firmware.bin
       - name: Commit firmware.bin
         run: |
