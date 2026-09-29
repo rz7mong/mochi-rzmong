@@ -18,19 +18,27 @@ jobs:
           python-version: '3.11'
       - name: Install PlatformIO
         run: pip install -U platformio
+      - name: Embed default GIF + jingle
+        run: python firmware/tools/embed_assets.py
       - name: Build ESP32-C3
         working-directory: firmware
         run: pio run -e esp32-c3-super-mini
-      - name: Copy bin into docs/firmware
+      - name: Merge flash image
         run: |
-          mkdir -p docs/firmware
-          cp firmware/.pio/build/esp32-c3-super-mini/firmware.bin docs/firmware/firmware.bin
-          ls -la docs/firmware/
+          B=firmware/.pio/build/esp32-c3-super-mini
+          ls -la $B
+          BOOTAPP=$(find ~/.platformio/packages/framework-arduinoespressif32 -name boot_app0.bin | head -1)
+          python -m esptool --chip esp32c3 merge_bin -o docs/firmware/firmware.bin --flash_mode dio --flash_size 4MB \
+            0x0 $B/bootloader.bin \
+            0x8000 $B/partitions.bin \
+            0xe000 ${BOOTAPP:-$B/boot_app0.bin} \
+            0x10000 $B/firmware.bin
+          ls -la docs/firmware/firmware.bin
       - name: Commit firmware.bin
         run: |
           git config user.name "rzmong-bot"
           git config user.email "rz7mong@users.noreply.github.com"
           git add docs/firmware/firmware.bin
           git diff --cached --quiet && echo "no bin change" && exit 0
-          git commit -m "build: firmware.bin rzmong"
+          git commit -m "build: firmware.bin gabungan rzmong"
           git push
