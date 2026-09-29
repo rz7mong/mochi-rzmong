@@ -12,7 +12,7 @@
 <label>Volume</label><input id=vol type=number min=0 max=21 value=12></div>
 <div class=card><h3>Lainnya</h3>
 <div class=tog><span>Chronos</span><input type=checkbox id=chrono checked></div>
-<div class=tog><span>Watermark rzmong</span><input type=checkbox id=wm checked></div></div>
+<div class=tog><span>Tampilkan merek rzmong di LCD</span><input type=checkbox id=wm checked></div></div>
 <p><button onclick=simpan()>Simpan ke Mochi</button></p>
 </main><footer style=color:#8b95a7;padding:24px>© rzmong</footer>
 <script>
@@ -20,5 +20,5 @@ const TEMAS=['wajah','gundam','mobil','neon','anime','makanan','musik','intro'];
 const chips=document.getElementById('chips');
 TEMAS.forEach(t=>{const b=document.createElement('div');b.className='chip'+(t===tema?' on':'');b.textContent=t;b.onclick=()=>{tema=t;[...chips.children].forEach(c=>c.classList.remove('on'));b.classList.add('on');};chips.appendChild(b);});
 async function ping(){const h=document.getElementById('host').value.replace(/\/$/,'');try{const j=await(await fetch(h+'/api/status')).json();document.getElementById('st').textContent='OK '+JSON.stringify(j);}catch(e){document.getElementById('st').textContent='Sambung Wi-Fi Mochi-rzmong';}}
-async function simpan(){const h=document.getElementById('host').value.replace(/\/$/,'');const body={theme:tema,play_mode:document.getElementById('mode').value,sound:document.getElementById('sound').checked,music:document.getElementById('music').checked,volume:+document.getElementById('vol').value,chronos:document.getElementById('chrono').checked,watermark:document.getElementById('wm').checked,brand:'rzmong'};try{const r=await fetch(h+'/api/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});document.getElementById('st').textContent=r.ok?'Tersimpan':'Gagal';}catch(e){document.getElementById('st').textContent='Offline';console.log(body);}}
+async function simpan(){const h=document.getElementById('host').value.replace(/\/$/,'');const body={theme:tema,play_mode:document.getElementById('mode').value,sound:document.getElementById('sound').checked,music:document.getElementById('music').checked,volume:+document.getElementById('vol').value,chronos:document.getElementById('chrono').checked,brand:'rzmong'};try{const r=await fetch(h+'/api/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});document.getElementById('st').textContent=r.ok?'Tersimpan':'Gagal';}catch(e){document.getElementById('st').textContent='Offline';console.log(body);}}
 </script></body></html>
