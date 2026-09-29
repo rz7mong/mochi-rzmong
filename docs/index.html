@@ -30,6 +30,7 @@ footer{color:var(--muted);font-size:12px;padding:12px 22px 40px}
   <nav>
     <a class="pri" href="#flash">🔌 Instalasi ESP32</a>
     <a href="panduan.html">📖 Cara pakai</a>
+    <a href="hardware.html">🔧 Merakit</a>
     <a href="studio.html">🎨 Studio tema</a>
     <a href="thietlap.html">⚙️ Pengaturan</a>
     <a href="https://github.com/rz7mong/mochi-rzmong">🐙 GitHub</a>
@@ -40,7 +41,7 @@ footer{color:var(--muted);font-size:12px;padding:12px 22px 40px}
   <h2>🔌 Instalasi ESP32 by rzmong</h2>
   <div class="step"><div class="num">📱</div><div><b>Pakai Chrome atau Edge</b><br>Jangan Safari / Instagram in-app. Buka halaman ini di laptop atau HP Android yang mendukung Web Serial.</div></div>
   <div class="step"><div class="num">⚡</div><div><b>Masuk mode flash</b><br>Tahan tombol <b>BOOT</b> di ESP32-C3 Super Mini. Sambil tetap ditahan, colok kabel USB-C ke komputer.</div></div>
-  <div class="step"><div class="num">🔌</div><div><b>Napa firmware</b><br>Lepas BOOT. Tekan tombol instal di bawah. Pilih port COM / USB JTAG. Tunggu sampai selesai, lalu tekan Reset.</div></div>
+  <div class="step"><div class="num">🔌</div><div><b>Instal firmware</b><br>Lepas BOOT. Tekan tombol instal di bawah. Pilih port COM / USB JTAG. Tunggu sampai selesai, lalu tekan Reset.</div></div>
   <div class="step"><div class="num">📶</div><div><b>Wi-Fi Mochi</b><br>Setelah nyala, Mochi membuat jaringan <code>Mochi-rzmong</code> sandi <code>rzmong24</code>. Buka <code>http://192.168.4.1</code> atau halaman Pengaturan.</div></div>
   <div class="step"><div class="num">💾</div><div><b>Kartu SD</b><br>Format FAT32. Salin folder <code>gif/</code>, <code>sfx/</code>, <code>themes.json</code>, dan opsional <code>music/</code>. Colok modul SD, nyalakan ulang.</div></div>
   <p style="margin-top:18px"><esp-web-install-button manifest="./firmware/manifest.json"></esp-web-install-button></p>
@@ -49,12 +50,11 @@ footer{color:var(--muted);font-size:12px;padding:12px 22px 40px}
   <h2>📖 Ringkas cara pakai</h2>
   <ol class="plain">
     <li>👆 Ketuk 1× kepala = GIF berikutnya dalam tema yang sama.</li>
-    <li>👆👆 Ketuk 2× = menu di LCD (tema, acak, musik, bisu).</li>
-    <li>⏳ Tahan 1 detik = bisukan / bunyikan SFX.</li>
-    <li>🎨 Ganti tema di menu LCD atau halaman Pengaturan.</li>
-    <li>🎵 Lagu: taruh MP3 di <code>/music/</code>, pilih Musik di menu.</li>
+    <li>👆👆 Ketuk 2× = menu di LCD.</li>
+    <li>⏳ Tahan 1 detik = bisu / bunyi.</li>
+    <li>🔧 Rakit hardware: lihat halaman Merakit.</li>
   </ol>
-  <p style="margin-top:14px"><a href="panduan.html" style="color:#54a0ff">Buka panduan lengkap →</a></p>
+  <p style="margin-top:14px"><a href="panduan.html" style="color:#54a0ff">Panduan pakai →</a>   <a href="hardware.html" style="color:#54a0ff">Merakit & case →</a></p>
 </section>
 </main>
 <footer>© rzmong</footer>
