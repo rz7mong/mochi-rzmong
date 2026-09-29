@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>🍡 Mochi rzmong — Instalasi</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍡</text></svg>"/>
+<script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
+<style>
+:root{--bg:#0e1116;--card:#171b22;--line:#2a3140;--ink:#eef2f7;--muted:#8b95a7;--acc:#ff6b6b;--ok:#1dd1a1}
+*{box-sizing:border-box}body{margin:0;font-family:ui-sans-serif,system-ui,sans-serif;background:radial-gradient(900px 420px at 10% -10%,#3a1d24 0%,transparent 50%),radial-gradient(800px 400px at 100% 0%,#16332c 0%,transparent 46%),var(--bg);color:var(--ink)}
+header,main,footer{max-width:980px;margin:0 auto;padding:0 22px}
+header{padding-top:36px}
+.kicker{letter-spacing:.2em;text-transform:uppercase;font-size:11px;color:var(--muted)}
+h1{font-size:40px;margin:8px 0 6px}
+.sub{color:var(--muted);max-width:40em;line-height:1.5}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 8px}
+nav a{color:var(--ink);text-decoration:none;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;font-size:13px}
+nav a.pri{background:var(--acc);border-color:var(--acc);color:#fff}
+.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin:22px 0 40px}
+@media(max-width:800px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px}
+.wm{position:fixed;right:14px;bottom:10px;opacity:.28;font-size:12px;letter-spacing:.18em;text-transform:uppercase;pointer-events:none}
+.feats{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin:10px 0 28px}
+.feat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:14px}
+.note{font-size:12px;color:var(--muted)}
+footer{color:var(--muted);font-size:12px;padding:8px 22px 40px}
+</style>
+</head>
+<body>
+<div class="wm">rzmong</div>
+<header>
+  <div class="kicker">instalasi · github.com/rz7mong</div>
+  <h1>🍡 Mochi rzmong</h1>
+  <p class="sub">Clone Dasai Mochi untuk ESP32-C3 + ST7789 240×240. Napa firmware dari browser, pilih tema, unggah GIF/MP4, ganti SFX, putar MP3 dari SD. Watermark <b>rzmong</b>.</p>
+  <nav>
+    <a class="pri" href="#flash">🔌 Napa firmware</a>
+    <a href="studio.html">🎨 Studio tema</a>
+    <a href="thietlap.html">⚙️ Pengaturan</a>
+    <a href="https://github.com/rz7mong/mochi-rzmong">🐙 GitHub</a>
+  </nav>
+</header>
+<main>
+  <div class="feats">
+    <div class="feat"><b>🎭 Tema</b>Wajah, Gundam (bagian), Mobil+polisi, Neon, Anime, Makanan, Musik, Intro</div>
+    <div class="feat"><b>🎲 Acak / tetap</b>Satu kategori atau acak semua</div>
+    <div class="feat"><b>👇 Sentuh</b>1× bagian · 2× menu · tahan bisu</div>
+    <div class="feat"><b>🎵 SD</b>SFX per GIF + /music/*.mp3</div>
+    <div class="feat"><b>🗺️ Chronos</b>Peta & notifikasi HP</div>
+    <div class="feat"><b>💧 rzmong</b>Boot LCD, web, repo</div>
+  </div>
+  <div class="grid" id="flash">
+    <div class="card">
+      <h2>🔌 Napa seperti Huykhong</h2>
+      <ol>
+        <li>Chrome / Edge.</li>
+        <li>Tahan <b>BOOT</b>, colok USB-C.</li>
+        <li>Tekan tombol, pilih port COM.</li>
+        <li>AP <code>Mochi-rzmong</code> password <code>rzmong24</code>.</li>
+      </ol>
+      <p class="note">Compile PlatformIO dulu, taruh firmware.bin di docs/firmware/.</p>
+      <p style="margin-top:16px"><esp-web-install-button manifest="./firmware/manifest.json"></esp-web-install-button></p>
+    </div>
+    <div class="card">
+      <h2>📦 Kartu SD</h2>
+      <pre style="background:#0b0e13;padding:12px;border-radius:10px;font-size:12px">/themes.json
+/gif/gundam/kokpit.gif
+/sfx/gundam/kokpit.wav
+/music/lagu.mp3</pre>
+    </div>
+  </div>
+</main>
+<footer>© rzmong · inspirasi Dasai + Huykhong · bukan produk resmi Dasai</footer>
+</body>
+</html>
