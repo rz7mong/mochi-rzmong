@@ -4,21 +4,30 @@
 <header><h1>⚙️ Pengaturan Mochi</h1><p>Sambung Wi-Fi <code>Mochi-rzmong</code> / sandi <code>rzmong24</code>. <a href=index.html style=color:#54a0ff>Instalasi</a></p></header>
 <main>
 <div class=card><label>Alamat Mochi</label><input id=host value=http://192.168.4.1><p id=st></p><button onclick=ping()>Tes koneksi</button></div>
-<div class=card><h3>Tema</h3><div class=chips id=chips></div>
+<div class=card><h3>Sumber gambar</h3>
+<label>Tanpa kartu SD pakai flash</label>
+<select id=storage><option value=flash>Flash — GIF bawaan</option><option value=sd>Kartu SD</option></select>
+<label>GIF bawaan</label>
+<select id=defgif>
+<option value=yelling>wajah / yelling</option>
+<option value=car>mobil / car</option>
+<option value=intro_3>intro / intro_3</option>
+</select>
+</div>
+<div class=card><h3>Tema SD</h3><div class=chips id=chips></div>
 <label>Mode</label><select id=mode><option value=kategori>Tetap di kategori</option><option value=acak>Acak semua</option><option value=acak_tema>Acak dalam tema</option></select></div>
 <div class=card><h3>Suara</h3>
-<div class=tog><span>SFX</span><input type=checkbox id=sound checked></div>
-<div class=tog><span>MP3 /music</span><input type=checkbox id=music checked></div>
-<label>Volume</label><input id=vol type=number min=0 max=21 value=12></div>
+<div class=tog><span>SFX / jingle tes</span><input type=checkbox id=sound checked></div>
+</div>
 <div class=card><h3>Lainnya</h3>
-<div class=tog><span>Chronos</span><input type=checkbox id=chrono checked></div>
+<div class=tog><span>Chronos</span><input type=checkbox id=chrono></div>
 <div class=tog><span>Tampilkan merek rzmong di LCD</span><input type=checkbox id=wm checked></div></div>
 <p><button onclick=simpan()>Simpan ke Mochi</button></p>
 </main><footer style=color:#8b95a7;padding:24px>© rzmong</footer>
 <script>
-const TEMAS=['wajah','gundam','mobil','neon','anime','makanan','musik','intro'];let tema='gundam';
+const TEMAS=['wajah','gundam','mobil','neon','anime','makanan','musik','intro'];let tema='wajah';
 const chips=document.getElementById('chips');
 TEMAS.forEach(t=>{const b=document.createElement('div');b.className='chip'+(t===tema?' on':'');b.textContent=t;b.onclick=()=>{tema=t;[...chips.children].forEach(c=>c.classList.remove('on'));b.classList.add('on');};chips.appendChild(b);});
 async function ping(){const h=document.getElementById('host').value.replace(/\/$/,'');try{const j=await(await fetch(h+'/api/status')).json();document.getElementById('st').textContent='OK '+JSON.stringify(j);}catch(e){document.getElementById('st').textContent='Sambung Wi-Fi Mochi-rzmong';}}
-async function simpan(){const h=document.getElementById('host').value.replace(/\/$/,'');const body={theme:tema,play_mode:document.getElementById('mode').value,sound:document.getElementById('sound').checked,music:document.getElementById('music').checked,volume:+document.getElementById('vol').value,chronos:document.getElementById('chrono').checked,brand:'rzmong'};try{const r=await fetch(h+'/api/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});document.getElementById('st').textContent=r.ok?'Tersimpan':'Gagal';}catch(e){document.getElementById('st').textContent='Offline';console.log(body);}}
+async function simpan(){const h=document.getElementById('host').value.replace(/\/$/,'');const body={theme:tema,play_mode:document.getElementById('mode').value,sound:document.getElementById('sound').checked,storage:document.getElementById('storage').value,default_gif:document.getElementById('defgif').value,chronos:document.getElementById('chrono').checked,brand:'rzmong'};try{const r=await fetch(h+'/api/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});document.getElementById('st').textContent=r.ok?'Tersimpan':'Gagal';}catch(e){document.getElementById('st').textContent='Tersimpan lokal (Mochi offline)';console.log(body);}}
 </script></body></html>
