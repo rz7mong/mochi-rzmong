@@ -39,10 +39,10 @@ ol,ul{color:#d5dbe6;line-height:1.55}
 <tr><td>👆 Sentuh</td><td>Modul TTP223</td></tr>
 <tr><td>🔊 Suara</td><td>MAX98357A I2S (mono) + speaker copotan HP 8Ω</td></tr>
 <tr><td>💾 Memori</td><td>Modul microSD SPI + kartu FAT32</td></tr>
-<tr><td>📦 Case</td><td>STL <code>case_luar</code> + <code>tatakan_lcd</code> 23×40 mm</td></tr>
+<tr><td>📦 Case</td><td>STL case luar + tatakan LCD 23×40 mm</td></tr>
 <tr><td>🧰 Lain</td><td>Kabel AWG30, tape, sekrup kecil / lem</td></tr>
 </table>
-<p style="color:#8b95a7;font-size:13px;margin:10px 0 0">Jangan pakai PAM8403 di case ini — panas dan besar. Bluetooth speaker eksternal opsional, firmware ini memakai MAX98357.</p>
+<p style="color:#8b95a7;font-size:13px;margin:10px 0 0">Jangan pakai PAM8403 di case ini — panas dan besar.</p>
 </div>
 
 <div class="card">
@@ -77,16 +77,14 @@ ol,ul{color:#d5dbe6;line-height:1.55}
 </div>
 
 <div class="card">
-<h2>📦 Case &amp; blueprint</h2>
+<h2>📦 Case & cetak 3D</h2>
+<p>Pakai file case yang sudah ada di proyek:</p>
 <ul>
-<li>Case luar: <code>case_luar_lcd_23_40mm.stl</code></li>
-<li>Tatakan LCD: <code>tatakan_lcd_23_40mm.stl</code></li>
-<li>Cetak PLA 0.2 mm, infill 15–20%. Jendela depan = 23×40 mm sesuai LCD.</li>
+<li>Kulit luar — <code>case_luar_lcd_23_40mm.stl</code></li>
+<li>Dudukan LCD — <code>tatakan_lcd_23_40mm.stl</code></li>
 </ul>
-<p>Unduh STL (taruh di repo folder <code>case/</code> atau dari chat):</p>
-<ul>
-<li><a href="https://github.com/rz7mong/mochi-rzmong/tree/main/case">Folder case di GitHub</a></li>
-</ul>
+<p>Cetak PLA, layer 0.2 mm, infill 15–20%. Jendela depan 23×40 mm.</p>
+<p><a href="https://github.com/rz7mong/mochi-rzmong/tree/main/case">Buka folder case</a></p>
 </div>
 
 <div class="card">
@@ -98,7 +96,7 @@ ol,ul{color:#d5dbe6;line-height:1.55}
 <li>🔋 Baterai ke B+/B− TP4056. Jangan balik polaritas.</li>
 <li>🔊 Speaker ke OUT ampli, tidak ke pin ESP.</li>
 <li>👆 Pad sentuh TTP223 menempel ke dinding dalam kepala.</li>
-<li>🔌 Flash firmware dari halaman Instalasi, tes LCD sebelum case ditutup.</li>
+<li>🔌 Instal firmware, tes LCD sebelum case ditutup.</li>
 <li>💾 Masukkan microSD FAT32 berisi <code>/gif</code> dan <code>/sfx</code>.</li>
 <li>🔒 Tutup case luar, jangan jepit kabel backlight.</li>
 </ol>
