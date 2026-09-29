@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>📖 Panduan pakai — Mochi rzmong</title>
+<style>
+:root{--bg:#0e1116;--card:#171b22;--line:#2a3140;--ink:#eef2f7;--muted:#8b95a7;--acc:#ff6b6b}
+*{box-sizing:border-box}body{margin:0;font-family:ui-sans-serif,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+header,main,footer{max-width:860px;margin:0 auto;padding:0 22px}
+header{padding-top:28px}h1{margin:6px 0 8px}h2{margin:0 0 10px;font-size:20px}
+a{color:#54a0ff}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin:12px 0}
+.wm{position:fixed;right:14px;bottom:10px;opacity:.28;letter-spacing:.18em;text-transform:uppercase;font-size:12px}
+table{width:100%;border-collapse:collapse;font-size:14px}
+td,th{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top}
+code{background:#10141b;padding:1px 6px;border-radius:6px}
+ul{margin:6px 0 0;padding-left:18px;line-height:1.55;color:#d5dbe6}
+.kicker{letter-spacing:.2em;text-transform:uppercase;font-size:11px;color:var(--muted)}
+</style></head>
+<body>
+<div class="wm">rzmong</div>
+<header>
+  <div class="kicker">panduan · rzmong</div>
+  <h1>📖 Cara memakai Mochi</h1>
+  <p><a href="index.html">← Instalasi</a> · <a href="thietlap.html">Pengaturan</a> · <a href="studio.html">Studio</a></p>
+</header>
+<main>
+
+<div class="card">
+<h2>👆 Kontrol sentuh</h2>
+<table>
+<tr><th>Gestur</th><th>Yang terjadi</th></tr>
+<tr><td>👆 Ketuk 1×</td><td>Ganti <b>bagian GIF</b> dalam tema yang sedang aktif. Contoh tema Gundam: kokpit → helm → isyarat → pilot → tembak.</td></tr>
+<tr><td>👆👆 Ketuk 2× cepat</td><td>Buka <b>menu LCD</b>.</td></tr>
+<tr><td>⏳ Tahan ±1 detik</td><td><b>Bisu / bunyi</b> SFX.</td></tr>
+<tr><td>Di dalam menu · ketuk 1×</td><td>Pindah baris menu.</td></tr>
+<tr><td>Di dalam menu · ketuk 2×</td><td>Jalankan baris yang dipilih.</td></tr>
+</table>
+<p style="color:#8b95a7;font-size:13px;margin:10px 0 0">Sensor: TTP223 ke GPIO1. Sentuh permukaan kepala / case, bukan layar.</p>
+</div>
+
+<div class="card">
+<h2>🎮 Menu di LCD</h2>
+<ul>
+<li>🎭 <b>Tema berikutnya</b> — wajah → gundam → mobil → neon → anime → makanan → musik → intro → ulang.</li>
+<li>🎲 <b>Mode acak</b> — ketuk 1× bisa loncat lintas tema.</li>
+<li>🎵 <b>Musik /music</b> — putar MP3 dari kartu SD.</li>
+<li>🔇 <b>Bisu / bunyi</b> — matikan SFX tanpa ganti tema.</li>
+<li>🗺️ <b>Chronos</b> — nyalakan peta &amp; notifikasi HP.</li>
+<li>💧 <b>Tentang rzmong</b> — layar boot bermerek.</li>
+<li>✖ <b>Tutup</b> — kembali ke GIF.</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>🎭 Ganti tema</h2>
+<p>Tema = folder, seperti tema HP. Pilih <b>Gundam</b> hanya GIF Gundam yang jalan. Pilih <b>Mobil</b> hanya mesin, lampu, polisi.</p>
+<ul>
+<li>📱 Di Mochi: ketuk 2× → <b>Tema berikutnya</b>.</li>
+<li>🌐 Di web: sambung Wi-Fi <code>Mochi-rzmong</code> / <code>rzmong24</code> → buka <a href="thietlap.html">Pengaturan</a> → ketuk chip tema → Simpan.</li>
+<li>🎲 Mode putar: <b>Tetap di kategori</b> · <b>Acak semua tema</b> · <b>Acak dalam tema</b>.</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>🤪 Pasang / ganti ekspresi GIF</h2>
+<p>Setiap file = satu bagian. Jangan gabung helm+kokpit+tembak jadi 1 GIF.</p>
+<ul>
+<li>📁 Struktur SD:<br>
+<code>/gif/wajah/happy.gif</code><br>
+<code>/sfx/wajah/happy.wav</code> (nama sama)<br>
+<code>/gif/gundam/kokpit.gif</code></li>
+<li>🎨 Buat sendiri: buka <a href="studio.html">Studio</a> → unggah GIF atau MP4 → pilih tema → pasang SFX MP3/WAV → ikuti path yang muncul → salin ke SD.</li>
+<li>🎬 MP4 harus diubah ke GIF 240×240 (perintah ffmpeg ada di Studio).</li>
+<li>🔄 Cabut-pasang SD atau restart Mochi setelah menambah file.</li>
+</ul>
+<p>Tema bawaan: wajah, gundam, mobil, neon, anime, makanan, musik, intro.</p>
+</div>
+
+<div class="card">
+<h2>🎵 Musik</h2>
+<ul>
+<li>Taruh file <code>.mp3</code> di folder SD <code>/music/</code>.</li>
+<li>Menu LCD → <b>Musik /music</b>, atau aktifkan “Izinkan MP3” di Pengaturan.</li>
+<li>Ketuk 1× = lagu berikutnya. Tahan = bisu.</li>
+<li>SFX ekspresi tetap di <code>/sfx/&lt;tema&gt;/</code>, terpisah dari lagu.</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>🗺️ Chronos — peta &amp; notifikasi</h2>
+<ul>
+<li>Pasang aplikasi <b>Chronos</b> (Android, fbiego) di HP.</li>
+<li>Nyalakan Chronos di menu LCD atau Pengaturan web.</li>
+<li>Di aplikasi: pilih perangkat ESP32, izinkan notifikasi, aktifkan navigasi peta.</li>
+<li>Panggilan / chat / belok di maps bisa tampil di Mochi saat mode Chronos hidup.</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>💾 Isi kartu SD</h2>
+<pre style="background:#0b0e13;padding:12px;border-radius:10px;overflow:auto">/themes.json
+/gif/wajah/*.gif
+/gif/gundam/*.gif
+/gif/mobil/*.gif
+/sfx/wajah/*.wav
+/sfx/gundam/*.wav
+/music/lagu1.mp3</pre>
+<p>Format kartu: <b>FAT32</b>. Paket jadi: file <code>mochi-themes.zip</code> di percakapan / rilis repo.</p>
+</div>
+
+<div class="card">
+<h2>❓ Kalau tidak jalan</h2>
+<ul>
+<li>📻 LCD hitam — cek kabel ST7789 (MOSI 6, SCLK 4, CS 7, DC 10, RST 8).</li>
+<li>🖼️ Tidak ada wajah — SD belum kebaca atau folder <code>/gif/&lt;tema&gt;/</code> kosong.</li>
+<li>🔊 Tidak ada suara — cek bisu, file SFX nama sama dengan GIF, modul MAX98357.</li>
+<li>🔌 Gagal napa — tahan BOOT sebelum colok, pakai Chrome, cabut kabel lain.</li>
+<li>📶 Tidak muncul Wi-Fi — tekan Reset setelah flash selesai.</li>
+</ul>
+</div>
+
+</main>
+<footer style="color:#8b95a7;font-size:12px;padding:20px 22px 40px">© rzmong</footer>
+</body></html>

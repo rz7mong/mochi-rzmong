@@ -4,69 +4,58 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>🍡 Mochi rzmong — Instalasi ESP32</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🍡</text></svg>"/>
 <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js?module"></script>
 <style>
-:root{--bg:#0e1116;--card:#171b22;--line:#2a3140;--ink:#eef2f7;--muted:#8b95a7;--acc:#ff6b6b;--ok:#1dd1a1}
+:root{--bg:#0e1116;--card:#171b22;--line:#2a3140;--ink:#eef2f7;--muted:#8b95a7;--acc:#ff6b6b}
 *{box-sizing:border-box}body{margin:0;font-family:ui-sans-serif,system-ui,sans-serif;background:radial-gradient(900px 420px at 10% -10%,#3a1d24 0%,transparent 50%),radial-gradient(800px 400px at 100% 0%,#16332c 0%,transparent 46%),var(--bg);color:var(--ink)}
 header,main,footer{max-width:980px;margin:0 auto;padding:0 22px}
 header{padding-top:36px}
 .kicker{letter-spacing:.2em;text-transform:uppercase;font-size:11px;color:var(--muted)}
-h1{font-size:40px;margin:8px 0 6px}
-nav{display:flex;gap:8px;flex-wrap:wrap;margin:22px 0 8px}
+h1{font-size:36px;margin:8px 0 6px}h2{margin:0 0 12px}
+nav{display:flex;gap:8px;flex-wrap:wrap;margin:18px 0 16px}
 nav a{color:var(--ink);text-decoration:none;border:1px solid var(--line);background:var(--card);border-radius:999px;padding:8px 14px;font-size:13px}
 nav a.pri{background:var(--acc);border-color:var(--acc);color:#fff}
-.grid{display:grid;grid-template-columns:1.2fr .8fr;gap:16px;margin:22px 0 40px}
-@media(max-width:800px){.grid{grid-template-columns:1fr}}
-.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px}
-.wm{position:fixed;right:14px;bottom:10px;opacity:.28;font-size:12px;letter-spacing:.18em;text-transform:uppercase;pointer-events:none}
-.feats{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px;margin:10px 0 28px}
-.feat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;font-size:14px}
-.feat b{display:block;margin-bottom:6px;font-size:15px}
-footer{color:var(--muted);font-size:12px;padding:8px 22px 40px}
-</style>
-</head>
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:20px;margin:0 0 16px}
+.step{display:flex;gap:12px;margin:12px 0;align-items:flex-start}
+.num{flex:0 0 36px;height:36px;border-radius:50%;background:#2a3140;display:grid;place-items:center;font-size:18px}
+.wm{position:fixed;right:14px;bottom:10px;opacity:.28;letter-spacing:.18em;text-transform:uppercase;font-size:12px}
+ol.plain{margin:8px 0 0;padding-left:20px;line-height:1.55;color:#d5dbe6}
+footer{color:var(--muted);font-size:12px;padding:12px 22px 40px}
+</style></head>
 <body>
 <div class="wm">rzmong</div>
 <header>
-  <div class="kicker">instalasi · github.com/rz7mong</div>
+  <div class="kicker">instalasi · rzmong</div>
   <h1>🍡 Mochi rzmong</h1>
   <nav>
     <a class="pri" href="#flash">🔌 Instalasi ESP32</a>
+    <a href="panduan.html">📖 Cara pakai</a>
     <a href="studio.html">🎨 Studio tema</a>
     <a href="thietlap.html">⚙️ Pengaturan</a>
     <a href="https://github.com/rz7mong/mochi-rzmong">🐙 GitHub</a>
   </nav>
 </header>
 <main>
-  <div class="feats">
-    <div class="feat"><b>🎭 Tema</b>Wajah, Gundam, Mobil, Neon, Anime, Makanan, Musik, Intro</div>
-    <div class="feat"><b>🎲 Acak / tetap</b>Satu kategori atau acak semua</div>
-    <div class="feat"><b>👇 Sentuh</b>1× bagian · 2× menu · tahan bisu</div>
-    <div class="feat"><b>🎵 SD</b>SFX per GIF + /music/*.mp3</div>
-    <div class="feat"><b>🗺️ Chronos</b>Peta & notifikasi HP</div>
-    <div class="feat"><b>💧 rzmong</b>Boot LCD, web, repo</div>
-  </div>
-  <div class="grid" id="flash">
-    <div class="card">
-      <h2>🔌 Instalasi ESP32 by rzmong</h2>
-      <ol>
-        <li>Buka di Chrome atau Edge.</li>
-        <li>Tahan <b>BOOT</b> di ESP32-C3, colok USB-C.</li>
-        <li>Tekan tombol instal, pilih port.</li>
-        <li>Wi-Fi AP: <code>Mochi-rzmong</code> / <code>rzmong24</code>.</li>
-      </ol>
-      <p style="margin-top:16px"><esp-web-install-button manifest="./firmware/manifest.json"></esp-web-install-button></p>
-    </div>
-    <div class="card">
-      <h2>📦 Kartu SD</h2>
-      <pre style="background:#0b0e13;padding:12px;border-radius:10px;font-size:12px">/themes.json
-/gif/gundam/kokpit.gif
-/sfx/gundam/kokpit.wav
-/music/lagu.mp3</pre>
-    </div>
-  </div>
+<section class="card" id="flash">
+  <h2>🔌 Instalasi ESP32 by rzmong</h2>
+  <div class="step"><div class="num">📱</div><div><b>Pakai Chrome atau Edge</b><br>Jangan Safari / Instagram in-app. Buka halaman ini di laptop atau HP Android yang mendukung Web Serial.</div></div>
+  <div class="step"><div class="num">⚡</div><div><b>Masuk mode flash</b><br>Tahan tombol <b>BOOT</b> di ESP32-C3 Super Mini. Sambil tetap ditahan, colok kabel USB-C ke komputer.</div></div>
+  <div class="step"><div class="num">🔌</div><div><b>Napa firmware</b><br>Lepas BOOT. Tekan tombol instal di bawah. Pilih port COM / USB JTAG. Tunggu sampai selesai, lalu tekan Reset.</div></div>
+  <div class="step"><div class="num">📶</div><div><b>Wi-Fi Mochi</b><br>Setelah nyala, Mochi membuat jaringan <code>Mochi-rzmong</code> sandi <code>rzmong24</code>. Buka <code>http://192.168.4.1</code> atau halaman Pengaturan.</div></div>
+  <div class="step"><div class="num">💾</div><div><b>Kartu SD</b><br>Format FAT32. Salin folder <code>gif/</code>, <code>sfx/</code>, <code>themes.json</code>, dan opsional <code>music/</code>. Colok modul SD, nyalakan ulang.</div></div>
+  <p style="margin-top:18px"><esp-web-install-button manifest="./firmware/manifest.json"></esp-web-install-button></p>
+</section>
+<section class="card">
+  <h2>📖 Ringkas cara pakai</h2>
+  <ol class="plain">
+    <li>👆 Ketuk 1× kepala = GIF berikutnya dalam tema yang sama.</li>
+    <li>👆👆 Ketuk 2× = menu di LCD (tema, acak, musik, bisu).</li>
+    <li>⏳ Tahan 1 detik = bisukan / bunyikan SFX.</li>
+    <li>🎨 Ganti tema di menu LCD atau halaman Pengaturan.</li>
+    <li>🎵 Lagu: taruh MP3 di <code>/music/</code>, pilih Musik di menu.</li>
+  </ol>
+  <p style="margin-top:14px"><a href="panduan.html" style="color:#54a0ff">Buka panduan lengkap →</a></p>
+</section>
 </main>
 <footer>© rzmong</footer>
-</body>
-</html>
+</body></html>
