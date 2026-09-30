@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>⚙️ Pengaturan — Mochi rzmong</title>
+<style>
+:root{--bg:#0e1116;--card:#171b22;--line:#2a3140;--ink:#eef2f7;--muted:#8b95a7;--acc:#ff6b6b;--ok:#50fa7b}
+*{box-sizing:border-box}body{margin:0;font-family:ui-sans-serif,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+header,main,footer{max-width:860px;margin:0 auto;padding:0 22px}header{padding-top:28px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0}
+label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px}
+input,select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#10141b;color:var(--ink)}
+.tog{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0}
+button{background:var(--acc);color:#fff;border:0;border-radius:10px;padding:10px 16px;cursor:pointer;margin:4px 4px 4px 0}
+button.sec{background:#2a3140}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);border-radius:999px;padding:8px 12px;cursor:pointer;font-size:13px}
+.chip.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.hint{font-size:13px;color:var(--muted);line-height:1.5}
+#st{font-size:13px;margin-top:8px;color:var(--ok)}
+.kicker{letter-spacing:.2em;text-transform:uppercase;font-size:11px;color:var(--muted)}
+a{color:#54a0ff}
+</style>
+</head>
+<body>
+<header>
+  <div class="kicker">pengaturan · rzmong · v0.2.7</div>
+  <h1>⚙️ Pengaturan Mochi</h1>
+  <p class="hint">Wi-Fi <code>Mochi-rzmong</code>. Sandi: <code>rz</code> + 4 hex MAC (menu LCD <b>Info Wi-Fi AP</b> atau field <code>ap_pass</code> di status).</p>
+  <p><a href="index.html">Instalasi</a> · <a href="panduan.html">Panduan</a> · <a href="https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1">Tema</a></p>
+</header>
+<main>
+<div class="card">
+  <label>Alamat Mochi</label>
+  <input id="host" value="http://192.168.4.1"/>
+  <p id="st"></p>
+  <button type="button" onclick="ping()">Tes koneksi</button>
+  <button type="button" class="sec" onclick="muat()">Muat dari Mochi</button>
+</div>
+<div class="card">
+  <h3>🎨 Tema default</h3>
+  <p class="hint">Web = default tersimpan. LCD + SD = ganti manual (Pilih tema).</p>
+  <div class="chips" id="chips"></div>
+  <label>Mode putar</label>
+  <select id="mode">
+    <option value="kategori">Tetap kategori</option>
+    <option value="acak">Acak semua tema</option>
+    <option value="acak_tema">Acak dalam tema</option>
+  </select>
+</div>
+<div class="card">
+  <h3>Sumber gambar</h3>
+  <select id="storage">
+    <option value="flash">Flash — GIF bawaan</option>
+    <option value="sd">Kartu SD</option>
+  </select>
+</div>
+<div class="card">
+  <h3>Reaksi sentuh</h3>
+  <select id="rmode"><option value="acak">Acak</option><option value="tetap">Tetap</option></select>
+  <label>Model tetap</label>
+  <select id="react">
+    <option value="0">tickle</option><option value="1">kedip</option><option value="2">cinta</option>
+    <option value="3">marah</option><option value="4">ketawa</option><option value="5">nangis</option>
+    <option value="6">ngantuk</option><option value="7">kaget</option><option value="8">kedip-satu</option>
+    <option value="9">cemberut</option>
+  </select>
+</div>
+<div class="card">
+  <h3>Suara</h3>
+  <div class="tog"><span>SFX</span><input type="checkbox" id="sound" checked/></div>
+  <label>Volume 0–21</label>
+  <input id="vol" type="number" min="0" max="21" value="12"/>
+</div>
+<p><button type="button" onclick="simpan()">Simpan ke Mochi</button></p>
+</main>
+<footer style="color:#8b95a7;padding:24px">© rzmong · MIT · v0.2.7</footer>
+<script>
+const TEMAS=[{id:'wajah',label:'Wajah'},{id:'gundam',label:'Gundam'},{id:'mobil',label:'Mobil'},{id:'polisi',label:'Polisi'},{id:'musik',label:'Musik'},{id:'neon',label:'Neon'},{id:'anime',label:'Anime'},{id:'makanan',label:'Makanan'},{id:'intro',label:'Intro'}];
+let tema='wajah';
+const chips=document.getElementById('chips');
+TEMAS.forEach(t=>{const b=document.createElement('div');b.className='chip'+(t.id===tema?' on':'');b.textContent=t.label;b.dataset.id=t.id;
+b.onclick=()=>{tema=t.id;[...chips.children].forEach(c=>c.classList.remove('on'));b.classList.add('on');};chips.appendChild(b);});
+function host(){return document.getElementById('host').value.replace(/\/$/,'');}
+function setTema(id){tema=id||'wajah';[...chips.children].forEach(c=>c.classList.toggle('on',c.dataset.id===tema));}
+async function ping(){try{const j=await(await fetch(host()+'/api/status')).json();
+document.getElementById('st').textContent='OK · tema='+(j.theme||'?')+' · '+(j.storage||'')+(j.ap_pass?' · pass='+j.ap_pass:'')+' · v'+(j.ver||'');
+}catch(e){document.getElementById('st').textContent='Sambung Wi-Fi Mochi dulu';}}
+async function muat(){try{const j=await(await fetch(host()+'/api/status')).json();
+if(j.theme)setTema(j.theme);if(j.mode)document.getElementById('mode').value=j.mode;
+if(j.react_mode)document.getElementById('rmode').value=j.react_mode;
+if(typeof j.react_idx==='number')document.getElementById('react').value=String(j.react_idx);
+if(typeof j.sound==='boolean')document.getElementById('sound').checked=j.sound;
+if(typeof j.vol==='number')document.getElementById('vol').value=j.vol;
+if(j.storage)document.getElementById('storage').value=j.storage;
+document.getElementById('st').textContent='Dimuat'+(j.ap_pass?' · pass '+j.ap_pass:'');
+}catch(e){document.getElementById('st').textContent='Gagal muat';}}
+async function simpan(){
+const body={theme:tema,play_mode:document.getElementById('mode').value,react_mode:document.getElementById('rmode').value,
+react:+document.getElementById('react').value,sound:document.getElementById('sound').checked,
+volume:+document.getElementById('vol').value,storage:document.getElementById('storage').value};
+try{const r=await fetch(host()+'/api/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+document.getElementById('st').textContent=r.ok?'Tersimpan · tema='+tema:'Gagal';}catch(e){document.getElementById('st').textContent='Offline';}}
+</script>
+</body>
+</html>
