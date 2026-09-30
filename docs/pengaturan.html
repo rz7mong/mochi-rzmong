@@ -23,16 +23,17 @@ button.sec{background:#2a3140}
 #st{font-size:13px;margin-top:8px;color:var(--ok)}
 .kicker{letter-spacing:.2em;text-transform:uppercase;font-size:11px;color:var(--muted)}
 a{color:#54a0ff} code{background:#10141b;padding:1px 6px;border-radius:6px}
+pre#chinfo{font-size:12px;color:var(--muted);white-space:pre-wrap}
 </style>
 </head>
 <body>
 <header>
-  <div class="kicker">pengaturan · rzmong · v0.4.7</div>
+  <div class="kicker">pengaturan · rzmong · v0.5.0</div>
   <h1>Pengaturan Mochi</h1>
-  <p class="hint"><b>Jalur utama (disarankan):</b> sambung Wi-Fi <b>rzmong mochi</b> / <b>rzmong123</b>, lalu buka di browser HP:
-  <code>http://192.168.4.1/</code> — UI di dalam firmware, offline, tanpa mixed content.</p>
-  <p class="warn">Halaman GitHub Pages ini memakai HTTPS. Memanggil <code>http://192.168.4.1</code> sering diblokir browser (mixed content). Jika "Tes koneksi" gagal dari sini, pakai UI di perangkat.</p>
-  <p><a href="index.html">Instalasi</a> · <a href="panduan.html">Panduan</a> · <a href="studio.html">Studio</a> · <a href="https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1">Tema</a></p>
+  <p class="hint"><b>Jalur utama (disarankan):</b> sambung Wi-Fi <b>rzmong mochi</b> / <b>rzmong123</b>, lalu buka
+  <code>http://192.168.4.1/</code> — UI firmware, offline.</p>
+  <p class="warn">Halaman Pages (HTTPS) sering memblokir panggilan ke http://192.168.4.1 (mixed content). Prefer UI di perangkat.</p>
+  <p><a href="index.html">Instalasi</a> · <a href="panduan.html">Panduan</a> · <a href="studio.html">Studio</a></p>
 </header>
 <main>
 <div class="card">
@@ -76,9 +77,17 @@ a{color:#54a0ff} code{background:#10141b;padding:1px 6px;border-radius:6px}
   <label>Volume 0–21</label>
   <input id="vol" type="number" min="0" max="21" value="12"/>
 </div>
+<div class="card" id="card-chronos">
+  <h3>Chronos (BLE)</h3>
+  <p class="hint">Pair lewat app <b>Chronos</b> · nama BLE <b>rzmong</b> · bukan Bluetooth Settings sistem.</p>
+  <div class="tog"><span>Chronos BLE</span><input type="checkbox" id="chronos"/></div>
+  <div class="tog"><span>Tampil navigasi / petunjuk peta</span><input type="checkbox" id="chronos_nav" checked/></div>
+  <p class="hint">Ketuk di perangkat: notif = 1× tutup · panggilan = tahan 0,6s · navigasi = 2× sembunyi overlay.</p>
+  <pre id="chinfo">—</pre>
+</div>
 <p><button type="button" onclick="simpan()">Simpan ke Mochi</button></p>
 </main>
-<footer style="color:#8b95a7;padding:24px">© rzmong · MIT · v0.4.7 · prefer http://192.168.4.1/</footer>
+<footer style="color:#8b95a7;padding:24px">© rzmong · MIT · v0.5.0 · prefer http://192.168.4.1/</footer>
 <script>
 const TEMAS=[{id:'wajah',label:'Wajah'},{id:'gundam',label:'Gundam'},{id:'mobil',label:'Mobil'},{id:'polisi',label:'Polisi'},{id:'musik',label:'Musik'},{id:'neon',label:'Neon'},{id:'anime',label:'Anime'},{id:'makanan',label:'Makanan'},{id:'intro',label:'Intro'}];
 let tema='wajah';
@@ -87,8 +96,18 @@ TEMAS.forEach(t=>{const b=document.createElement('div');b.className='chip'+(t.id
 b.onclick=()=>{tema=t.id;[...chips.children].forEach(c=>c.classList.remove('on'));b.classList.add('on');};chips.appendChild(b);});
 function host(){return document.getElementById('host').value.replace(/\/$/,'');}
 function setTema(id){tema=id||'wajah';[...chips.children].forEach(c=>c.classList.toggle('on',c.dataset.id===tema));}
+function fillChronos(j){
+  if(typeof j.chronos==='boolean')document.getElementById('chronos').checked=j.chronos;
+  if(typeof j.chronos_nav==='boolean')document.getElementById('chronos_nav').checked=j.chronos_nav;
+  let t='BLE '+(j.chronos_run?'ON':'off')+(j.chronos_conn?' · linked':'');
+  if(j.chronos_mac)t+='\n'+j.chronos_mac;
+  if(j.chronos_time)t+='\n'+j.chronos_time;
+  if(j.nav_active)t+='\nNav: '+(j.nav_title||'aktif')+' '+(j.nav_dist||'');
+  document.getElementById('chinfo').textContent=t||'—';
+}
 async function ping(){try{const j=await(await fetch(host()+'/api/status')).json();
 document.getElementById('st').textContent='OK · '+(j.theme||'?')+' · '+(j.storage||'')+' · v'+(j.ver||'');
+fillChronos(j);
 }catch(e){document.getElementById('st').textContent='Gagal. Coba buka http://192.168.4.1/ langsung di HP (Wi-Fi Mochi).';}}
 async function muat(){try{const j=await(await fetch(host()+'/api/status')).json();
 if(j.theme)setTema(j.theme);if(j.mode)document.getElementById('mode').value=j.mode;
@@ -97,11 +116,14 @@ if(typeof j.react_idx==='number')document.getElementById('react').value=String(j
 if(typeof j.sound==='boolean')document.getElementById('sound').checked=j.sound;
 if(typeof j.vol==='number')document.getElementById('vol').value=j.vol;
 if(j.storage)document.getElementById('storage').value=j.storage;
+fillChronos(j);
 document.getElementById('st').textContent='Dimuat · v'+(j.ver||'?');}catch(e){document.getElementById('st').textContent='Gagal muat — pakai UI di 192.168.4.1';}}
 async function simpan(){
 const body={theme:tema,play_mode:document.getElementById('mode').value,react_mode:document.getElementById('rmode').value,
 react:+document.getElementById('react').value,sound:document.getElementById('sound').checked,
-volume:+document.getElementById('vol').value,storage:document.getElementById('storage').value};
+volume:+document.getElementById('vol').value,storage:document.getElementById('storage').value,
+chronos:document.getElementById('chronos').checked,
+chronos_nav:document.getElementById('chronos_nav').checked};
 try{const r=await fetch(host()+'/api/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
 document.getElementById('st').textContent=r.ok?'Tersimpan · tema='+tema:'Gagal';}catch(e){document.getElementById('st').textContent='Offline / diblokir browser';}}
 </script>
