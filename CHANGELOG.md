@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.5.1] — 2026-09-30
+
+### Changed
+- **Docs sync**: Pages, PRODUCT, README, HANDOFF, hardware/blueprint, tutorial → **0.5.1**
+- **Blueprint**: pinout mengikuti `MochiRzmong.h` + `User_Setup_ST7789.h` (bukan skema lama RST=8 / MISO=2 / DIN=9)
+- **Model hardware**: ESP32-C3 Super Mini + ST7789 1.3" 240×240 PCB 23×40 mm
+
+### Notes
+- Jangan flash zip prebuilt 0.4.7 jika butuh Chronos-nav / serviceNet / captive upload
+- Prefer **http://192.168.4.1/** di AP perangkat
+
 ## [0.4.7] — 2026-09-30
 
 ### Changed

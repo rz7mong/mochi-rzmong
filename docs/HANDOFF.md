@@ -2,18 +2,20 @@
 
 | Key | Value |
 | --- | --- |
-| Version | **0.3.0** |
+| Version | **0.5.1** |
 | AP | `rzmong mochi` / `rzmong123` |
 | Settings (preferred) | `http://192.168.4.1/` on device |
 | Settings (Pages) | `docs/pengaturan.html` |
 | Binary | `docs/firmware/firmware.bin` |
+| Manifest | `docs/firmware/manifest.json` → version **0.5.1** |
 | Install | https://rz7mong.github.io/mochi-rzmong/ |
 | Theme pack | `assets-v1` |
+| Hardware | ESP32-C3 Super Mini + ST7789 1.3" 240×240 (PCB 23×40 mm) |
 
 ## Web on device
 
 - `GET /` · `GET /index.html` → captive HTML (`captive_ui.h`)
-- `GET /api/status` · `GET /api/themes` · `POST /api/settings`
+- `GET /api/status` · `GET /api/themes` · `POST /api/settings` · `POST /api/upload`
 - No authentication on AP (lab). Erase install wipes NVS.
 
 ## Chronos
@@ -24,7 +26,9 @@
 
 ## SPI / SD
 
-- TFT+SD share SCK/MOSI; `sdBusy` prevents concurrent SD file use
+- TFT+SD share SCK/MOSI; `sdBusy` + `SUPPORT_TRANSACTIONS` prevent bus clash
+- TFT RST = **GPIO0**, SD MISO = **GPIO3**, I2S DIN = **GPIO8**
+- Leave **GPIO2** and **GPIO9** unconnected (strapping)
 
 ## Partitions
 
