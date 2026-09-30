@@ -281,7 +281,9 @@ bool playCurrent(){
     }
     prevDown=down;
   }
-  gif.close(); sdBusy=false; brandMark(); return true;
+  gif.close(); sdBusy=false; brandMark();
+  if(taps==0) nextPart();
+  return true;
 }
 void sendCorsHeaders(){
   server.sendHeader("Access-Control-Allow-Origin","*");
