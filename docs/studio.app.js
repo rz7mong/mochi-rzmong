@@ -78,43 +78,62 @@ async function loadFFmpeg() {
 
 async function convertVideoToPair(file) {
   await ffmpeg.writeFile("input", await fetchFile(file));
-  setStatus("Convert video to GIF 240x240...", false);
-  log("GIF from: " + file.name);
-  await ffmpeg.exec([
-    "-i", "input",
-    "-t", "8",
-    "-r", "10",
-    "-vf", "scale=240:240:force_original_aspect_ratio=decrease,pad=240:240:(ow-iw)/2:(oh-ih)/2:color=black",
-    "-loop", "0",
-    "-y", "out.gif"
-  ]);
+  log("Source: " + file.name + " (" + fmtSize(file.size) + ")");
+
+  setStatus("Convert video to small GIF...", false);
+  try {
+    await ffmpeg.exec([
+      "-i", "input",
+      "-t", "5",
+      "-vf", "fps=8,scale=240:240:force_original_aspect_ratio=decrease,pad=240:240:(ow-iw)/2:(oh-ih)/2:color=black,palettegen=max_colors=64:stats_mode=diff",
+      "-y", "palette.png"
+    ]);
+    await ffmpeg.exec([
+      "-i", "input",
+      "-i", "palette.png",
+      "-t", "5",
+      "-lavfi", "fps=8,scale=240:240:force_original_aspect_ratio=decrease,pad=240:240:(ow-iw)/2:(oh-ih)/2:color=black[x];[x][1:v]paletteuse=dither=bayer:bayer_scale=3",
+      "-loop", "0",
+      "-y", "out.gif"
+    ]);
+  } catch (e1) {
+    log("Palette GIF failed, fallback: " + (e1.message || e1));
+    await ffmpeg.exec([
+      "-i", "input",
+      "-t", "5",
+      "-r", "6",
+      "-vf", "scale=240:240:force_original_aspect_ratio=decrease,pad=240:240:(ow-iw)/2:(oh-ih)/2:color=black",
+      "-loop", "0",
+      "-y", "out.gif"
+    ]);
+  }
   const gifData = await ffmpeg.readFile("out.gif");
   const gifBlob = new Blob([gifData.buffer], { type: "image/gif" });
   log("GIF: " + fmtSize(gifBlob.size));
 
   let wavBlob = null;
-  try {
-    setStatus("Extract audio from video to WAV...", false);
-    log("Extract audio track from same video...");
-    await ffmpeg.exec([
-      "-i", "input",
-      "-t", "8",
-      "-vn",
-      "-acodec", "pcm_s16le",
-      "-ar", "22050",
-      "-ac", "1",
-      "-y", "out_from_vid.wav"
-    ]);
-    const wavData = await ffmpeg.readFile("out_from_vid.wav");
-    if (wavData.length > 1000) {
-      wavBlob = new Blob([wavData.buffer], { type: "audio/wav" });
-      log("WAV from video: " + fmtSize(wavBlob.size));
-    } else {
-      log("No usable audio track in video");
+  setStatus("Extract audio from video...", false);
+  const audioTries = [
+    ["-i", "input", "-t", "5", "-vn", "-map", "0:a:0", "-acodec", "pcm_s16le", "-ar", "22050", "-ac", "1", "-y", "out_from_vid.wav"],
+    ["-i", "input", "-t", "5", "-vn", "-acodec", "pcm_s16le", "-ar", "22050", "-ac", "1", "-y", "out_from_vid.wav"]
+  ];
+  for (let ti = 0; ti < audioTries.length; ti++) {
+    try {
+      log("Audio try " + (ti + 1) + "...");
+      await ffmpeg.exec(audioTries[ti]);
+      const wavData = await ffmpeg.readFile("out_from_vid.wav");
+      log("Audio raw size: " + wavData.length + " bytes");
+      if (wavData.length > 2000) {
+        wavBlob = new Blob([wavData.buffer], { type: "audio/wav" });
+        log("WAV from video: " + fmtSize(wavBlob.size));
+        break;
+      }
+    } catch (e) {
+      log("Audio try " + (ti + 1) + " fail: " + (e.message || e));
     }
-  } catch (e) {
-    log("Audio extract skipped: " + (e.message || e));
   }
+  if (!wavBlob) log("No audio track found (silent video or extract failed)");
+
   return { gif: gifBlob, wav: wavBlob };
 }
 
@@ -122,7 +141,7 @@ async function convertAudioOnly(file) {
   await ffmpeg.writeFile("ain", await fetchFile(file));
   await ffmpeg.exec([
     "-i", "ain",
-    "-t", "8",
+    "-t", "5",
     "-acodec", "pcm_s16le",
     "-ar", "22050",
     "-ac", "1",
@@ -149,7 +168,7 @@ function showPreview() {
   if (result.wav) {
     audioMeta.style.display = "block";
     const src = URL.createObjectURL(result.wav);
-    audioMeta.innerHTML = "WAV paired · <audio controls src=\"" + src + "\" style=\"max-width:100%;margin-top:6px\"></audio>";
+    audioMeta.innerHTML = "WAV paired · <audio controls src='" + src + "' style='max-width:100%;margin-top:6px'></audio>";
     parts.push('<span class="badge">WAV ' + fmtSize(result.wav.size) + "</span>");
   } else {
     audioMeta.style.display = "none";
@@ -157,7 +176,7 @@ function showPreview() {
   sizeMeta.innerHTML =
     "Theme <b>" + result.tema + "</b> · file <b>" + result.stem + "</b><br>" +
     parts.join(" ") +
-    "<br><span class=\"hint\">Same tema + stem: ESP32 plays WAV then GIF</span>";
+    "<br><span class='hint'>Same tema + stem: ESP32 plays WAV then GIF</span>";
 }
 
 async function doConvert() {
@@ -189,17 +208,20 @@ async function doConvert() {
       log("WAV: " + fmtSize(result.wav.size));
     }
     if (result.gif) {
-      if (result.gif.size > 600000) setStatus("Warning: GIF over 600 KB", false);
+      if (result.gif.size > 600000) {
+        setStatus("GIF still over 600 KB — use shorter video", false);
+        log("TIP: video max 5s recommended for ESP32");
+      }
     }
     if (result.wav) {
-      if (result.wav.size > 600000) setStatus("Warning: WAV over 600 KB", false);
+      if (result.wav.size > 600000) setStatus("WAV over 600 KB", false);
     }
     result.tema = tema;
     result.stem = stem;
     showPreview();
     if (result.gif) {
-      if (result.wav) setStatus("Paired GIF + WAV ready — Save or Upload to Mochi", true);
-      else setStatus("GIF ready (no audio). Use video with sound, or add SFX file.", true);
+      if (result.wav) setStatus("Paired GIF + WAV ready — Save or Upload", true);
+      else setStatus("GIF only (no audio). Add SFX file if video is silent.", true);
     } else {
       setStatus("WAV ready", true);
     }
