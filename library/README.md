@@ -1,18 +1,10 @@
 # Pustaka Mochi rzmong
 
-Reaksi sentuh memakai **GIF katalog**, bukan teks wajah.
+10 GIF reaksi **tersimpan di flash ESP32** (PROGMEM), bukan hanya SD.
 
-| Nama | File SD |
-|---|---|
-| tickle | `/gif/wajah/yelling.gif` |
-| kedip | `/gif/wajah/distracted_2.gif` |
-| cinta | `/gif/wajah/dumb_love.gif` |
-| marah | `/gif/gundam/hadouken_hit.gif` |
-| ketawa | `/gif/wajah/awkward_laugh.gif` |
-| nangis | `/gif/wajah/crying_smile.gif` |
-| ngantuk | `/gif/intro/keep_it_up.gif` |
-| kaget | `/gif/wajah/big_sneeze.gif` |
-| kedip-satu | `/gif/gundam/blade.gif` |
-| cemberut | `/gif/anime/pinky.gif` |
+Urutan putar saat sentuh:
+1. Array flash `DEFAULT_GIFS[]`
+2. Baru SD `/gif/<tema>/<stem>.gif` jika flash gagal
 
-Tanpa SD, firmware memutar GIF bawaan flash dengan stem yang sama.
+File sumber: `firmware/assets/react/` + `firmware/tools/react_b64/`.
+Compile: `python firmware/tools/embed_assets.py` lalu PlatformIO.
