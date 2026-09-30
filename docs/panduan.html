@@ -11,7 +11,6 @@ header,main,footer{max-width:860px;margin:0 auto;padding:0 22px}
 header{padding-top:28px}h1{margin:6px 0 8px}h2{margin:0 0 10px;font-size:20px}
 a{color:#54a0ff}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin:12px 0}
-.wm{position:fixed;right:14px;bottom:10px;opacity:.28;letter-spacing:.18em;text-transform:uppercase;font-size:12px}
 table{width:100%;border-collapse:collapse;font-size:14px}
 td,th{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top}
 code{background:#10141b;padding:1px 6px;border-radius:6px}
@@ -19,13 +18,21 @@ ul,ol{margin:6px 0 0;padding-left:18px;line-height:1.55;color:#d5dbe6}
 .kicker{letter-spacing:.2em;text-transform:uppercase;font-size:11px;color:var(--muted)}
 </style></head>
 <body>
-<div class="wm">rzmong</div>
 <header>
-  <div class="kicker">panduan · rzmong · v0.2.6</div>
+  <div class="kicker">panduan · rzmong · v0.2.8</div>
   <h1>📖 Cara memakai Mochi</h1>
-  <p><a href="index.html">🍡 Instalasi</a> · <a href="thietlap.html">⚙️ Pengaturan</a> · <a href="hardware.html">🔧 Merakit</a></p>
+  <p><a href="index.html">🍡 Instalasi</a> · <a href="pengaturan.html">⚙️ Pengaturan</a> · <a href="hardware.html">🔧 Merakit</a></p>
 </header>
 <main>
+
+<div class="card">
+<h2>📶 Wi-Fi</h2>
+<table>
+<tr><th>SSID</th><td><code>rzmong mochi</code></td></tr>
+<tr><th>Password</th><td><code>rzmong123</code></td></tr>
+</table>
+<p style="color:#8b95a7;font-size:13px;margin:10px 0 0">Ganti di firmware: <code>MOCHI_AP_NAME</code> / <code>MOCHI_AP_PASS</code> di <code>MochiRzmong.h</code>, lalu rebuild. Halaman pengaturan tanpa login.</p>
+</div>
 
 <div class="card">
 <h2>👆 Kontrol sentuh</h2>
@@ -38,35 +45,21 @@ ul,ol{margin:6px 0 0;padding-left:18px;line-height:1.55;color:#d5dbe6}
 </div>
 
 <div class="card">
-<h2>🎨 Tema default vs manual</h2>
+<h2>🎨 Tema</h2>
 <ul>
-<li><b>Web</b> — sambung Wi-Fi → <a href="thietlap.html">Pengaturan</a> → pilih tema → Simpan (tersimpan di ESP32).</li>
+<li><b>Web</b> — <a href="pengaturan.html">Pengaturan</a> → pilih tema → Simpan (default di ESP32).</li>
 <li><b>LCD + SD</b> — ketuk 2× → <b>Pilih tema</b>.</li>
-<li>Pack tema: <a href="https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1">Release assets-v1</a>.</li>
+<li>Pack: <a href="https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1">Release assets-v1</a>.</li>
 </ul>
 </div>
 
 <div class="card">
-<h2>🎲 Reaksi acak/tetap vs Model reaksi</h2>
-<table>
-<tr><th>Menu</th><th>Arti</th></tr>
-<tr><td>Reaksi acak/tetap</td><td><b>acak</b> = random 10 ekspresi; <b>tetap</b> = satu model</td></tr>
-<tr><td>Model reaksi</td><td>Pilih 1 dari 10 + set mode tetap</td></tr>
-</table>
-</div>
-
-<div class="card">
-<h2>🎬 / 🔊 Format media</h2>
+<h2>🎬 / 🔊 Format</h2>
 <ul>
-<li>Animasi perangkat: <b>.gif</b> saja (bukan MP4).</li>
+<li>Animasi: <b>.gif</b> saja (bukan MP4 di perangkat).</li>
 <li>SFX: <b>WAV 16-bit</b> (bukan MP3).</li>
 <li>Speaker: hanya lewat <b>MAX98357</b>.</li>
 </ul>
-</div>
-
-<div class="card">
-<h2>📶 Wi-Fi</h2>
-<p>Default: <code>Mochi-rzmong</code> / <code>rzmong24</code>. Sandi lab — ganti jika dipakai di luar lingkungan pribadi. Siapa pun di jaringan AP bisa membuka halaman pengaturan.</p>
 </div>
 
 <div class="card">
@@ -75,11 +68,12 @@ ul,ol{margin:6px 0 0;padding-left:18px;line-height:1.55;color:#d5dbe6}
 <tr><th>Gejala</th><th>Periksa</th></tr>
 <tr><td>Layar putih/hitam</td><td>RST=0, CS=7, DC=10, SCLK=4, MOSI=6</td></tr>
 <tr><td>SD gagal</td><td>FAT32, MISO=3, CS=5; jangan GPIO2</td></tr>
-<tr><td>Tidak ada suara</td><td>DIN=8, speaker ke OUT amp; volume menu</td></tr>
+<tr><td>Tidak ada suara</td><td>DIN=8, speaker ke OUT amp; volume</td></tr>
+<tr><td>Wi-Fi tidak muncul</td><td>Flash ≥0.2.8; SSID <code>rzmong mochi</code></td></tr>
 <tr><td>Flash gagal</td><td>Chrome/Edge, tahan BOOT</td></tr>
 </table>
 </div>
 
 </main>
-<footer style="color:#8b95a7;font-size:12px;padding:20px 22px 40px">© rzmong · MIT · v0.2.6</footer>
+<footer style="color:#8b95a7;font-size:12px;padding:20px 22px 40px">© rzmong · MIT · v0.2.8</footer>
 </body></html>

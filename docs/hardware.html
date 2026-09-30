@@ -11,7 +11,6 @@ header,main,footer{max-width:900px;margin:0 auto;padding:0 22px}
 header{padding-top:28px}h1{margin:6px 0}h2{margin:0 0 10px;font-size:20px}
 a{color:#54a0ff}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin:12px 0}
-.wm{position:fixed;right:14px;bottom:10px;opacity:.28;letter-spacing:.18em;text-transform:uppercase;font-size:12px}
 table{width:100%;border-collapse:collapse;font-size:14px}
 td,th{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left}
 code,pre{background:#10141b;border-radius:8px}
@@ -22,26 +21,25 @@ ol,ul{color:#d5dbe6;line-height:1.55}
 .ok{color:#50fa7b}
 </style></head>
 <body>
-<div class="wm">rzmong</div>
 <header>
-  <div class="kicker">blueprint · rzmong · v0.2.6</div>
+  <div class="kicker">blueprint · rzmong · v0.2.8</div>
   <h1>🔧 Cara membuat Mochi</h1>
   <p><a href="index.html">🍡 Instalasi</a> · <a href="panduan.html">📖 Cara pakai</a> · <a href="https://github.com/rz7mong/mochi-rzmong">🐙 GitHub</a></p>
 </header>
 <main>
 
 <div class="card">
-<h2>🛒 Hardware</h2>
+<h2>🛒 Komponen</h2>
 <table>
 <tr><th>Bagian</th><th>Spesifikasi</th></tr>
-<tr><td>🧠 Otak</td><td>ESP32-C3 Super Mini</td></tr>
-<tr><td>📺 Layar</td><td>ST7789 1.3" 240×240 SPI</td></tr>
-<tr><td>🔋 Baterai</td><td>LiPo 3.7V 400–800 mAh</td></tr>
-<tr><td>⚡ Charger</td><td>TP4056 + proteksi</td></tr>
-<tr><td>🔌 Saklar</td><td>On/Off</td></tr>
-<tr><td>👆 Sentuh</td><td>TTP223</td></tr>
-<tr><td>🔊 Suara</td><td><b>MAX98357A I2S</b> + speaker 4–8Ω</td></tr>
-<tr><td>💾 SD</td><td>microSD SPI FAT32 (opsional)</td></tr>
+<tr><td>Otak</td><td>ESP32-C3 Super Mini</td></tr>
+<tr><td>Layar</td><td>ST7789 1.3" 240×240 SPI</td></tr>
+<tr><td>Baterai</td><td>LiPo 3.7V 400–800 mAh</td></tr>
+<tr><td>Charger</td><td><b>TP4056 + proteksi DW01/8205A</b> (jangan modul tanpa proteksi)</td></tr>
+<tr><td>Saklar</td><td>On/Off</td></tr>
+<tr><td>Sentuh</td><td>TTP223</td></tr>
+<tr><td>Suara</td><td>MAX98357A I2S + speaker 4–8Ω</td></tr>
+<tr><td>SD</td><td>microSD SPI FAT32 (opsional)</td></tr>
 </table>
 </div>
 
@@ -49,65 +47,54 @@ ol,ul{color:#d5dbe6;line-height:1.55}
 <h2>🔌 Pin per modul</h2>
 <table>
 <tr><th>Modul</th><th>Sinyal</th><th>GPIO</th><th>Catatan</th></tr>
-<tr><td>👆 Touch</td><td>OUT</td><td><b>1</b></td><td>TTP223 → HIGH saat sentuh</td></tr>
-<tr><td rowspan="4">💾 SD</td><td>SCK</td><td><b>4</b></td><td rowspan="4">Berbagi SPI clock/data dengan TFT. MISO khusus SD.</td></tr>
+<tr><td>Touch</td><td>OUT</td><td><b>1</b></td><td>TTP223 HIGH saat sentuh</td></tr>
+<tr><td rowspan="4">SD</td><td>SCK</td><td><b>4</b></td><td rowspan="4">SPI <b>berbagi</b> SCK/MOSI dengan TFT</td></tr>
 <tr><td>MOSI</td><td><b>6</b></td></tr>
 <tr><td>MISO</td><td><b>3</b></td></tr>
 <tr><td>CS</td><td><b>5</b></td></tr>
-<tr><td rowspan="5">📺 TFT ST7789</td><td>SCLK</td><td><b>4</b></td><td rowspan="5">RST harus 0 (bukan pin strap 2/8/9). BLK ke 3V3.</td></tr>
-<tr><td>MOSI/SDA</td><td><b>6</b></td></tr>
+<tr><td rowspan="5">TFT ST7789</td><td>SCLK</td><td><b>4</b></td><td rowspan="5">RST=0. BLK → 3V3</td></tr>
+<tr><td>MOSI</td><td><b>6</b></td></tr>
 <tr><td>CS</td><td><b>7</b></td></tr>
 <tr><td>DC</td><td><b>10</b></td></tr>
 <tr><td>RST</td><td><b>0</b></td></tr>
-<tr><td rowspan="3">🔊 MAX98357</td><td>BCLK</td><td><b>21</b></td><td rowspan="3">VIN amp dari jalur baterai setelah saklar.</td></tr>
+<tr><td rowspan="3">MAX98357</td><td>BCLK</td><td><b>21</b></td><td rowspan="3">GPIO20/21 = UART0 default; firmware pakai USB CDC. GPIO8 = <b>strapping</b> + sering LED onboard — jangan tarik LOW saat reset.</td></tr>
 <tr><td>LRC</td><td><b>20</b></td></tr>
 <tr><td>DIN</td><td><b>8</b></td></tr>
-<tr><td>⛔ Kosong</td><td>—</td><td><b>2, 9</b></td><td>Strap / BOOT — jangan wiring</td></tr>
+<tr><td>Hindari di boot</td><td>—</td><td><b>2, 9</b></td><td>Strapping boot mode</td></tr>
 </table>
+<p class="warn">⚠️ Tidak klaim “boot-safe penuh” untuk GPIO8. Uji board Super Mini Anda.</p>
 </div>
 
 <div class="card">
-<h2>🔈 Speaker — jangan ke GPIO</h2>
-<p><span class="warn">⚠️ Speaker tidak boleh langsung ke pin ESP32.</span></p>
+<h2>🔈 Speaker</h2>
+<p class="warn">Jangan sambung speaker ke GPIO langsung.</p>
 <pre>
-ESP32  BCLK → MAX98357 BCLK
-       LRC  → MAX98357 LRC
-       DIN  → MAX98357 DIN
+ESP32 BCLK/LRC/DIN → MAX98357
 MAX98357 VIN ← setelah saklar (baterai)
-MAX98357 OUT+ / OUT− → speaker 4–8Ω
+OUT+/OUT− → speaker 4–8Ω
 </pre>
-<p><span class="ok">✅</span> Selalu: <b>ESP32 → amp I2S → speaker</b>.</p>
 </div>
 
 <div class="card">
-<h2>⚡ Power path</h2>
+<h2>⚡ Power</h2>
 <pre>
-LiPo → TP4056 → Saklar → VIN ESP32 + VIN MAX98357
+LiPo → TP4056 (+DW01) → Saklar → VIN ESP32 + VIN MAX98357
 ESP32 3V3 → LCD + SD + TTP223
 GND bersama
 </pre>
 </div>
 
 <div class="card">
-<h2>🔊 SFX (WAV saja)</h2>
-<pre>
-/sfx/&lt;tema&gt;/&lt;stem&gt;.wav   contoh /sfx/wajah/yelling.wav
-/sfx/&lt;stem&gt;.wav
-</pre>
-<p>Format: <b>WAV 16-bit PCM</b>, 8–48 kHz. MP3 tidak di-decode di firmware ini.</p>
-</div>
-
-<div class="card">
 <h2>🧩 Urutan rakit</h2>
 <ol>
 <li>Case + LCD</li>
-<li>GND → 3V3 → SPI → touch → I2S ke amp</li>
+<li>GND → 3V3 → SPI → touch → I2S</li>
 <li>Speaker ke OUT amp</li>
-<li>TP4056 → saklar → VIN</li>
-<li>Flash firmware ≥ <b>0.2.6</b> dari <a href="index.html">halaman instalasi</a></li>
+<li>TP4056 berproteksi → saklar → VIN</li>
+<li>Flash firmware ≥ <b>0.2.8</b></li>
 </ol>
 </div>
 
 </main>
-<footer style="color:#8b95a7;font-size:12px;padding:16px 22px 40px">© rzmong · MIT · v0.2.6</footer>
+<footer style="color:#8b95a7;font-size:12px;padding:16px 22px 40px">© rzmong · MIT · v0.2.8</footer>
 </body></html>
