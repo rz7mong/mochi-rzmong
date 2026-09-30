@@ -1,4 +1,4 @@
-// Mochi rzmong 0.2.2 — reaksi sentuh = GIF katalog
+// Mochi rzmong 0.2.3 — pin boot-safe (MISO=3 RST=0 DIN=8)
 #include <Arduino.h>
 #include <TFT_eSPI.h>
 #include <AnimatedGIF.h>
