@@ -1,4 +1,4 @@
-// Mochi rzmong 0.2.1 — reaksi sentuh = GIF katalog
+// Mochi rzmong 0.2.2 — reaksi sentuh = GIF katalog
 #include <Arduino.h>
 #include <TFT_eSPI.h>
 #include <AnimatedGIF.h>
