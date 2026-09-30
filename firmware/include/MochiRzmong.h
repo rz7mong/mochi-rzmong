@@ -1,8 +1,9 @@
 #pragma once
 #define MOCHI_BRAND   "rzmong"
 #define MOCHI_WATERMARK MOCHI_BRAND
-#define MOCHI_AP_NAME "Mochi-rzmong"
-#define MOCHI_VERSION "0.2.7"
+#define MOCHI_AP_NAME "rzmong mochi"
+#define MOCHI_AP_PASS "rzmong123"
+#define MOCHI_VERSION "0.2.8"
 /* Pin map — ESP32-C3
  * Strapping: GPIO2, GPIO8, GPIO9 — avoid forcing wrong level at reset.
  * GPIO8 used as I2S DIN (after boot OK if not pulled LOW at reset).
