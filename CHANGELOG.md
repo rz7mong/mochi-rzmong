@@ -1,5 +1,15 @@
 # Changelog
 
+## [0.4.0] — 2026-09-30
+
+### Added
+- **Studio Convert + Upload**: halaman `studio.html` convert MP4→GIF 240×240 dan MP3→WAV 16-bit di browser (FFmpeg.wasm), lalu upload ke SD lewat Wi-Fi AP
+- **API** `POST /api/upload?tema=&stem=&type=gif|wav` — tulis file ke `/gif/<tema>/` atau `/sfx/<tema>/` (max ~600 KB, hormati `sdBusy`)
+
+### Notes
+- Upload hanya jalan jika kartu SD terpasang dan user tersambung ke AP `rzmong mochi`
+- API tetap **tanpa autentikasi** (siapa pun di AP bisa upload)
+
 ## [0.3.0] — 2026-09-30
 
 ### Added
