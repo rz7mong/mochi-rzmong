@@ -5,14 +5,14 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <title>Studio tema - Mochi rzmong</title>
-<link rel="stylesheet" href="./studio.css?v=6"/>
+<link rel="stylesheet" href="./studio.css?v=7"/>
 </head>
 <body>
 <header>
-  <div class="kicker">studio · rzmong · v0.4.6</div>
+  <div class="kicker">studio · rzmong · v0.4.7</div>
   <h1>Studio + Upload</h1>
-  <p class="hint">Convert video to small GIF + WAV. Auto-compress until under 600 KB.</p>
-  <p class="hint warn">Upload needs Wi-Fi rzmong mochi / rzmong123 and firmware 0.4.5+</p>
+  <p class="hint">Target GIF max 599 KB. Tries longer duration first (up to 8s), then lowers quality.</p>
+  <p class="hint warn">Upload: Wi-Fi rzmong mochi / rzmong123 · firmware 0.4.5+</p>
   <p><a href="index.html">Install</a> · <a href="pengaturan.html">Settings</a> · <a href="panduan.html">Guide</a></p>
 </header>
 <main>
@@ -32,7 +32,7 @@
   </datalist>
   <label>File name (no extension)</label>
   <input id="stem" value="yelling"/>
-  <label>Video (auto GIF + sound, short clip for ESP32)</label>
+  <label>Video (GIF up to ~8s if under 599 KB)</label>
   <input type="file" id="vid" accept="video/*,image/gif,.gif,.mp4,.webm,.mov"/>
   <label>Sound optional (overrides video audio)</label>
   <input type="file" id="sfx" accept="audio/*,.mp3,.wav,.m4a,.ogg"/>
@@ -51,8 +51,8 @@
   </div>
 </div>
 </main>
-<footer>rzmong · MIT · v0.4.6 · multi-try GIF compress under 600KB</footer>
+<footer>rzmong · MIT · v0.4.7 · GIF max 599 KB · longer duration first</footer>
 <script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js"></script>
-<script src="./studio.app.js?v=20260930e"></script>
+<script src="./studio.app.js?v=20260930f"></script>
 </body>
 </html>
