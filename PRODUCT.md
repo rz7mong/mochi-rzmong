@@ -1,23 +1,21 @@
 # Product constants (single source of truth)
 
-Edit **version and Wi-Fi here and in** `firmware/include/MochiRzmong.h` together. CI reads version from the header for `manifest.json`.
-
 | Key | Value |
 | --- | --- |
-| **Version** | `0.2.9` |
+| **Version** | `0.3.0` |
 | **Brand** | `rzmong` |
 | **AP SSID** | `rzmong mochi` |
 | **AP password** | `rzmong123` |
-| **Settings page** | `docs/pengaturan.html` |
-| **Legacy settings URL** | `docs/thietlap.html` → redirect to `pengaturan.html` |
-| **Theme pack** | Release tag `assets-v1` |
-| **Media on device** | GIF + WAV 16-bit only (no MP4, no MP3) |
-| **Suggested About text** | `ESP32-C3 desk buddy: GIF faces, touch reactions, WAV SFX. Flash from browser.` |
-
-Firmware:
+| **On-device settings** | `http://192.168.4.1/` (captive UI, offline) |
+| **GitHub Pages settings** | `docs/pengaturan.html` (needs internet; prefer on-device UI) |
+| **Theme pack** | Release `assets-v1` |
+| **Media** | GIF + WAV 16-bit only |
+| **Suggested About** | `ESP32-C3 desk buddy: GIF faces, touch reactions, WAV SFX. Flash from browser.` |
 
 ```c
-#define MOCHI_VERSION "0.2.9"
+#define MOCHI_VERSION "0.3.0"
 #define MOCHI_AP_NAME "rzmong mochi"
 #define MOCHI_AP_PASS "rzmong123"
 ```
+
+**Erase on install:** `new_install_prompt_erase: true` wipes **NVS** (saved theme, volume, Chronos flag, etc.). Documented in install guide.
