@@ -1,0 +1,24 @@
+name: Patch repo About
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/patch-about.yml'
+permissions:
+  contents: write
+jobs:
+  about:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Description, homepage, topics
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh api -X PATCH repos/rz7mong/mochi-rzmong \
+            -f description='ESP32-C3 desk buddy: GIF faces, touch reactions, WAV SFX. Flash from browser.' \
+            -f homepage='https://rz7mong.github.io/mochi-rzmong/'
+          gh api -X PUT repos/rz7mong/mochi-rzmong/topics \
+            -H 'Accept: application/vnd.github+json' \
+            --input - <<'JSON'
+          {"names":["esp32-c3","st7789","platformio","desk-pet","gif","esp32","arduino","wav"]}
+          JSON

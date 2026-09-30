@@ -1,59 +1,51 @@
 # HANDOFF — Mochi rzmong v0.5.1
 
 **Repo:** https://github.com/rz7mong/mochi-rzmong  
-**Pages:** https://rz7mong.github.io/mochi-rzmong/
+**Pages:** https://rz7mong.github.io/mochi-rzmong/  
+**Salinan web:** https://rz7mong.github.io/mochi-rzmong/handoff.html
 
 ## Device
 
-ESP32-C3 Super Mini + ST7789 240×240 + touch + optional microSD + Chronos BLE.
+ESP32-C3 Super Mini + ST7789 1.3" 240×240 (PCB 23×40 mm) + touch + microSD opsional + Chronos BLE.
 
 | AP | Value |
 |----|--------|
 | SSID | `rzmong mochi` |
-| Pass | `rzmong123` |
+| Pass | `rzmong123` (lab; ganti `MOCHI_AP_PASS` lalu flash) |
 | UI | `http://192.168.4.1/` |
 
 ## Build / flash
 
 ```bash
 cd firmware
+python tools/embed_assets.py
 pio run -e esp32-c3-super-mini
 pio run -e esp32-c3-super-mini -t upload
 ```
 
-CI (`firmware.yml`): runs `embed_assets.py` (GIF/jingle headers), builds, merges `docs/firmware/firmware.bin`, commits bin + manifest.
+Installer: https://rz7mong.github.io/mochi-rzmong/  
+Tema: https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1
 
-**Do not flash an old zip `prebuilt/` 0.4.7** if you need Chronos-nav / serviceNet / captive upload.
+Jangan flash zip prebuilt 0.4.7 jika butuh Chronos-nav / serviceNet / captive upload.
 
-## Pins
+## Pins (bukan boot-safe)
 
-See `firmware/include/MochiRzmong.h` and `User_Setup_ST7789.h` (`SUPPORT_TRANSACTIONS` for shared SPI).
+Touch=1 · SD 4/6/3/5 · TFT 4/6/7/10/0 · I2S 21/20/8 · GPIO2/9 kosong.
 
-## SD paths
+GPIO8 = strapping + I2S DIN. GPIO20/21 = UART0 — log boot bisa “plok” di speaker.
 
-`/gif/<tema>/<stem>.gif` · `/sfx/<tema>/<stem>.wav` · upload buffer ~600000 bytes
+Lihat `firmware/include/MochiRzmong.h` + `User_Setup_ST7789.h` (`SUPPORT_TRANSACTIONS`).
 
-## API
+## SD / API
 
-`GET /api/status` · `GET /api/themes` · `POST /api/settings` · `POST /api/upload` · CORS + OPTIONS enabled. **Password not in JSON.**
+`/gif/<tema>/<stem>.gif` + `/sfx/<tema>/<stem>.wav` · upload ~600000 bytes  
+`GET /api/status` · `GET /api/themes` · `POST /api/settings` · `POST /api/upload`  
+Password **tidak** di JSON.
 
 ## Chronos
 
-BLE name `rzmong`. Pair in Chronos app only. Features: notif, call, find, time, navigation (dirty redraw).
-
-Touch: notif 1-tap · call hold 0.6s · nav 2-tap hide · play 1-tap react / 2-tap menu.
-
-## Media flow
-
-1. Studio online → download GIF/WAV  
-2. AP + captive **Upload ke SD** (same-origin)
-
-## Runtime notes
-
-- `serviceNet()` during GIF frames (DNS, HTTP, Chronos loop)
-- GIF auto-`nextPart()` after a full play with no taps
-- One radio: heavy AP + BLE may lag
+BLE name `rzmong`. Satu radio 2.4 GHz: AP + BLE bisa lag.
 
 ## License
 
-MIT · rzmong · ChronosESP32 (fbiego)
+**MIT © rzmong** · ChronosESP32 (fbiego)

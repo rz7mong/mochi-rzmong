@@ -1,24 +1,31 @@
-# 🍡 Mochi rzmong
+# Mochi rzmong
 
 [![Build firmware](https://github.com/rz7mong/mochi-rzmong/actions/workflows/firmware.yml/badge.svg)](https://github.com/rz7mong/mochi-rzmong/actions/workflows/firmware.yml)
+[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
-Palm-sized **ESP32-C3** desk buddy: **GIF** faces on ST7789, touch reactions, **WAV** SFX via MAX98357.
+Palm-sized **ESP32-C3 Super Mini** desk buddy + **ST7789 1.3" 240×240** (23×40 mm PCB): **GIF** faces, touch reactions, **WAV** SFX.
 
-> Independent open-source project. **Not affiliated** with any commercial brand. Bahasa Indonesia: [README.md](README.md).
+Independent open-source project **inspired by** Dasai Mochi — **not affiliated**, not a licensed clone.
 
-| | |
-| --- | --- |
-| Brand | **rzmong** (optional LCD corner mark, can be disabled) |
-| Version | See [PRODUCT.md](PRODUCT.md) |
-| License | [MIT](LICENSE) · [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) |
-| Install | [rz7mong.github.io/mochi-rzmong](https://rz7mong.github.io/mochi-rzmong/) |
-| Theme pack | [Release `assets-v1`](https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1) |
-| Wi-Fi | SSID **`rzmong mochi`** · password **`rzmong123`** |
+**Firmware 0.5.1** · **MIT © rzmong** · Bahasa Indonesia: [README.md](README.md)
 
-**On device:** GIF + WAV 16-bit only (no MP4 player, no MP3 decoder).
+On device: **GIF + 16-bit WAV only** (no MP4 player, no MP3 decoder).
 
-Suggested GitHub About: `ESP32-C3 desk buddy: GIF faces, touch reactions, WAV SFX. Flash from browser.`
+## Quick start
 
-Change AP credentials in `MOCHI_AP_NAME` / `MOCHI_AP_PASS`, rebuild, flash.
+1. Chrome / Edge → [installer 0.5.1](https://rz7mong.github.io/mochi-rzmong/) (hold BOOT, plug USB-C).
+2. Default AP: **`rzmong mochi` / `rzmong123`**. Lab password — change `MOCHI_AP_PASS` and reflash before public use.
+3. Settings: **`http://192.168.4.1/`** on the device AP.
+4. Themes: [Release `assets-v1`](https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1) → FAT32 SD root (`gif/` + `sfx/`).
 
-Pins, power, and build steps: see the Indonesian [README.md](README.md) (same content structure).
+Do not use expired `user-attachments` zip links. Use the Release.
+
+Settings page is **pengaturan.html** (`thietlap.html` only redirects).
+
+Pins are **not** “boot-safe”: GPIO8 is a C3 strapping pin (I2S DIN); GPIO20/21 are UART0 (boot log may click the speaker).
+
+Full pins / case STL / troubleshooting: see [README.md](README.md).
+
+## License
+
+**MIT © rzmong** · [LICENSE](LICENSE) · ChronosESP32 by fbiego — [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
