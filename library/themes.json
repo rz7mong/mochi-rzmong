@@ -1,7 +1,18 @@
 {
   "brand": "rzmong",
-  "version": "0.2.1",
-  "themes": ["wajah", "gundam", "mobil", "neon", "anime", "makanan", "musik", "intro"],
+  "version": "0.2.5",
+  "themes": ["wajah", "gundam", "mobil", "polisi", "musik", "neon", "anime", "makanan", "intro"],
+  "labels": {
+    "wajah": "Wajah Mochi",
+    "gundam": "Gundam / Mecha",
+    "mobil": "Mobil / JDM",
+    "polisi": "Polisi",
+    "musik": "Musik",
+    "neon": "Neon / Kota",
+    "anime": "Anime",
+    "makanan": "Makanan",
+    "intro": "Intro / Logo"
+  },
   "react_mode_default": "acak",
   "reacts": [
     {"name": "tickle", "theme": "wajah", "stem": "yelling"},
@@ -14,5 +25,10 @@
     {"name": "kaget", "theme": "wajah", "stem": "big_sneeze"},
     {"name": "kedip-satu", "theme": "gundam", "stem": "blade"},
     {"name": "cemberut", "theme": "anime", "stem": "pinky"}
-  ]
+  ],
+  "sd": {
+    "gif": "/gif/<tema>/*.gif",
+    "sfx": "/sfx/<tema>/<stem>.wav",
+    "note": "Ekstrak pack ke root SD. Pilih default di web; ganti manual di ESP32 lewat menu Pilih tema."
+  }
 }
