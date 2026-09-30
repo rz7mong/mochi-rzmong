@@ -2,16 +2,21 @@
 
 Target hardware **2026**: ESP32-C3 Super Mini + LCD ST7789 **1.3" 240×240** modul **23×40 mm** (bukan 1.54" / 32 mm).
 
-File cetak 3D yang diharapkan (unggah ke folder ini jika sudah siap):
+## File cetak resmi
 
-- `case_luar_lcd_23_40mm.stl` — kulit luar
-- `tatakan_lcd_23_40mm.stl` — dudukan LCD 23×40 mm
+| File | Fungsi | Ukuran |
+| --- | --- | --- |
+| [case_luar_lcd_23_40mm.stl](./case_luar_lcd_23_40mm.stl) | Kulit luar | 1.4 MB |
+| [tatakan_lcd_23_40mm.stl](./tatakan_lcd_23_40mm.stl) | Dudukan LCD 23×40 mm | 794 KB |
 
-**Catatan:** STL belum ada di repo ini. Jendela depan harus 23×40 mm agar modul 1.3" 8-pin muat rapat. Modul 1.54" **tidak** muat tanpa redesign.
+Unduh mentah:
+
+- https://github.com/rz7mong/mochi-rzmong/raw/main/case/case_luar_lcd_23_40mm.stl
+- https://github.com/rz7mong/mochi-rzmong/raw/main/case/tatakan_lcd_23_40mm.stl
 
 ## Cetak
 
-- Material: PLA (atau PETG jika case di dekat TP4056 yang hangat)
+- Material: PLA (PETG jika dekat TP4056 yang hangat)
 - Layer 0.2 mm, dinding 2, infill 15–20%
 - Support: biasanya tidak perlu jika jendela menghadap plate sesuai desain
 
