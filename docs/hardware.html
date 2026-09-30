@@ -52,8 +52,18 @@ ol,ul{color:#d5dbe6;line-height:1.55}
 <tr><td>Sentuh</td><td>TTP223 (HIGH saat sentuh)</td></tr>
 <tr><td>Suara</td><td>MAX98357A I2S + speaker 4–8Ω tipis — <b>bukan PAM8403</b></td></tr>
 <tr><td>SD</td><td>microSD SPI FAT32 (opsional, wajib untuk upload Studio)</td></tr>
-<tr><td>Case</td><td>Jendela 23×40 mm — lihat folder <code>case/</code></td></tr>
+<tr><td>Case</td><td>Jendela 23×40 mm — STL resmi di bawah</td></tr>
 </table>
+</div>
+
+<div class="card">
+<h2>📥 Unduh case 3D (STL)</h2>
+<ul>
+<li><a href="https://github.com/rz7mong/mochi-rzmong/raw/main/case/case_luar_lcd_23_40mm.stl">case_luar_lcd_23_40mm.stl</a> — kulit luar (1.4 MB)</li>
+<li><a href="https://github.com/rz7mong/mochi-rzmong/raw/main/case/tatakan_lcd_23_40mm.stl">tatakan_lcd_23_40mm.stl</a> — dudukan LCD 23×40 mm (794 KB)</li>
+</ul>
+<p>Folder: <a href="https://github.com/rz7mong/mochi-rzmong/tree/main/case">github.com/rz7mong/mochi-rzmong/tree/main/case</a></p>
+<p>Cetak PLA, layer 0.2 mm, infill 15–20%.</p>
 </div>
 
 <div class="card">
@@ -110,7 +120,7 @@ LCD BLK → 3V3 (bukan 5V)
 <div class="card">
 <h2>🧩 Urutan rakit</h2>
 <ol>
-<li>Cetak case jendela 23×40 mm + tatakan LCD.</li>
+<li>Cetak case jendela 23×40 mm + tatakan LCD (STL di atas).</li>
 <li>Rekatkan LCD 1.3" ke tatakan, kabel ke belakang. BLK ke 3V3.</li>
 <li>Solder urutan: GND bersama → 3V3 → SPI layar → SPI SD → sentuh GPIO1 → I2S 21/20/8.</li>
 <li>Speaker ke OUT amp. Jangan pakai GPIO2 atau GPIO9.</li>
