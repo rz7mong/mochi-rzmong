@@ -52,34 +52,19 @@ img.wire{width:100%;border-radius:12px;border:1px solid var(--line);background:#
 <tr><td>Saklar</td><td>On/Off memutus VIN beban</td></tr>
 <tr><td>Sentuh</td><td>TTP223 (HIGH saat sentuh)</td></tr>
 <tr><td>Suara</td><td>MAX98357A I2S + speaker 4–8Ω tipis — <b>bukan PAM8403</b></td></tr>
-<tr><td>SD</td><td>microSD SPI FAT32 (opsional, wajib untuk upload Studio)</td></tr>
+<tr><td>Kapasitor amp</td><td><b>~470 µF / ≥10 V</b> di VIN MAX98357 ke GND</td></tr>
+<tr><td>SD</td><td>Modul microSD SPI <b>native 3.3V</b> + kartu FAT32 — bukan reader 5V</td></tr>
 <tr><td>Case</td><td>Jendela 23×40 mm — STL resmi di bawah</td></tr>
 </table>
 </div>
 
 <div class="card">
-<h2>🐍 Wiring (WikiHow-style)</h2>
-<p>Ikuti warna kabel + kotak teks di gambar. Pin sesuai firmware <b>0.5.1</b>.</p>
-<img class="wire" src="wiring-0.5.1.jpg" alt="Wiring ESP32-C3 Super Mini ST7789 TTP223 MAX98357 microSD TP4056"/>
-<p class="warn" style="margin-top:10px">GPIO2 dan GPIO9 kosong. Speaker hanya ke OUT amp, bukan ke GPIO.</p>
-</div>
-
-<div class="card">
-<h2>📥 Unduh case 3D (STL)</h2>
-<ul>
-<li><a href="https://github.com/rz7mong/mochi-rzmong/raw/main/case/case_luar_lcd_23_40mm.stl">case_luar_lcd_23_40mm.stl</a> — kulit luar (1.4 MB)</li>
-<li><a href="https://github.com/rz7mong/mochi-rzmong/raw/main/case/tatakan_lcd_23_40mm.stl">tatakan_lcd_23_40mm.stl</a> — dudukan LCD 23×40 mm (794 KB)</li>
-</ul>
-<p>Folder: <a href="https://github.com/rz7mong/mochi-rzmong/tree/main/case">github.com/rz7mong/mochi-rzmong/tree/main/case</a></p>
-<p>Cetak PLA, layer 0.2 mm, infill 15–20%.</p>
-</div>
-
-<div class="card">
-<h2>🔌 Pin firmware 0.5.1</h2>
+<h2>Pin firmware 0.5.1</h2>
+<p>Ikuti tabel ini saat solder. Gambar wiring hanya bantu lihat bentuk barang.</p>
 <table>
 <tr><th>Modul</th><th>Sinyal</th><th>GPIO</th><th>Catatan</th></tr>
 <tr><td>Touch</td><td>OUT</td><td><b>1</b></td><td>TTP223 HIGH saat sentuh</td></tr>
-<tr><td rowspan="4">SD</td><td>SCK</td><td><b>4</b></td><td rowspan="4">SPI <b>berbagi</b> SCK/MOSI dengan TFT. Firmware: <code>sdBusy</code> + <code>SUPPORT_TRANSACTIONS</code>.</td></tr>
+<tr><td rowspan="4">SD</td><td>SCK</td><td><b>4</b></td><td rowspan="4">SPI <b>berbagi</b> SCK/MOSI dengan TFT. Modul harus <b>3.3V native</b>.</td></tr>
 <tr><td>MOSI</td><td><b>6</b></td></tr>
 <tr><td>MISO</td><td><b>3</b></td></tr>
 <tr><td>CS</td><td><b>5</b></td></tr>
@@ -88,7 +73,7 @@ img.wire{width:100%;border-radius:12px;border:1px solid var(--line);background:#
 <tr><td>CS</td><td><b>7</b></td></tr>
 <tr><td>DC</td><td><b>10</b></td></tr>
 <tr><td>RST / RES</td><td><b>0</b></td></tr>
-<tr><td rowspan="3">MAX98357</td><td>BCLK</td><td><b>21</b></td><td rowspan="3">GPIO8 = strapping. GPIO20/21 = UART0 — log boot bisa “plok” di speaker. Pakai USB CDC.</td></tr>
+<tr><td rowspan="3">MAX98357</td><td>BCLK</td><td><b>21</b></td><td rowspan="3">GPIO8 = strapping. GPIO20/21 = UART0 — log boot bisa “plok”. Pakai USB CDC. Tambah 470 µF di VIN amp.</td></tr>
 <tr><td>LRC / WS</td><td><b>20</b></td></tr>
 <tr><td>DIN</td><td><b>8</b></td></tr>
 <tr><td>Strapping</td><td>—</td><td><b>2, 9</b></td><td class="warn"><b>Biarkan tidak terhubung</b></td></tr>
@@ -117,12 +102,30 @@ LiPo → TP4056 (+DW01) → Saklar → VIN ESP32 + VIN MAX98357
 ESP32 3V3 → LCD + SD + TTP223
 GND bersama
 LCD BLK → 3V3 (bukan 5V)
+MAX98357 VIN — kapasitor ~470 µF ke GND, sedekat mungkin ke modul
 </pre>
 </div>
 
 <div class="card">
-<h2>🔊 Speaker</h2>
-<p class="warn">Jangan sambung speaker ke GPIO langsung — hanya lewat MAX98357 OUT+/OUT−. Bunyi “plok” saat boot bisa muncul karena UART0 di GPIO20/21.</p>
+<h2>📥 Unduh case 3D (STL)</h2>
+<ul>
+<li><a href="https://github.com/rz7mong/mochi-rzmong/raw/main/case/case_luar_lcd_23_40mm.stl">case_luar_lcd_23_40mm.stl</a> — kulit luar (1.4 MB)</li>
+<li><a href="https://github.com/rz7mong/mochi-rzmong/raw/main/case/tatakan_lcd_23_40mm.stl">tatakan_lcd_23_40mm.stl</a> — dudukan LCD 23×40 mm (794 KB)</li>
+</ul>
+<p>Folder: <a href="https://github.com/rz7mong/mochi-rzmong/tree/main/case">github.com/rz7mong/mochi-rzmong/tree/main/case</a></p>
+<p>Cetak PLA, layer 0.2 mm, infill 15–20%.</p>
+</div>
+
+<div class="card">
+<h2>🔊 Speaker & amp</h2>
+<p class="warn">Jangan sambung speaker ke GPIO — hanya lewat MAX98357 OUT+/OUT−. Bunyi “plok” saat boot bisa muncul karena UART0 di GPIO20/21.</p>
+<p>Wajib: kapasitor elektrolit <b>~470 µF, ≥10 V</b> antara VIN MAX98357 dan GND (kaki + ke VIN). Tanpa ini amp mudah ceklek saat bass.</p>
+</div>
+
+<div class="card">
+<h2>💾 Kartu SD</h2>
+<p>Pakai breakout SPI <b>yang memang 3.3V</b>. Modul “SD reader 5V” / converter 5V ke 3.3V sering gagal di bus yang sama dengan TFT.</p>
+<p>Format FAT32. MISO = <b>GPIO3</b>, CS = GPIO5. Jangan GPIO2.</p>
 </div>
 
 <div class="card">
@@ -131,9 +134,9 @@ LCD BLK → 3V3 (bukan 5V)
 <li>Cetak case jendela 23×40 mm + tatakan LCD (STL di atas).</li>
 <li>Rekatkan LCD 1.3" ke tatakan, kabel ke belakang. BLK ke 3V3.</li>
 <li>Solder urutan: GND bersama → 3V3 → SPI layar → SPI SD → sentuh GPIO1 → I2S 21/20/8.</li>
-<li>Speaker ke OUT amp. Jangan pakai GPIO2 atau GPIO9.</li>
+<li>Speaker ke OUT amp. Kapasitor 470 µF di VIN amp. Jangan pakai GPIO2 atau GPIO9.</li>
 <li>TP4056 berproteksi → saklar → VIN.</li>
-<li>Flash firmware <b>0.5.1</b> dari halaman instalasi (Erase NVS aman; SD tidak terhapus).</li>
+<li>Flash firmware <b>0.5.1</b> dari <a href="index.html">halaman instalasi</a> (Erase NVS aman; SD tidak terhapus).</li>
 <li>Wi-Fi <code>rzmong mochi</code> / <code>rzmong123</code> → <code>http://192.168.4.1/</code>. Ganti sandi AP di firmware sebelum dipakai di tempat umum.</li>
 </ol>
 </div>
@@ -142,9 +145,9 @@ LCD BLK → 3V3 (bukan 5V)
 <h2>⚠️ Troubleshooting rakit</h2>
 <table>
 <tr><td>Layar putih/hitam</td><td>RST=<b>0</b>, CS=7, DC=10, SCLK=4, MOSI=6, BLK=3V3</td></tr>
-<tr><td>SD gagal</td><td>FAT32, MISO=<b>3</b>, CS=5; <b>bukan GPIO2</b></td></tr>
+<tr><td>SD gagal</td><td>FAT32, modul <b>3.3V native</b>, MISO=<b>3</b>, CS=5; <b>bukan GPIO2</b></td></tr>
 <tr><td>Tidak boot / aneh</td><td>GPIO2 atau GPIO9 tersolder — cabut</td></tr>
-<tr><td>Tidak ada suara</td><td>DIN=<b>8</b>, speaker ke OUT amp</td></tr>
+<tr><td>Tidak ada suara</td><td>DIN=<b>8</b>, speaker ke OUT amp, cek 470 µF</td></tr>
 <tr><td>Plok saat boot</td><td>UART0 di 20/21 + strapping GPIO8 — uji di hardware</td></tr>
 <tr><td>LCD 1.54" longgar</td><td>Salah model — case ini untuk 23×40 mm</td></tr>
 </table>
