@@ -1,4 +1,4 @@
-// Mochi rzmong 0.3.0 — captive / + sdBusy SPI guard; AP rzmong mochi / rzmong123
+// Mochi rzmong 0.4.0 — captive UI + sdBusy + /api/upload (GIF/WAV to SD); AP rzmong mochi / rzmong123
 #include <Arduino.h>
 #include <TFT_eSPI.h>
 #include <AnimatedGIF.h>
@@ -294,6 +294,98 @@ void handleSettings(){
   out["storage"]=(useSd&&sdOk)?"sd":"flash"; out["gif_count"]=nparts; out["sd"]=sdOk; out["ap_pass"]=MOCHI_AP_PASS;
   String s; serializeJson(out,s); server.send(200,"application/json",s);
 }
+
+// ===== Upload file ke SD (GIF / WAV) =====
+// POST /api/upload?tema=wajah&stem=yelling&type=gif|wav  body: multipart file
+static File upFile;
+static String upPath;
+static bool upOk = false;
+static size_t upWritten = 0;
+static const size_t UPLOAD_MAX = 600000; // ~600 KB
+
+void handleUpload() {
+  HTTPUpload& upload = server.upload();
+
+  if (upload.status == UPLOAD_FILE_START) {
+    sdBusy = true;
+    upOk = false;
+    upWritten = 0;
+    upPath = "";
+    if (!sdOk) return;
+
+    String tema = server.arg("tema");
+    String stem = server.arg("stem");
+    String type = server.arg("type");
+    tema.trim(); stem.trim(); type.trim();
+    if (tema.length() == 0 || stem.length() == 0 ||
+        (type != "gif" && type != "wav")) {
+      return;
+    }
+    tema.replace("..", ""); stem.replace("..", "");
+    tema.replace("/", "");  stem.replace("/", "");
+    tema.replace("\\", ""); stem.replace("\\", "");
+    if (tema.length() == 0 || stem.length() == 0) return;
+
+    String dir = (type == "gif") ? String("/gif/") + tema : String("/sfx/") + tema;
+    if (!SD.exists("/gif")) SD.mkdir("/gif");
+    if (!SD.exists("/sfx")) SD.mkdir("/sfx");
+    if (!SD.exists(dir)) SD.mkdir(dir);
+
+    upPath = dir + "/" + stem + "." + type;
+    if (SD.exists(upPath)) SD.remove(upPath);
+    upFile = SD.open(upPath, FILE_WRITE);
+    upOk = (bool)upFile;
+  }
+  else if (upload.status == UPLOAD_FILE_WRITE) {
+    if (upOk && upFile) {
+      if (upWritten + upload.currentSize > UPLOAD_MAX) {
+        upFile.close();
+        SD.remove(upPath);
+        upOk = false;
+        upPath = "";
+      } else {
+        size_t w = upFile.write(upload.buf, upload.currentSize);
+        upWritten += w;
+        if (w != upload.currentSize) {
+          upFile.close();
+          SD.remove(upPath);
+          upOk = false;
+          upPath = "";
+        }
+      }
+    }
+  }
+  else if (upload.status == UPLOAD_FILE_END) {
+    if (upOk && upFile) {
+      upFile.close();
+      JsonDocument out;
+      out["ok"] = true;
+      out["path"] = upPath;
+      out["size"] = (int)upWritten;
+      out["brand"] = MOCHI_BRAND;
+      String s; serializeJson(out, s);
+      server.send(200, "application/json", s);
+    } else {
+      if (upFile) upFile.close();
+      if (upPath.length()) SD.remove(upPath);
+      server.send(400, "application/json",
+        sdOk ? "{\"error\":\"upload_failed\"}" : "{\"error\":\"sd_not_ready\"}");
+    }
+    sdBusy = false;
+    upPath = "";
+    upOk = false;
+    upWritten = 0;
+  }
+  else if (upload.status == UPLOAD_FILE_ABORTED) {
+    if (upFile) upFile.close();
+    if (upPath.length()) SD.remove(upPath);
+    sdBusy = false;
+    upPath = "";
+    upOk = false;
+    upWritten = 0;
+  }
+}
+
 void setup(){
   Serial.begin(115200); pinMode(MOCHI_PIN_TOUCH,INPUT_PULLDOWN); loadPrefs();
   tft.init(); tft.setRotation(rot); bootMark();
@@ -306,6 +398,7 @@ void setup(){
   server.on("/",handleRoot);
   server.on("/index.html",handleRoot);
   server.on("/api/status",handleStatus); server.on("/api/themes",handleThemes); server.on("/api/settings",HTTP_POST,handleSettings);
+  server.on("/api/upload", HTTP_POST, [](){}, handleUpload);
   server.begin();
   if(chronosOn) watch.begin();
 }
