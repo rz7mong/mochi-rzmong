@@ -1,4 +1,4 @@
-// Mochi rzmong 0.4.9 — Chronos full + captive DNS + GIF pairs with matching /sfx/<tema>/<stem>.wav; AP rzmong mochi
+// Mochi rzmong 0.5.0 — Chronos nav + full + captive DNS + GIF pairs with matching /sfx/<tema>/<stem>.wav; AP rzmong mochi
 #include <Arduino.h>
 #include <TFT_eSPI.h>
 #include <AnimatedGIF.h>
@@ -23,7 +23,7 @@ static const uint16_t C_RED=0xF985,C_TEAL=0x07F4,C_BLUE=0x3C7F,C_PINK=0xF81F,C_Y
 TFT_eSPI tft; AnimatedGIF gif; WebServer server(80); DNSServer dnsServer; ChronosESP32 watch("rzmong", CF_ESP32_240x240); Preferences prefs;
 String theme="wajah", playMode="kategori", reactMode="acak", apPass=MOCHI_AP_PASS;
 bool soundOn=true, useSd=false, chronosOn=false, showWm=true;
-bool chronoConn=false, ringerOn=false;
+bool chronoConn=false, ringerOn=false, chronosNav=true;
 String notifApp, notifTitle, notifMsg, ringerName;
 uint32_t notifUntil=0;
 int defIdx=0, reactIdx=0, volume=12, rot=0, menuRow=0, menuTop=0;
@@ -46,7 +46,7 @@ void loadPrefs(){
   prefs.begin("rzmong",false);
   theme=prefs.getString("theme","wajah"); playMode=prefs.getString("mode","kategori");
   reactMode=prefs.getString("rmode","acak"); soundOn=prefs.getBool("sound",true);
-  useSd=prefs.getBool("usesd",false); chronosOn=prefs.getBool("chrono",false); showWm=prefs.getBool("wm",true);
+  useSd=prefs.getBool("usesd",false); chronosOn=prefs.getBool("chrono",false); chronosNav=prefs.getBool("chrono_nav",true); showWm=prefs.getBool("wm",true);
   defIdx=prefs.getInt("def",0); reactIdx=prefs.getInt("react",0); volume=prefs.getInt("vol",12); rot=prefs.getInt("rot",0);
   if(defIdx<0||defIdx>=DEFAULT_GIF_COUNT)defIdx=0;
   if(reactIdx<0||reactIdx>=MOCHI_REACT_COUNT)reactIdx=0;
@@ -54,7 +54,7 @@ void loadPrefs(){
 }
 void savePrefs(){
   prefs.putString("theme",theme); prefs.putString("mode",playMode); prefs.putString("rmode",reactMode);
-  prefs.putBool("sound",soundOn); prefs.putBool("usesd",useSd); prefs.putBool("chrono",chronosOn); prefs.putBool("wm",showWm);
+  prefs.putBool("sound",soundOn); prefs.putBool("usesd",useSd); prefs.putBool("chrono",chronosOn); prefs.putBool("chrono_nav",chronosNav); prefs.putBool("wm",showWm);
   prefs.putInt("def",defIdx); prefs.putInt("react",reactIdx); prefs.putInt("vol",volume); prefs.putInt("rot",rot);
 }
 void scanTheme(const String &t){
@@ -296,8 +296,11 @@ void handleStatus(){
   d["chronos"]=chronosOn;
   d["chronos_conn"]=chronosOn && watch.isConnected();
   d["chronos_run"]=chronosOn && watch.isRunning();
+  d["chronos_nav"]=chronosNav;
+  d["nav_active"]=navActive && !navHide;
   if(chronosOn && watch.isRunning()) d["chronos_mac"]=watch.getAddress();
   if(chronosOn && chronoConn) d["chronos_time"]=watch.getTimeDate();
+  if(navActive){ d["nav_title"]=navTitle; d["nav_dist"]=navDist; }
   JsonArray themes=d["themes"].to<JsonArray>();
   for(int i=0;i<MOCHI_THEME_COUNT;i++) themes.add(MOCHI_THEMES[i]);
   String s; serializeJson(d,s); server.send(200,"application/json",s);
@@ -322,6 +325,7 @@ void handleSettings(){
   if(d["react_mode"].is<const char*>()) reactMode=(const char*)d["react_mode"];
   if(d["sound"].is<bool>()) soundOn=d["sound"];
   if(d["chronos"].is<bool>()){ chronosOn=d["chronos"]; chronosApply(); }
+  if(d["chronos_nav"].is<bool>()){ chronosNav=d["chronos_nav"]; }
   if(d["watermark"].is<bool>()) showWm=d["watermark"];
   if(d["storage"].is<const char*>()) useSd=(String((const char*)d["storage"])=="sd");
   if(d["def"].is<int>()){ defIdx=d["def"]; if(defIdx<0||defIdx>=DEFAULT_GIF_COUNT) defIdx=0; }
@@ -456,20 +460,32 @@ void loop(){
   dnsServer.processNextRequest();
   server.handleClient();
   if(chronosOn) watch.loop();
+
   if(chronosOn && ringerOn){
     drawChronosRinger();
     bool down=digitalRead(MOCHI_PIN_TOUCH)==HIGH;
-    if(down&&!prevDown) ringerOn=false;
+    if(down&&!prevDown) downAt=millis();
+    if(!down&&prevDown){ if(millis()-downAt>=600) ringerOn=false; }
     prevDown=down; delay(40); return;
   }
   if(chronosOn && notifUntil && (int32_t)(millis()-notifUntil)<0){
     drawChronosNotif();
     bool down=digitalRead(MOCHI_PIN_TOUCH)==HIGH;
-    if(down&&!prevDown) notifUntil=0;
+    if(down&&!prevDown){ notifUntil=0; }
     prevDown=down; delay(40); return;
   } else if(notifUntil && (int32_t)(millis()-notifUntil)>=0){
     notifUntil=0;
   }
+  if(chronosOn && chronosNav && navActive && !navHide){
+    drawChronosNav();
+    bool down=digitalRead(MOCHI_PIN_TOUCH)==HIGH;
+    if(down&&!prevDown){
+      if(millis()-lastTap<400){ navHide=true; taps=0; }
+      else { lastTap=millis(); taps=1; }
+    }
+    prevDown=down; delay(40); return;
+  }
+
   bool down=digitalRead(MOCHI_PIN_TOUCH)==HIGH;
   if(ui==UI_MENU){
     if(down&&!prevDown) downAt=millis();

@@ -3,7 +3,7 @@
 #define MOCHI_WATERMARK MOCHI_BRAND
 #define MOCHI_AP_NAME "rzmong mochi"
 #define MOCHI_AP_PASS "rzmong123"
-#define MOCHI_VERSION "0.4.9"
+#define MOCHI_VERSION "0.5.0"
 /* Chronos: BLE name rzmong · pair via Chronos app (not system BT).
  * ESP32-C3 shares 2.4GHz radio with Wi-Fi AP — expect lag if both busy.
  */
