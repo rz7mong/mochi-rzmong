@@ -33,6 +33,8 @@ Di perangkat: **GIF + WAV 16-bit saja** (tidak ada pemutar MP4, tidak ada decode
 
 ## Wiring firmware 0.5.1
 
+![Wiring ESP32-C3 Super Mini + ST7789 + TTP223 + MAX98357 + microSD + TP4056](docs/wiring-0.5.1.jpg)
+
 ```
 ESP32-C3 Super Mini
   Touch OUT → GPIO1
