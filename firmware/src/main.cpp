@@ -1,4 +1,4 @@
-// Mochi rzmong 0.2.9 — sdBusy SPI guard; AP rzmong mochi / rzmong123
+// Mochi rzmong 0.3.0 — captive / + sdBusy SPI guard; AP rzmong mochi / rzmong123
 #include <Arduino.h>
 #include <TFT_eSPI.h>
 #include <AnimatedGIF.h>
@@ -13,6 +13,7 @@
 #include "MochiRzmong.h"
 #include "defaults_gif.h"
 #include "jingle.h"
+#include "captive_ui.h"
 
 static const int W=240,H=240;
 static const uint16_t C_BG=0x1082,C_BAR=0xFD20,C_SEL=0xFE60,C_TEXT=0xEF7D,C_DIM=0x8410;
@@ -244,6 +245,10 @@ bool playCurrent(){
   }
   gif.close(); sdBusy=false; brandMark(); return true;
 }
+void handleRoot(){
+  server.sendHeader("Cache-Control","no-store");
+  server.send_P(200,"text/html",CAPTIVE_HTML);
+}
 void handleStatus(){
   JsonDocument d; d["brand"]=MOCHI_BRAND; d["ver"]=MOCHI_VERSION; d["theme"]=theme;
   d["mode"]=playMode; d["react_mode"]=reactMode; d["react"]=MOCHI_REACT[reactIdx].name;
@@ -252,6 +257,7 @@ void handleStatus(){
   d["sound"]=soundOn; d["vol"]=volume; d["storage"]=(useSd&&sdOk)?"sd":"flash"; d["sd"]=sdOk;
   d["sfx"]="wav_sd_or_jingle"; d["def"]=defIdx; d["gif_count"]=nparts;
   d["ap_ssid"]=MOCHI_AP_NAME; d["ap_pass"]=MOCHI_AP_PASS; d["sd_busy"]=sdBusy;
+  d["chronos"]=chronosOn;
   JsonArray themes=d["themes"].to<JsonArray>();
   for(int i=0;i<MOCHI_THEME_COUNT;i++) themes.add(MOCHI_THEMES[i]);
   String s; serializeJson(d,s); server.send(200,"application/json",s);
@@ -297,7 +303,10 @@ void setup(){
   audioInit();
   apPass = MOCHI_AP_PASS;
   WiFi.softAP(MOCHI_AP_NAME, MOCHI_AP_PASS);
-  server.on("/api/status",handleStatus); server.on("/api/themes",handleThemes); server.on("/api/settings",HTTP_POST,handleSettings); server.begin();
+  server.on("/",handleRoot);
+  server.on("/index.html",handleRoot);
+  server.on("/api/status",handleStatus); server.on("/api/themes",handleThemes); server.on("/api/settings",HTTP_POST,handleSettings);
+  server.begin();
   if(chronosOn) watch.begin();
 }
 void loop(){
