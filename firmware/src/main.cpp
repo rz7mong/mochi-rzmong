@@ -1,4 +1,4 @@
-// Mochi rzmong 0.2.4 — SFX SD WAV + jingle flash; pin boot-safe
+// Mochi rzmong 0.2.6 — theme web=default, LCD manual if SD; SFX WAV via MAX98357
 #include <Arduino.h>
 #include <TFT_eSPI.h>
 #include <AnimatedGIF.h>
@@ -13,6 +13,7 @@
 #include "MochiRzmong.h"
 #include "defaults_gif.h"
 #include "jingle.h"
+/* Theme: web sets default; LCD "Pilih tema" manual if SD */
 
 static const int W=240,H=240;
 static const uint16_t C_BG=0x1082,C_BAR=0xFD20,C_SEL=0xFE60,C_TEXT=0xEF7D,C_DIM=0x8410;
@@ -98,7 +99,6 @@ void playJingleMs(int ms){
   }
 }
 
-/* WAV 16-bit PCM mono/stereo from SD → I2S MAX98357. Bukan GPIO langsung. */
 bool playWavFromSd(const char *path){
   if(!soundOn||!i2sOk||!sdOk) return false;
   File f=SD.open(path); if(!f) return false;
@@ -161,7 +161,7 @@ bool playWavFromSd(const char *path){
     size_t wr=0;
     if(outN>0) i2s_write(I2S_NUM_0,out,(size_t)outN*2,&wr,pdMS_TO_TICKS(300));
     left-=(uint32_t)rd;
-    if(millis()-t0>4000) break; /* SFX pendek max ~4s */
+    if(millis()-t0>4000) break;
     yield();
   }
   f.close();
@@ -169,9 +169,6 @@ bool playWavFromSd(const char *path){
   return true;
 }
 
-/* Cari SFX: /sfx/<theme>/<stem>.wav lalu /sfx/<stem>.wav lalu /sfx/<name>.wav
- * MP3: ESP32-C3 tidak punya decoder MP3 di firmware ini — prefer WAV.
- * Jika hanya .mp3 ada, fallback jingle (log Serial). */
 bool playSfxForReact(int r){
   if(!soundOn||!i2sOk) return false;
   if(r<0||r>=MOCHI_REACT_COUNT) r=0;
@@ -186,10 +183,7 @@ bool playSfxForReact(int r){
     if(SD.exists(path) && playWavFromSd(path)) return true;
     snprintf(path,sizeof(path),"/sfx/%s.wav",name);
     if(SD.exists(path) && playWavFromSd(path)) return true;
-    /* .mp3: belum di-decode di C3 (butuh Helix/multi-core). Sarankan konversi ke WAV. */
     snprintf(path,sizeof(path),"/sfx/%s/%s.mp3",themeR,stem);
-    if(SD.exists(path)){ Serial.println("SFX mp3: konversi ke WAV 16-bit mono"); }
-    snprintf(path,sizeof(path),"/sfx/%s.mp3",stem);
     if(SD.exists(path)){ Serial.println("SFX mp3: konversi ke WAV 16-bit mono"); }
   }
   playJingleMs(220);
@@ -257,7 +251,15 @@ void showInfo(const char *a,const char *b){
 }
 void applyMenu(){
   if(menuRow==0){nextPart(); ui=UI_PLAY;}
-  else if(menuRow==1){int i=0; for(;i<MOCHI_THEME_COUNT;i++) if(theme==MOCHI_THEMES[i]) break; theme=MOCHI_THEMES[(i+1)%MOCHI_THEME_COUNT]; if(useSd)scanTheme(theme); savePrefs(); showInfo("tema",theme.c_str());}
+  else if(menuRow==1){
+    int i=0; for(;i<MOCHI_THEME_COUNT;i++) if(theme==MOCHI_THEMES[i]) break;
+    theme=MOCHI_THEMES[(i+1)%MOCHI_THEME_COUNT];
+    if(sdOk){ useSd=true; scanTheme(theme); idx=0; }
+    savePrefs();
+    if(sdOk && nparts>0) showInfo(theme.c_str(), (String(nparts)+" GIF").c_str());
+    else if(sdOk) showInfo(theme.c_str(),"kosong di SD");
+    else showInfo(theme.c_str(),"default (no SD)");
+  }
   else if(menuRow==2){defIdx=(defIdx+1)%DEFAULT_GIF_COUNT; savePrefs(); showInfo("ekspresi",DEFAULT_GIFS[defIdx].stem);}
   else if(menuRow==3){playMode=(playMode=="kategori")?"acak":(playMode=="acak"?"acak_tema":"kategori"); savePrefs(); showInfo("mode",playMode.c_str());}
   else if(menuRow==4){reactMode=(reactMode=="acak")?"tetap":"acak"; savePrefs(); showInfo("reaksi",reactMode.c_str());}
@@ -302,9 +304,36 @@ bool playCurrent(){
 void handleStatus(){
   JsonDocument d; d["brand"]=MOCHI_BRAND; d["ver"]=MOCHI_VERSION; d["theme"]=theme;
   d["mode"]=playMode; d["react_mode"]=reactMode; d["react"]=MOCHI_REACT[reactIdx].name;
+  d["react_idx"]=reactIdx;
   d["react_gif"]=String("/gif/")+MOCHI_REACT[reactIdx].theme+"/"+MOCHI_REACT[reactIdx].stem+".gif";
   d["sound"]=soundOn; d["vol"]=volume; d["storage"]=(useSd&&sdOk)?"sd":"flash"; d["sd"]=sdOk;
-  d["sfx"]="wav_sd_or_jingle";
+  d["sfx"]="wav_sd_or_jingle"; d["def"]=defIdx; d["gif_count"]=nparts;
+  JsonArray themes=d["themes"].to<JsonArray>();
+  for(int i=0;i<MOCHI_THEME_COUNT;i++) themes.add(MOCHI_THEMES[i]);
+  String s; serializeJson(d,s); server.send(200,"application/json",s);
+}
+void handleThemes(){
+  JsonDocument d;
+  d["sd"]=sdOk; d["current"]=theme; d["storage"]=(useSd&&sdOk)?"sd":"flash";
+  JsonArray arr=d["themes"].to<JsonArray>();
+  for(int i=0;i<MOCHI_THEME_COUNT;i++){
+    JsonObject o=arr.add<JsonObject>();
+    o["id"]=MOCHI_THEMES[i];
+    int cnt=0;
+    if(sdOk){
+      String dir=String("/gif/")+MOCHI_THEMES[i];
+      File dd=SD.open(dir);
+      if(dd){
+        while(true){File f=dd.openNextFile(); if(!f)break;
+          String n=f.name(); f.close();
+          if(n.endsWith(".gif")) cnt++;
+        }
+        dd.close();
+      }
+    }
+    o["gif_count"]=cnt;
+    o["available"]=(cnt>0)||(!sdOk && i==0);
+  }
   String s; serializeJson(d,s); server.send(200,"application/json",s);
 }
 void handleSettings(){
@@ -316,11 +345,16 @@ void handleSettings(){
   if(d["chronos"].is<bool>()) chronosOn=d["chronos"];
   if(d["watermark"].is<bool>()) showWm=d["watermark"];
   if(d["storage"].is<const char*>()) useSd=(String((const char*)d["storage"])=="sd");
-  if(d["def"].is<int>()) defIdx=d["def"];
-  if(d["react"].is<int>()) reactIdx=d["react"];
-  if(d["volume"].is<int>()) volume=d["volume"];
-  savePrefs(); if(useSd) scanTheme(theme);
-  server.send(200,"application/json","{\"ok\":true,\"brand\":\"rzmong\"}");
+  if(d["def"].is<int>()){ defIdx=d["def"]; if(defIdx<0||defIdx>=DEFAULT_GIF_COUNT) defIdx=0; }
+  if(d["react"].is<int>()){ reactIdx=d["react"]; if(reactIdx<0||reactIdx>=MOCHI_REACT_COUNT) reactIdx=0; }
+  if(d["volume"].is<int>()){ volume=d["volume"]; if(volume<0)volume=0; if(volume>21)volume=21; }
+  if(sdOk && d["theme"].is<const char*>() && !d["storage"].is<const char*>()) useSd=true;
+  if(useSd && !sdOk) useSd=false;
+  savePrefs();
+  if(useSd && sdOk){ scanTheme(theme); idx=0; }
+  JsonDocument out; out["ok"]=true; out["brand"]=MOCHI_BRAND; out["theme"]=theme;
+  out["storage"]=(useSd&&sdOk)?"sd":"flash"; out["gif_count"]=nparts; out["sd"]=sdOk;
+  String s; serializeJson(out,s); server.send(200,"application/json",s);
 }
 void setup(){
   Serial.begin(115200); pinMode(MOCHI_PIN_TOUCH,INPUT_PULLDOWN); loadPrefs();
@@ -329,7 +363,7 @@ void setup(){
   sdOk=SD.begin(MOCHI_PIN_SD_CS,SPI); if(sdOk) scanTheme(theme);
   if(useSd&&(!sdOk||nparts==0)) useSd=false;
   audioInit(); WiFi.softAP(MOCHI_AP_NAME,"rzmong24");
-  server.on("/api/status",handleStatus); server.on("/api/settings",HTTP_POST,handleSettings); server.begin();
+  server.on("/api/status",handleStatus); server.on("/api/themes",handleThemes); server.on("/api/settings",HTTP_POST,handleSettings); server.begin();
   if(chronosOn) watch.begin();
 }
 void loop(){
