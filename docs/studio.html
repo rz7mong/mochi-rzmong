@@ -22,15 +22,17 @@ button{background:var(--acc);color:#fff;border:0;border-radius:10px;padding:10px
 pre{background:#0b0e13;padding:12px;border-radius:10px;font-size:12px;overflow:auto}
 .kicker{letter-spacing:.2em;text-transform:uppercase;font-size:11px;color:var(--muted)}
 .warn{color:#ffb86c;font-size:13px}
+.hint{font-size:13px;color:var(--muted);line-height:1.5}
 </style>
 </head>
 <body>
 <div class="wm">rzmong</div>
 <header>
-  <div class="kicker">studio · rzmong · v0.2.4</div>
+  <div class="kicker">studio · rzmong · v0.2.5</div>
   <h1>🎨 Buat tema Mochi</h1>
   <p>Bantu siapkan berkas untuk kartu SD. <b>Di ESP32 hanya GIF + WAV</b> yang diputar.</p>
   <p class="warn">⚠️ MP4 tidak diputar di perangkat — harus dikonversi ke GIF 240×240. MP3 tidak di-decode — simpan SFX sebagai WAV 16-bit.</p>
+  <p class="hint">Pack siap pakai: ekstrak ke root SD. Pilih default di <a href="thietlap.html">Pengaturan</a>; di perangkat ganti lewat menu <b>Pilih tema</b>.</p>
   <p><a href="index.html">🍡 Instalasi</a> · <a href="thietlap.html">⚙️ Pengaturan</a> · <a href="panduan.html">📖 Panduan</a></p>
 </header>
 <main>
@@ -47,8 +49,15 @@ pre{background:#0b0e13;padding:12px;border-radius:10px;font-size:12px;overflow:a
       <input id="stem" placeholder="helm_siaga">
       <label>🎨 Tema</label>
       <select id="tema">
-        <option>wajah</option><option>gundam</option><option>mobil</option><option>neon</option>
-        <option>anime</option><option>makanan</option><option>musik</option><option>intro</option>
+        <option value="wajah">wajah — Wajah Mochi</option>
+        <option value="gundam">gundam — Gundam / Mecha</option>
+        <option value="mobil">mobil — Mobil / JDM</option>
+        <option value="polisi">polisi — Polisi</option>
+        <option value="musik">musik — Musik</option>
+        <option value="neon">neon — Neon / Kota</option>
+        <option value="anime">anime — Anime</option>
+        <option value="makanan">makanan — Makanan</option>
+        <option value="intro">intro — Intro / Logo</option>
       </select>
       <label>🔊 SFX (disarankan WAV 16-bit; MP3 hanya untuk referensi)</label>
       <input type="file" id="sfx" accept="audio/wav,audio/x-wav,audio/*">
@@ -59,7 +68,7 @@ pre{background:#0b0e13;padding:12px;border-radius:10px;font-size:12px;overflow:a
 </div>
 <div class="card"><pre id="out">Pilih berkas dulu.</pre></div>
 </main>
-<footer style="color:#8b95a7;padding:20px">© rzmong · v0.2.4</footer>
+<footer style="color:#8b95a7;padding:20px">© rzmong · v0.2.5</footer>
 <script>
 const $ = (id) => document.getElementById(id);
 $("vid").onchange = (e) => {
@@ -89,6 +98,7 @@ $("pack").onclick = () => {
     out += "ffmpeg -i " + a.name + " -acodec pcm_s16le -ar 22050 -ac 1 " + s + ".wav\n\n";
   }
   out += "Salin ke kartu SD:\n/gif/" + t + "/" + s + ".gif\n/sfx/" + t + "/" + s + ".wav\n";
+  out += "\n# Setelah di SD: di web Pengaturan pilih tema default; di ESP32 ketuk 2× → Pilih tema.\n";
   $("out").textContent = out;
 };
 </script>
