@@ -5,23 +5,31 @@
 <main>
 <div class=card><label>Alamat Mochi</label><input id=host value=http://192.168.4.1><p id=st></p><button onclick=ping()>Tes koneksi</button></div>
 <div class=card><h3>Sumber gambar</h3>
-<label>Tanpa kartu SD pakai flash</label>
 <select id=storage><option value=flash>Flash — GIF bawaan</option><option value=sd>Kartu SD</option></select>
 <label>GIF bawaan</label>
-<select id=defgif>
-<option value=yelling>wajah / yelling</option>
-<option value=car>mobil / car</option>
-<option value=intro_3>intro / intro_3</option>
+<select id=defgif><option value=yelling>wajah</option><option value=car>mobil</option><option value=intro_3>intro</option></select>
+</div>
+<div class=card><h3>Reaksi sentuh</h3>
+<label>Mode</label>
+<select id=rmode><option value=acak>Acak tiap sentuh</option><option value=tetap>Tetap satu model</option></select>
+<label>Model tetap</label>
+<select id=react>
+<option value=0>tickle o_o</option><option value=1>kedip -_-</option>
+<option value=2>cinta <3</option><option value=3>marah >_<</option>
+<option value=4>ketawa ^_^</option><option value=5>nangis T_T</option>
+<option value=6>ngantuk u_u</option><option value=7>kaget O_O</option>
+<option value=8>kedip-satu ^_o</option><option value=9>cemberut :*</option>
 </select>
 </div>
 <div class=card><h3>Tema SD</h3><div class=chips id=chips></div>
-<label>Mode</label><select id=mode><option value=kategori>Tetap di kategori</option><option value=acak>Acak semua</option><option value=acak_tema>Acak dalam tema</option></select></div>
+<label>Mode putar</label><select id=mode><option value=kategori>Tetap kategori</option><option value=acak>Acak semua</option><option value=acak_tema>Acak dalam tema</option></select></div>
 <div class=card><h3>Suara</h3>
-<div class=tog><span>SFX / jingle tes</span><input type=checkbox id=sound checked></div>
+<div class=tog><span>SFX / jingle</span><input type=checkbox id=sound checked></div>
+<label>Volume 0-21</label><input id=vol type=number min=0 max=21 value=12>
 </div>
 <div class=card><h3>Lainnya</h3>
 <div class=tog><span>Chronos</span><input type=checkbox id=chrono></div>
-<div class=tog><span>Tampilkan merek rzmong di LCD</span><input type=checkbox id=wm checked></div></div>
+<div class=tog><span>Merek rzmong di LCD</span><input type=checkbox id=wm checked></div></div>
 <p><button onclick=simpan()>Simpan ke Mochi</button></p>
 </main><footer style=color:#8b95a7;padding:24px>© rzmong</footer>
 <script>
@@ -29,5 +37,5 @@ const TEMAS=['wajah','gundam','mobil','neon','anime','makanan','musik','intro'];
 const chips=document.getElementById('chips');
 TEMAS.forEach(t=>{const b=document.createElement('div');b.className='chip'+(t===tema?' on':'');b.textContent=t;b.onclick=()=>{tema=t;[...chips.children].forEach(c=>c.classList.remove('on'));b.classList.add('on');};chips.appendChild(b);});
 async function ping(){const h=document.getElementById('host').value.replace(/\/$/,'');try{const j=await(await fetch(h+'/api/status')).json();document.getElementById('st').textContent='OK '+JSON.stringify(j);}catch(e){document.getElementById('st').textContent='Sambung Wi-Fi Mochi-rzmong';}}
-async function simpan(){const h=document.getElementById('host').value.replace(/\/$/,'');const body={theme:tema,play_mode:document.getElementById('mode').value,sound:document.getElementById('sound').checked,storage:document.getElementById('storage').value,default_gif:document.getElementById('defgif').value,chronos:document.getElementById('chrono').checked,brand:'rzmong'};try{const r=await fetch(h+'/api/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});document.getElementById('st').textContent=r.ok?'Tersimpan':'Gagal';}catch(e){document.getElementById('st').textContent='Tersimpan lokal (Mochi offline)';console.log(body);}}
+async function simpan(){const h=document.getElementById('host').value.replace(/\/$/,'');const body={theme:tema,play_mode:document.getElementById('mode').value,react_mode:document.getElementById('rmode').value,react:+document.getElementById('react').value,sound:document.getElementById('sound').checked,volume:+document.getElementById('vol').value,storage:document.getElementById('storage').value,default_gif:document.getElementById('defgif').value,chronos:document.getElementById('chrono').checked,brand:'rzmong'};try{const r=await fetch(h+'/api/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});document.getElementById('st').textContent=r.ok?'Tersimpan':'Gagal';}catch(e){document.getElementById('st').textContent='Tersimpan lokal (Mochi offline)';console.log(body);}}
 </script></body></html>
