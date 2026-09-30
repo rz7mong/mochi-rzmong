@@ -20,6 +20,7 @@ code{padding:1px 6px}pre{padding:12px;overflow:auto;font-size:12px;line-height:1
 ol,ul{color:#d5dbe6;line-height:1.55}
 .warn{color:#ffb86c}
 .ok{color:#50fa7b}
+img.wire{width:100%;border-radius:12px;border:1px solid var(--line);background:#fff}
 </style></head>
 <body>
 <header>
@@ -54,6 +55,13 @@ ol,ul{color:#d5dbe6;line-height:1.55}
 <tr><td>SD</td><td>microSD SPI FAT32 (opsional, wajib untuk upload Studio)</td></tr>
 <tr><td>Case</td><td>Jendela 23×40 mm — STL resmi di bawah</td></tr>
 </table>
+</div>
+
+<div class="card">
+<h2>🐍 Wiring (WikiHow-style)</h2>
+<p>Ikuti warna kabel + kotak teks di gambar. Pin sesuai firmware <b>0.5.1</b>.</p>
+<img class="wire" src="wiring-0.5.1.jpg" alt="Wiring ESP32-C3 Super Mini ST7789 TTP223 MAX98357 microSD TP4056"/>
+<p class="warn" style="margin-top:10px">GPIO2 dan GPIO9 kosong. Speaker hanya ke OUT amp, bukan ke GPIO.</p>
 </div>
 
 <div class="card">
