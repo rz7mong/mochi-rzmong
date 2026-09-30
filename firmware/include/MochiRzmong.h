@@ -2,7 +2,7 @@
 #define MOCHI_BRAND   "rzmong"
 #define MOCHI_WATERMARK MOCHI_BRAND
 #define MOCHI_AP_NAME "Mochi-rzmong"
-#define MOCHI_VERSION "0.2.4"
+#define MOCHI_VERSION "0.2.5"
 /* Pin map v0.2.3+ — boot-safe ESP32-C3
  * Strap: GPIO2,8,9 — free GPIO2 & GPIO9; GPIO8 = I2S DIN only
  */
@@ -29,5 +29,8 @@ static const MochiReact MOCHI_REACT[] = {
   {"cemberut","anime","pinky"}
 };
 static const int MOCHI_REACT_COUNT = 10;
-static const char *MOCHI_THEMES[] = {"wajah","gundam","mobil","neon","anime","makanan","musik","intro"};
-static const int MOCHI_THEME_COUNT = 8;
+/* Urutan sama dengan pack SD /themes.json */
+static const char *MOCHI_THEMES[] = {
+  "wajah","gundam","mobil","polisi","musik","neon","anime","makanan","intro"
+};
+static const int MOCHI_THEME_COUNT = 9;
