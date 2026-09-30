@@ -6,36 +6,30 @@ Jangan mengembalikan ketuk 1× menjadi ganti GIF tema.
 
 - Repo: https://github.com/rz7mong/mochi-rzmong
 - Situs: https://rz7mong.github.io/mochi-rzmong/
-- Versi: **0.2.2**
+- Versi: **0.2.3**
 
 ## 👆 Gestur
 
-- Ketuk 1× = GIF reaksi dari PROGMEM `DEFAULT_GIFS`
-- Ketuk 2× = menu 16 item bergulir
+- Ketuk 1× = GIF reaksi PROGMEM
+- Ketuk 2× = menu 16 item
 - Tahan 900 ms = bisu
-- Ganti GIF tema hanya lewat menu **GIF berikutnya**
 
-## 🔌 Pin
+## 🔌 Pin map v0.2.3 (boot-safe)
 
-Touch = 1, SD MISO = 2, SD CS = 5, SPI clock = 4, MOSI = 6, TFT CS = 7, DC = 10, RST = 8, I2S BCLK = 21, LRC = 20, DIN = 9.
+Touch=1, SD MISO=**3**, SD CS=5, SCK=4, MOSI=6, TFT CS=7, TFT RST=**0**, TFT DC=10, I2S DIN=**8**, LRC=20, BCLK=21.
 
-## ⚡ Power path
+**Jangan pakai GPIO2 / GPIO9** untuk peripheral (strapping / BOOT).
+
+## ⚡ Power
 
 ```
 LiPo → TP4056 → Saklar → VIN ESP32 + VIN MAX98357
 ESP32 3V3 → LCD + SD + TTP223
 ```
 
-MAX98357 ambil daya dari baterai (setelah saklar).
-
-## 🎬 Reaksi flash
-
-yelling, distracted_2, dumb_love, hadouken_hit, awkward_laugh, crying_smile, keep_it_up, big_sneeze, blade, pinky.
-
 ## 🛠️ Build
 
 ```bash
 python firmware/tools/embed_assets.py
-cd firmware
-pio run -e esp32-c3-super-mini
+cd firmware && pio run -e esp32-c3-super-mini
 ```
