@@ -3,9 +3,10 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>⚙️ Pengaturan — Mochi rzmong</title>
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
+<title>Pengaturan — Mochi rzmong</title>
 <style>
-:root{--bg:#0e1116;--card:#171b22;--line:#2a3140;--ink:#eef2f7;--muted:#8b95a7;--acc:#ff6b6b;--ok:#50fa7b}
+:root{--bg:#0e1116;--card:#171b22;--line:#2a3140;--ink:#eef2f7;--muted:#8b95a7;--acc:#ff6b6b;--ok:#50fa7b;--warn:#ffb86c}
 *{box-sizing:border-box}body{margin:0;font-family:ui-sans-serif,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
 header,main,footer{max-width:860px;margin:0 auto;padding:0 22px}header{padding-top:28px}
 .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0}
@@ -18,28 +19,31 @@ button.sec{background:#2a3140}
 .chip{border:1px solid var(--line);border-radius:999px;padding:8px 12px;cursor:pointer;font-size:13px}
 .chip.on{background:var(--acc);border-color:var(--acc);color:#fff}
 .hint{font-size:13px;color:var(--muted);line-height:1.5}
+.warn{font-size:13px;color:var(--warn);line-height:1.5}
 #st{font-size:13px;margin-top:8px;color:var(--ok)}
 .kicker{letter-spacing:.2em;text-transform:uppercase;font-size:11px;color:var(--muted)}
-a{color:#54a0ff}
+a{color:#54a0ff} code{background:#10141b;padding:1px 6px;border-radius:6px}
 </style>
 </head>
 <body>
 <header>
-  <div class="kicker">pengaturan · rzmong · v0.2.8</div>
-  <h1>⚙️ Pengaturan Mochi</h1>
-  <p class="hint">Sambung Wi-Fi <b>rzmong mochi</b> · sandi <b>rzmong123</b> · lalu buka halaman ini (atau <code>http://192.168.4.1</code> jika Mochi menyajikan web).</p>
-  <p><a href="index.html">Instalasi</a> · <a href="panduan.html">Panduan</a> · <a href="https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1">Tema</a></p>
+  <div class="kicker">pengaturan · rzmong · v0.4.7</div>
+  <h1>Pengaturan Mochi</h1>
+  <p class="hint"><b>Jalur utama (disarankan):</b> sambung Wi-Fi <b>rzmong mochi</b> / <b>rzmong123</b>, lalu buka di browser HP:
+  <code>http://192.168.4.1/</code> — UI di dalam firmware, offline, tanpa mixed content.</p>
+  <p class="warn">Halaman GitHub Pages ini memakai HTTPS. Memanggil <code>http://192.168.4.1</code> sering diblokir browser (mixed content). Jika "Tes koneksi" gagal dari sini, pakai UI di perangkat.</p>
+  <p><a href="index.html">Instalasi</a> · <a href="panduan.html">Panduan</a> · <a href="studio.html">Studio</a> · <a href="https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1">Tema</a></p>
 </header>
 <main>
 <div class="card">
-  <label>Alamat Mochi</label>
+  <label>Alamat Mochi (API)</label>
   <input id="host" value="http://192.168.4.1"/>
   <p id="st"></p>
   <button type="button" onclick="ping()">Tes koneksi</button>
   <button type="button" class="sec" onclick="muat()">Muat dari Mochi</button>
 </div>
 <div class="card">
-  <h3>🎨 Tema default</h3>
+  <h3>Tema default</h3>
   <div class="chips" id="chips"></div>
   <label>Mode putar</label>
   <select id="mode">
@@ -74,7 +78,7 @@ a{color:#54a0ff}
 </div>
 <p><button type="button" onclick="simpan()">Simpan ke Mochi</button></p>
 </main>
-<footer style="color:#8b95a7;padding:24px">© rzmong · MIT · v0.2.8</footer>
+<footer style="color:#8b95a7;padding:24px">© rzmong · MIT · v0.4.7 · prefer http://192.168.4.1/</footer>
 <script>
 const TEMAS=[{id:'wajah',label:'Wajah'},{id:'gundam',label:'Gundam'},{id:'mobil',label:'Mobil'},{id:'polisi',label:'Polisi'},{id:'musik',label:'Musik'},{id:'neon',label:'Neon'},{id:'anime',label:'Anime'},{id:'makanan',label:'Makanan'},{id:'intro',label:'Intro'}];
 let tema='wajah';
@@ -85,7 +89,7 @@ function host(){return document.getElementById('host').value.replace(/\/$/,'');}
 function setTema(id){tema=id||'wajah';[...chips.children].forEach(c=>c.classList.toggle('on',c.dataset.id===tema));}
 async function ping(){try{const j=await(await fetch(host()+'/api/status')).json();
 document.getElementById('st').textContent='OK · '+(j.theme||'?')+' · '+(j.storage||'')+' · v'+(j.ver||'');
-}catch(e){document.getElementById('st').textContent='Sambung Wi-Fi rzmong mochi dulu';}}
+}catch(e){document.getElementById('st').textContent='Gagal. Coba buka http://192.168.4.1/ langsung di HP (Wi-Fi Mochi).';}}
 async function muat(){try{const j=await(await fetch(host()+'/api/status')).json();
 if(j.theme)setTema(j.theme);if(j.mode)document.getElementById('mode').value=j.mode;
 if(j.react_mode)document.getElementById('rmode').value=j.react_mode;
@@ -93,13 +97,13 @@ if(typeof j.react_idx==='number')document.getElementById('react').value=String(j
 if(typeof j.sound==='boolean')document.getElementById('sound').checked=j.sound;
 if(typeof j.vol==='number')document.getElementById('vol').value=j.vol;
 if(j.storage)document.getElementById('storage').value=j.storage;
-document.getElementById('st').textContent='Dimuat';}catch(e){document.getElementById('st').textContent='Gagal muat';}}
+document.getElementById('st').textContent='Dimuat · v'+(j.ver||'?');}catch(e){document.getElementById('st').textContent='Gagal muat — pakai UI di 192.168.4.1';}}
 async function simpan(){
 const body={theme:tema,play_mode:document.getElementById('mode').value,react_mode:document.getElementById('rmode').value,
 react:+document.getElementById('react').value,sound:document.getElementById('sound').checked,
 volume:+document.getElementById('vol').value,storage:document.getElementById('storage').value};
 try{const r=await fetch(host()+'/api/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-document.getElementById('st').textContent=r.ok?'Tersimpan · tema='+tema:'Gagal';}catch(e){document.getElementById('st').textContent='Offline';}}
+document.getElementById('st').textContent=r.ok?'Tersimpan · tema='+tema:'Gagal';}catch(e){document.getElementById('st').textContent='Offline / diblokir browser';}}
 </script>
 </body>
 </html>
