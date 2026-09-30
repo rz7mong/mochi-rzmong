@@ -1,41 +1,205 @@
-<!DOCTYPE html><html lang=id><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><title>⚙️ Pengaturan — Mochi rzmong</title>
-<style>:root{--bg:#0e1116;--card:#171b22;--line:#2a3140;--ink:#eef2f7;--muted:#8b95a7;--acc:#ff6b6b}*{box-sizing:border-box}body{margin:0;font-family:ui-sans-serif,system-ui;background:var(--bg);color:var(--ink)}header,main,footer{max-width:860px;margin:0 auto;padding:0 22px}header{padding-top:28px}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0}label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px}input,select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#10141b;color:var(--ink)}.tog{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0}button{background:var(--acc);color:#fff;border:0;border-radius:10px;padding:10px 16px;cursor:pointer}.chips{display:flex;flex-wrap:wrap;gap:8px}.chip{border:1px solid var(--line);border-radius:999px;padding:8px 12px;cursor:pointer}.chip.on{background:var(--acc);border-color:var(--acc)}.wm{position:fixed;right:14px;bottom:10px;opacity:.28;letter-spacing:.18em;text-transform:uppercase;font-size:12px}</style></head>
-<body><div class=wm>rzmong</div>
-<header><h1>⚙️ Pengaturan Mochi</h1><p>Sambung Wi-Fi <code>Mochi-rzmong</code> / sandi <code>rzmong24</code>. <a href=index.html style=color:#54a0ff>🍡 Instalasi</a></p></header>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>⚙️ Pengaturan — Mochi rzmong</title>
+<style>
+:root{--bg:#0e1116;--card:#171b22;--line:#2a3140;--ink:#eef2f7;--muted:#8b95a7;--acc:#ff6b6b}
+*{box-sizing:border-box}body{margin:0;font-family:ui-sans-serif,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+header,main,footer{max-width:860px;margin:0 auto;padding:0 22px}header{padding-top:28px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0}
+label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px}
+input,select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#10141b;color:var(--ink)}
+.tog{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0}
+button{background:var(--acc);color:#fff;border:0;border-radius:10px;padding:10px 16px;cursor:pointer;margin:4px 4px 4px 0}
+button.sec{background:#2a3140}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{border:1px solid var(--line);border-radius:999px;padding:8px 12px;cursor:pointer;font-size:13px;user-select:none}
+.chip.on{background:var(--acc);border-color:var(--acc);color:#fff}
+.wm{position:fixed;right:14px;bottom:10px;opacity:.28;letter-spacing:.18em;text-transform:uppercase;font-size:12px}
+.hint{font-size:13px;color:var(--muted);line-height:1.5;margin:8px 0 0}
+#st{font-size:13px;margin-top:8px;color:#50fa7b}
+.kicker{letter-spacing:.2em;text-transform:uppercase;font-size:11px;color:var(--muted)}
+a{color:#54a0ff}
+</style>
+</head>
+<body>
+<div class="wm">rzmong</div>
+<header>
+  <div class="kicker">pengaturan · rzmong · v0.2.5</div>
+  <h1>⚙️ Pengaturan Mochi</h1>
+  <p>Sambung Wi-Fi <code>Mochi-rzmong</code> / sandi <code>rzmong24</code>.
+  Tema yang dipilih di sini jadi <b>default</b> (tersimpan di ESP32).
+  Kalau ada SD, di perangkat bisa ganti manual lewat menu <b>Pilih tema</b>.</p>
+  <p><a href="index.html">🍡 Instalasi</a> · <a href="studio.html">🎨 Studio</a> · <a href="panduan.html">📖 Panduan</a></p>
+</header>
 <main>
-<div class=card><label>🌐 Alamat Mochi</label><input id=host value=http://192.168.4.1><p id=st></p><button onclick=ping()>🔗 Tes koneksi</button></div>
-<div class=card><h3>🖼️ Sumber gambar</h3>
-<select id=storage><option value=flash>💾 Flash — GIF bawaan</option><option value=sd>💿 Kartu SD</option></select>
-<label>🎬 GIF bawaan</label>
-<select id=defgif><option value=yelling>wajah</option><option value=car>mobil</option><option value=intro_3>intro</option></select>
+
+<div class="card">
+  <label>🌐 Alamat Mochi</label>
+  <input id="host" value="http://192.168.4.1"/>
+  <p id="st"></p>
+  <button type="button" onclick="ping()">🔗 Tes koneksi</button>
+  <button type="button" class="sec" onclick="muat()">📥 Muat dari Mochi</button>
 </div>
-<div class=card><h3>👆 Reaksi sentuh</h3>
-<label>Mode</label>
-<select id=rmode><option value=acak>🎲 Acak tiap sentuh</option><option value=tetap>🔒 Tetap satu model</option></select>
-<label>Model tetap</label>
-<select id=react>
-<option value=0>tickle o_o</option><option value=1>kedip -_-</option>
-<option value=2>cinta <3</option><option value=3>marah >_<</option>
-<option value=4>ketawa ^_^</option><option value=5>nangis T_T</option>
-<option value=6>ngantuk u_u</option><option value=7>kaget O_O</option>
-<option value=8>kedip-satu ^_o</option><option value=9>cemberut :*</option>
-</select>
+
+<div class="card">
+  <h3>🎨 Tema default (dari pack SD)</h3>
+  <p class="hint">Dipakai saat boot & mode SD. Di ESP32: ketuk 2× → <b>Pilih tema</b> untuk ganti manual.</p>
+  <div class="chips" id="chips"></div>
+  <label>Mode putar GIF</label>
+  <select id="mode">
+    <option value="kategori">📁 Tetap kategori (tema yang dipilih)</option>
+    <option value="acak">🎲 Acak semua tema</option>
+    <option value="acak_tema">🔀 Acak dalam tema</option>
+  </select>
 </div>
-<div class=card><h3>🎨 Tema SD</h3><div class=chips id=chips></div>
-<label>Mode putar</label><select id=mode><option value=kategori>📁 Tetap kategori</option><option value=acak>🎲 Acak semua</option><option value=acak_tema>🔀 Acak dalam tema</option></select></div>
-<div class=card><h3>🔊 Suara</h3>
-<div class=tog><span>SFX / jingle</span><input type=checkbox id=sound checked></div>
-<label>Volume 0-21</label><input id=vol type=number min=0 max=21 value=12>
+
+<div class="card">
+  <h3>🖼️ Sumber gambar</h3>
+  <select id="storage">
+    <option value="flash">💾 Flash — GIF bawaan</option>
+    <option value="sd">💿 Kartu SD (/gif/<tema>/)</option>
+  </select>
+  <p class="hint">Pack tema: ekstrak zip ke root SD → folder <code>gif/</code>, <code>sfx/</code>, file <code>themes.json</code>.</p>
+  <label>GIF bawaan (jika flash / SD kosong)</label>
+  <select id="defgif">
+    <option value="0">wajah · yelling</option>
+    <option value="1">wajah · distracted</option>
+    <option value="2">wajah · love</option>
+  </select>
 </div>
-<div class=card><h3>✨ Lainnya</h3>
-<div class=tog><span>🗺️ Chronos</span><input type=checkbox id=chrono></div>
-<div class=tog><span>🏷️ Merek rzmong di LCD</span><input type=checkbox id=wm checked></div></div>
-<p><button onclick=simpan()>💾 Simpan ke Mochi</button></p>
-</main><footer style=color:#8b95a7;padding:24px>© rzmong · v0.2.2</footer>
+
+<div class="card">
+  <h3>👆 Reaksi sentuh</h3>
+  <label>Mode</label>
+  <select id="rmode">
+    <option value="acak">🎲 Acak tiap sentuh</option>
+    <option value="tetap">🔒 Tetap satu model</option>
+  </select>
+  <label>Model tetap</label>
+  <select id="react">
+    <option value="0">tickle o_o</option>
+    <option value="1">kedip -_-</option>
+    <option value="2">cinta <3</option>
+    <option value="3">marah >_<</option>
+    <option value="4">ketawa ^_^</option>
+    <option value="5">nangis T_T</option>
+    <option value="6">ngantuk u_u</option>
+    <option value="7">kaget O_O</option>
+    <option value="8">kedip-satu ^_o</option>
+    <option value="9">cemberut :*</option>
+  </select>
+</div>
+
+<div class="card">
+  <h3>🔊 Suara</h3>
+  <div class="tog"><span>SFX / jingle</span><input type="checkbox" id="sound" checked/></div>
+  <label>Volume 0–21</label>
+  <input id="vol" type="number" min="0" max="21" value="12"/>
+</div>
+
+<div class="card">
+  <h3>✨ Lainnya</h3>
+  <div class="tog"><span>🗺️ Chronos</span><input type="checkbox" id="chrono"/></div>
+  <div class="tog"><span>🏷️ Merek rzmong di LCD</span><input type="checkbox" id="wm" checked/></div>
+</div>
+
+<p><button type="button" onclick="simpan()">💾 Simpan ke Mochi (jadi default)</button></p>
+</main>
+<footer style="color:#8b95a7;padding:24px">© rzmong · v0.2.5</footer>
 <script>
-const TEMAS=['wajah','gundam','mobil','neon','anime','makanan','musik','intro'];let tema='wajah';
-const chips=document.getElementById('chips');
-TEMAS.forEach(t=>{const b=document.createElement('div');b.className='chip'+(t===tema?' on':'');b.textContent=t;b.onclick=()=>{tema=t;[...chips.children].forEach(c=>c.classList.remove('on'));b.classList.add('on');};chips.appendChild(b);});
-async function ping(){const h=document.getElementById('host').value.replace(/\/$/,'');try{const j=await(await fetch(h+'/api/status')).json();document.getElementById('st').textContent='OK '+JSON.stringify(j);}catch(e){document.getElementById('st').textContent='Sambung Wi-Fi Mochi-rzmong';}}
-async function simpan(){const h=document.getElementById('host').value.replace(/\/$/,'');const body={theme:tema,play_mode:document.getElementById('mode').value,react_mode:document.getElementById('rmode').value,react:+document.getElementById('react').value,sound:document.getElementById('sound').checked,volume:+document.getElementById('vol').value,storage:document.getElementById('storage').value,default_gif:document.getElementById('defgif').value,chronos:document.getElementById('chrono').checked,brand:'rzmong'};try{const r=await fetch(h+'/api/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});document.getElementById('st').textContent=r.ok?'Tersimpan':'Gagal';}catch(e){document.getElementById('st').textContent='Tersimpan lokal (Mochi offline)';console.log(body);}}
-</script></body></html>
+const TEMAS = [
+  {id:'wajah', label:'Wajah Mochi'},
+  {id:'gundam', label:'Gundam / Mecha'},
+  {id:'mobil', label:'Mobil / JDM'},
+  {id:'polisi', label:'Polisi'},
+  {id:'musik', label:'Musik'},
+  {id:'neon', label:'Neon / Kota'},
+  {id:'anime', label:'Anime'},
+  {id:'makanan', label:'Makanan'},
+  {id:'intro', label:'Intro / Logo'}
+];
+let tema = 'wajah';
+const chips = document.getElementById('chips');
+TEMAS.forEach(t => {
+  const b = document.createElement('div');
+  b.className = 'chip' + (t.id === tema ? ' on' : '');
+  b.textContent = t.label;
+  b.dataset.id = t.id;
+  b.onclick = () => {
+    tema = t.id;
+    [...chips.children].forEach(c => c.classList.remove('on'));
+    b.classList.add('on');
+  };
+  chips.appendChild(b);
+});
+function host() {
+  return document.getElementById('host').value.replace(/\/$/, '');
+}
+function setTema(id) {
+  tema = id || 'wajah';
+  [...chips.children].forEach(c => {
+    c.classList.toggle('on', c.dataset.id === tema);
+  });
+}
+async function ping() {
+  try {
+    const j = await (await fetch(host() + '/api/status')).json();
+    document.getElementById('st').textContent =
+      'OK · tema=' + (j.theme || '?') + ' · ' + (j.storage || '') +
+      (j.sd ? ' · SD ada' : ' · tanpa SD') + ' · v' + (j.ver || '');
+  } catch (e) {
+    document.getElementById('st').textContent = 'Sambung Wi-Fi Mochi-rzmong dulu';
+  }
+}
+async function muat() {
+  try {
+    const j = await (await fetch(host() + '/api/status')).json();
+    if (j.theme) setTema(j.theme);
+    if (j.mode) document.getElementById('mode').value = j.mode;
+    if (j.react_mode) document.getElementById('rmode').value = j.react_mode;
+    if (typeof j.react === 'string') {
+      const names = ['tickle','kedip','cinta','marah','ketawa','nangis','ngantuk','kaget','kedip-satu','cemberut'];
+      const i = names.indexOf(j.react);
+      if (i >= 0) document.getElementById('react').value = String(i);
+    }
+    if (typeof j.sound === 'boolean') document.getElementById('sound').checked = j.sound;
+    if (typeof j.vol === 'number') document.getElementById('vol').value = j.vol;
+    if (j.storage) document.getElementById('storage').value = j.storage;
+    document.getElementById('st').textContent = 'Dimuat dari Mochi';
+  } catch (e) {
+    document.getElementById('st').textContent = 'Gagal muat — pastikan Wi-Fi Mochi';
+  }
+}
+async function simpan() {
+  const body = {
+    theme: tema,
+    play_mode: document.getElementById('mode').value,
+    react_mode: document.getElementById('rmode').value,
+    react: +document.getElementById('react').value,
+    sound: document.getElementById('sound').checked,
+    volume: +document.getElementById('vol').value,
+    storage: document.getElementById('storage').value,
+    def: +document.getElementById('defgif').value,
+    chronos: document.getElementById('chrono').checked,
+    watermark: document.getElementById('wm').checked
+  };
+  try {
+    const r = await fetch(host() + '/api/settings', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body)
+    });
+    document.getElementById('st').textContent = r.ok
+      ? 'Tersimpan · tema default = ' + tema
+      : 'Gagal simpan';
+  } catch (e) {
+    document.getElementById('st').textContent = 'Offline — cek Wi-Fi Mochi-rzmong';
+    console.log(body);
+  }
+}
+</script>
+</body>
+</html>
