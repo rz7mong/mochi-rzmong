@@ -2,7 +2,7 @@
 #define MOCHI_BRAND   "rzmong"
 #define MOCHI_WATERMARK MOCHI_BRAND
 #define MOCHI_AP_NAME "Mochi-rzmong"
-#define MOCHI_VERSION "0.2.1"
+#define MOCHI_VERSION "0.2.2"
 #define MOCHI_PIN_TOUCH 1
 #define MOCHI_PIN_SD_SCK 4
 #define MOCHI_PIN_SD_MISO 2
