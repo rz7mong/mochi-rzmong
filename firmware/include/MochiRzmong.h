@@ -3,10 +3,9 @@
 #define MOCHI_WATERMARK MOCHI_BRAND
 #define MOCHI_AP_NAME "rzmong mochi"
 #define MOCHI_AP_PASS "rzmong123"
-#define MOCHI_VERSION "0.5.0"
-/* Chronos full: notif, call, find, time, map/nav.
- * Touch: notif=1tap, ringer=hold 0.6s, nav=2tap hide.
- * Pair Chronos app · BLE rzmong · settings http://192.168.4.1/
+#define MOCHI_VERSION "0.5.1"
+/* v0.5.1: serviceNet during GIF, SPI SUPPORT_TRANSACTIONS, CORS, no ap_pass in JSON,
+ * captive same-origin upload, touch: react on 1-tap (not press-down).
  */
 #define MOCHI_PIN_TOUCH 1
 #define MOCHI_PIN_SD_SCK 4
