@@ -21,7 +21,7 @@ ul,ol{margin:6px 0 0;padding-left:18px;line-height:1.55;color:#d5dbe6}
 <body>
 <div class="wm">rzmong</div>
 <header>
-  <div class="kicker">panduan · rzmong · v0.2.4</div>
+  <div class="kicker">panduan · rzmong · v0.2.6</div>
   <h1>📖 Cara memakai Mochi</h1>
   <p><a href="index.html">🍡 Instalasi</a> · <a href="thietlap.html">⚙️ Pengaturan</a> · <a href="hardware.html">🔧 Merakit</a></p>
 </header>
@@ -30,71 +30,56 @@ ul,ol{margin:6px 0 0;padding-left:18px;line-height:1.55;color:#d5dbe6}
 <div class="card">
 <h2>👆 Kontrol sentuh</h2>
 <table>
-<tr><th>Gestur</th><th>Ambang (kode)</th><th>Aksi</th></tr>
-<tr><td>👆 Ketuk 1×</td><td>lepas < <b>900 ms</b></td><td>GIF reaksi + SFX (WAV SD atau jingle flash)</td></tr>
-<tr><td>👆👆 Ketuk 2×</td><td>2 ketuk, jarak < ~320 ms</td><td>Menu PENGATURAN</td></tr>
+<tr><th>Gestur</th><th>Ambang</th><th>Aksi</th></tr>
+<tr><td>👆 Ketuk 1×</td><td>lepas &lt; <b>900 ms</b></td><td>GIF reaksi + SFX</td></tr>
+<tr><td>👆👆 Ketuk 2×</td><td>2 ketuk cepat</td><td>Menu PENGATURAN</td></tr>
 <tr><td>✊ Tahan</td><td><b>≥ 900 ms</b></td><td>Bisu / bunyi</td></tr>
 </table>
-<p style="color:#8b95a7;font-size:13px;margin:10px 0 0">TTP223 → GPIO1, aktif HIGH. Bukan layar sentuh.</p>
 </div>
 
 <div class="card">
-<h2>🎲 Reaksi acak/tetap vs 🎭 Model reaksi</h2>
+<h2>🎨 Tema default vs manual</h2>
+<ul>
+<li><b>Web</b> — sambung Wi-Fi → <a href="thietlap.html">Pengaturan</a> → pilih tema → Simpan (tersimpan di ESP32).</li>
+<li><b>LCD + SD</b> — ketuk 2× → <b>Pilih tema</b>.</li>
+<li>Pack tema: <a href="https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1">Release assets-v1</a>.</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>🎲 Reaksi acak/tetap vs Model reaksi</h2>
 <table>
 <tr><th>Menu</th><th>Arti</th></tr>
-<tr><td>🎲 Reaksi acak/tetap</td><td><b>acak</b> = tiap ketuk pilih random dari 10 GIF. <b>tetap</b> = selalu model yang dipilih.</td></tr>
-<tr><td>🎭 Model reaksi</td><td>Pilih satu dari 10 (tickle, cinta, …) dan otomatis mode <b>tetap</b>.</td></tr>
+<tr><td>Reaksi acak/tetap</td><td><b>acak</b> = random 10 ekspresi; <b>tetap</b> = satu model</td></tr>
+<tr><td>Model reaksi</td><td>Pilih 1 dari 10 + set mode tetap</td></tr>
 </table>
 </div>
 
 <div class="card">
-<h2>🎬 Animasi = GIF saja</h2>
-<p>Firmware hanya memutar <b>.gif</b> (flash atau <code>/gif/</code> di SD). File <b>MP4 tidak diputar di ESP32</b> — pakai Studio untuk konversi MP4→GIF.</p>
+<h2>🎬 / 🔊 Format media</h2>
+<ul>
+<li>Animasi perangkat: <b>.gif</b> saja (bukan MP4).</li>
+<li>SFX: <b>WAV 16-bit</b> (bukan MP3).</li>
+<li>Speaker: hanya lewat <b>MAX98357</b>.</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>📶 Wi-Fi</h2>
+<p>Default: <code>Mochi-rzmong</code> / <code>rzmong24</code>. Sandi lab — ganti jika dipakai di luar lingkungan pribadi. Siapa pun di jaringan AP bisa membuka halaman pengaturan.</p>
+</div>
+
+<div class="card">
+<h2>🛠️ Troubleshooting</h2>
 <table>
-<tr><th>Nama</th><th>Stem file</th></tr>
-<tr><td>tickle</td><td>yelling</td></tr>
-<tr><td>kedip</td><td>distracted_2</td></tr>
-<tr><td>cinta</td><td>dumb_love</td></tr>
-<tr><td>marah</td><td>hadouken_hit</td></tr>
-<tr><td>ketawa</td><td>awkward_laugh</td></tr>
-<tr><td>nangis</td><td>crying_smile</td></tr>
-<tr><td>ngantuk</td><td>keep_it_up</td></tr>
-<tr><td>kaget</td><td>big_sneeze</td></tr>
-<tr><td>kedip-satu</td><td>blade</td></tr>
-<tr><td>cemberut</td><td>pinky</td></tr>
+<tr><th>Gejala</th><th>Periksa</th></tr>
+<tr><td>Layar putih/hitam</td><td>RST=0, CS=7, DC=10, SCLK=4, MOSI=6</td></tr>
+<tr><td>SD gagal</td><td>FAT32, MISO=3, CS=5; jangan GPIO2</td></tr>
+<tr><td>Tidak ada suara</td><td>DIN=8, speaker ke OUT amp; volume menu</td></tr>
+<tr><td>Flash gagal</td><td>Chrome/Edge, tahan BOOT</td></tr>
 </table>
-</div>
-
-<div class="card">
-<h2>🔊 SFX (bukan pemutar MP3)</h2>
-<ul>
-<li>Di perangkat: <b>WAV 16-bit PCM</b> di <code>/sfx/</code>, atau jingle flash.</li>
-<li><b>MP3 tidak di-decode</b> di ESP32-C3 firmware ini.</li>
-<li>Speaker hanya lewat <b>MAX98357</b> (bukan GPIO langsung).</li>
-</ul>
-</div>
-
-<div class="card">
-<h2>📋 Menu LCD (16)</h2>
-<ul>
-<li>🎞️ GIF berikutnya · 🎨 Pilih tema · 😊 Ekspresi flash</li>
-<li>🔁 Mode putar · 🎲 Reaksi acak/tetap · 🎭 Model reaksi</li>
-<li>💾 Sumber SD/Flash · 🔊 Volume · 🔇 Bisu</li>
-<li>🔄 Rotasi · 🗺️ Chronos · 🏷️ Merek · 📶 Wi-Fi · ℹ️ Tentang · ❌ Tutup</li>
-</ul>
-</div>
-
-<div class="card">
-<h2>🛠️ Kalau tidak jalan</h2>
-<ul>
-<li>📺 LCD — SCLK 4, MOSI 6, CS 7, DC 10, RST <b>0</b></li>
-<li>👆 Sentuh — GPIO1 HIGH</li>
-<li>💾 SD — MISO <b>3</b>, CS 5</li>
-<li>🔊 — DIN 8, BCLK 21, LRC 20; speaker ke OUT amp</li>
-<li>⚡ Boot — jangan wiring GPIO2 / GPIO9</li>
-</ul>
 </div>
 
 </main>
-<footer style="color:#8b95a7;font-size:12px;padding:20px 22px 40px">© rzmong · v0.2.4</footer>
+<footer style="color:#8b95a7;font-size:12px;padding:20px 22px 40px">© rzmong · MIT · v0.2.6</footer>
 </body></html>

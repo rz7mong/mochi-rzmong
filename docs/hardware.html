@@ -24,7 +24,7 @@ ol,ul{color:#d5dbe6;line-height:1.55}
 <body>
 <div class="wm">rzmong</div>
 <header>
-  <div class="kicker">blueprint · rzmong · v0.2.4</div>
+  <div class="kicker">blueprint · rzmong · v0.2.6</div>
   <h1>🔧 Cara membuat Mochi</h1>
   <p><a href="index.html">🍡 Instalasi</a> · <a href="panduan.html">📖 Cara pakai</a> · <a href="https://github.com/rz7mong/mochi-rzmong">🐙 GitHub</a></p>
 </header>
@@ -36,9 +36,9 @@ ol,ul{color:#d5dbe6;line-height:1.55}
 <tr><th>Bagian</th><th>Spesifikasi</th></tr>
 <tr><td>🧠 Otak</td><td>ESP32-C3 Super Mini</td></tr>
 <tr><td>📺 Layar</td><td>ST7789 1.3" 240×240 SPI</td></tr>
-<tr><td>🔋 Baterai</td><td>LiPo 3.7V 400–800 mAh pipih</td></tr>
+<tr><td>🔋 Baterai</td><td>LiPo 3.7V 400–800 mAh</td></tr>
 <tr><td>⚡ Charger</td><td>TP4056 + proteksi</td></tr>
-<tr><td>🔌 Saklar</td><td>On/Off 2-pin</td></tr>
+<tr><td>🔌 Saklar</td><td>On/Off</td></tr>
 <tr><td>👆 Sentuh</td><td>TTP223</td></tr>
 <tr><td>🔊 Suara</td><td><b>MAX98357A I2S</b> + speaker 4–8Ω</td></tr>
 <tr><td>💾 SD</td><td>microSD SPI FAT32 (opsional)</td></tr>
@@ -46,12 +46,29 @@ ol,ul{color:#d5dbe6;line-height:1.55}
 </div>
 
 <div class="card">
-<h2>🔈 Speaker — jangan ke GPIO!</h2>
-<p><span class="warn">⚠️ Speaker HP / speaker kecil <b>tidak boleh</b> disambung langsung ke pin GPIO ESP32.</span></p>
-<ul>
-<li>GPIO hanya sinyal digital (3.3V, arus kecil) — tidak cukup menggerakkan speaker.</li>
-<li>Sambungan langsung bisa merusak pin ESP32.</li>
-</ul>
+<h2>🔌 Pin per modul</h2>
+<table>
+<tr><th>Modul</th><th>Sinyal</th><th>GPIO</th><th>Catatan</th></tr>
+<tr><td>👆 Touch</td><td>OUT</td><td><b>1</b></td><td>TTP223 → HIGH saat sentuh</td></tr>
+<tr><td rowspan="4">💾 SD</td><td>SCK</td><td><b>4</b></td><td rowspan="4">Berbagi SPI clock/data dengan TFT. MISO khusus SD.</td></tr>
+<tr><td>MOSI</td><td><b>6</b></td></tr>
+<tr><td>MISO</td><td><b>3</b></td></tr>
+<tr><td>CS</td><td><b>5</b></td></tr>
+<tr><td rowspan="5">📺 TFT ST7789</td><td>SCLK</td><td><b>4</b></td><td rowspan="5">RST harus 0 (bukan pin strap 2/8/9). BLK ke 3V3.</td></tr>
+<tr><td>MOSI/SDA</td><td><b>6</b></td></tr>
+<tr><td>CS</td><td><b>7</b></td></tr>
+<tr><td>DC</td><td><b>10</b></td></tr>
+<tr><td>RST</td><td><b>0</b></td></tr>
+<tr><td rowspan="3">🔊 MAX98357</td><td>BCLK</td><td><b>21</b></td><td rowspan="3">VIN amp dari jalur baterai setelah saklar.</td></tr>
+<tr><td>LRC</td><td><b>20</b></td></tr>
+<tr><td>DIN</td><td><b>8</b></td></tr>
+<tr><td>⛔ Kosong</td><td>—</td><td><b>2, 9</b></td><td>Strap / BOOT — jangan wiring</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h2>🔈 Speaker — jangan ke GPIO</h2>
+<p><span class="warn">⚠️ Speaker tidak boleh langsung ke pin ESP32.</span></p>
 <pre>
 ESP32  BCLK → MAX98357 BCLK
        LRC  → MAX98357 LRC
@@ -72,51 +89,25 @@ GND bersama
 </div>
 
 <div class="card">
-<h2>🛡️ Pin boot-safe</h2>
+<h2>🔊 SFX (WAV saja)</h2>
 <pre>
-TFT MOSI=6  SCLK=4  CS=7  DC=10  RST=0
-SD MISO=3  CS=5  (SCK/MOSI berbagi 4/6)
-Touch=1
-I2S BCLK=21  LRC=20  DIN=8
-GPIO2 & GPIO9 kosong (strap/BOOT)
+/sfx/&lt;tema&gt;/&lt;stem&gt;.wav   contoh /sfx/wajah/yelling.wav
+/sfx/&lt;stem&gt;.wav
 </pre>
-</div>
-
-<div class="card">
-<h2>🔊 SFX reaksi (firmware 0.2.4+)</h2>
-<p>Saat ketuk, firmware mencari file di SD lalu jingle flash:</p>
-<pre>
-/sfx/<tema>/<stem>.wav   contoh /sfx/wajah/yelling.wav
-/sfx/<stem>.wav
-/sfx/<nama>.wav          contoh /sfx/tickle.wav
-</pre>
-<p>Format: <b>WAV 16-bit PCM</b> mono atau stereo, 8–48 kHz.</p>
-<p><span class="warn">MP3:</span> ESP32-C3 belum decode MP3 di firmware ini. Konversi ke WAV (Audacity).</p>
-</div>
-
-<div class="card">
-<h2>🔌 Tabel pin</h2>
-<table>
-<tr><th>Modul</th><th>Ke</th></tr>
-<tr><td>📺 ST7789</td><td>3V3, GND, SCL4, SDA6, RES0, DC10, CS7, BLK3V3</td></tr>
-<tr><td>💾 SD</td><td>3V3, GND, SCK4, MOSI6, MISO3, CS5</td></tr>
-<tr><td>👆 TTP223</td><td>3V3, GND, OUT→GPIO1</td></tr>
-<tr><td>🔊 MAX98357</td><td>VIN baterai, GND, BCLK21, LRC20, DIN8</td></tr>
-<tr><td>🔈 Speaker</td><td><b>OUT+/OUT− amp saja</b></td></tr>
-</table>
+<p>Format: <b>WAV 16-bit PCM</b>, 8–48 kHz. MP3 tidak di-decode di firmware ini.</p>
 </div>
 
 <div class="card">
 <h2>🧩 Urutan rakit</h2>
 <ol>
-<li>Cetak case → pasang LCD</li>
+<li>Case + LCD</li>
 <li>GND → 3V3 → SPI → touch → I2S ke amp</li>
-<li>Speaker ke OUT amp (bukan GPIO)</li>
-<li>TP4056 → saklar → VIN ESP + amp</li>
-<li>Flash firmware ≥0.2.4</li>
+<li>Speaker ke OUT amp</li>
+<li>TP4056 → saklar → VIN</li>
+<li>Flash firmware ≥ <b>0.2.6</b> dari <a href="index.html">halaman instalasi</a></li>
 </ol>
 </div>
 
 </main>
-<footer style="color:#8b95a7;font-size:12px;padding:16px 22px 40px">© rzmong · v0.2.4</footer>
+<footer style="color:#8b95a7;font-size:12px;padding:16px 22px 40px">© rzmong · MIT · v0.2.6</footer>
 </body></html>
