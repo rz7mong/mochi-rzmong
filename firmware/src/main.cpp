@@ -1,4 +1,4 @@
-// Mochi rzmong 0.4.0 — captive UI + sdBusy + /api/upload (GIF/WAV to SD); AP rzmong mochi / rzmong123
+// Mochi rzmong 0.4.5 — upload + GIF pairs with matching /sfx/<tema>/<stem>.wav; AP rzmong mochi
 #include <Arduino.h>
 #include <TFT_eSPI.h>
 #include <AnimatedGIF.h>
@@ -145,6 +145,27 @@ bool playSfxForReact(int r){
   playJingleMs(220); return true;
 }
 
+// Mainkan WAV yang sepasang dengan path GIF: /gif/<tema>/<stem>.gif → /sfx/<tema>/<stem>.wav
+bool playSfxForGifPath(const char *gifPath){
+  if(!soundOn||!i2sOk||!sdOk||!gifPath) return false;
+  String p = gifPath;
+  if(!p.startsWith("/gif/")) return false;
+  int slash = p.lastIndexOf('/');
+  int dot = p.lastIndexOf('.');
+  if(slash < 0 || dot < slash) return false;
+  String stem = p.substring(slash+1, dot);
+  String rest = p.substring(5);
+  int slash2 = rest.indexOf('/');
+  if(slash2 < 0) return false;
+  String tema = rest.substring(0, slash2);
+  char path[96];
+  snprintf(path, sizeof(path), "/sfx/%s/%s.wav", tema.c_str(), stem.c_str());
+  if(SD.exists(path) && playWavFromSd(path)) return true;
+  snprintf(path, sizeof(path), "/sfx/%s.wav", stem.c_str());
+  if(SD.exists(path) && playWavFromSd(path)) return true;
+  return false;
+}
+
 int pickReact(){ return (reactMode=="acak") ? random(MOCHI_REACT_COUNT) : reactIdx; }
 bool playOpen(const uint8_t *mem,int len,const char *path){
   if(mem) return gif.open((uint8_t*)mem,len,GIFDraw);
@@ -225,6 +246,8 @@ void finishTaps(){
 bool playCurrent(){
   bool ok;
   bool fromSd=useSd&&sdOk&&nparts>0;
+  // SFX sepasang dengan GIF (tema+stem sama) — diputar sebelum animasi
+  if(fromSd && soundOn) playSfxForGifPath(parts[idx].c_str());
   if(fromSd){ sdBusy=true; ok=playOpen(NULL,0,parts[idx].c_str()); }
   else ok=playOpen(DEFAULT_GIFS[defIdx].data,DEFAULT_GIFS[defIdx].len,NULL);
   if(!ok){ sdBusy=false; return false; }
@@ -301,7 +324,7 @@ static File upFile;
 static String upPath;
 static bool upOk = false;
 static size_t upWritten = 0;
-static const size_t UPLOAD_MAX = 600000; // ~600 KB
+static const size_t UPLOAD_MAX = 600000;
 
 void handleUpload() {
   HTTPUpload& upload = server.upload();
