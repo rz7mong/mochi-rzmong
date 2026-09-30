@@ -9,21 +9,30 @@ Firmware, pustaka, dan halaman instalasi untuk **ESP32-C3 Super Mini** + LCD TFT
 | 🌐 Instal | [rz7mong.github.io/mochi-rzmong](https://rz7mong.github.io/mochi-rzmong/) |
 | 📌 Versi | **0.2.3** |
 
-## ✨ Fitur
+## ✨ Fitur yang ada
 
 - 🌐 Instal dari browser (ESP Web Tools)
 - 🎬 10 GIF reaksi sentuh di flash (PROGMEM)
-- 🎨 Tema SD opsional
+- 🎨 **Tema GIF dari SD** (opsional) — hanya animasi wajah/tema, bukan pemutar musik
 - 📋 Menu 16 baris di LCD
 - 📶 Wi-Fi AP `Mochi-rzmong` / `rzmong24`
-- 🔊 Jingle I2S (MAX98357)
+- 🔊 **Jingle pendek dari flash** (I2S MAX98357) — volume 0–21, bisu
 - 🗺️ Chronos opsional
+
+## ❌ Belum ada / jangan diasumsikan
+
+- 🎵 **Pemutar MP3 / musik dari kartu SD** — tidak diimplementasikan
+- 🔊 Pemutaran file `.wav` / `.mp3` dari folder `/sfx/` — struktur folder boleh ada, firmware **belum** memutarnya
+- Overlay teks `o_o` di layar
+- Ketuk 1× untuk ganti GIF tema (hanya lewat menu)
+
+Suara yang keluar saat ini = **jingle PCM tertanam di flash**, bukan trek dari SD.
 
 ## 👆 Sentuh
 
 | Gestur | Aksi |
 | --- | --- |
-| 👆 Ketuk 1× | GIF reaksi + jingle |
+| 👆 Ketuk 1× | GIF reaksi + jingle flash |
 | 👆👆 Ketuk 2× | Menu Pengaturan |
 | ✊ Tahan ≥1 d | Bisu / bunyi |
 
@@ -52,12 +61,14 @@ Firmware, pustaka, dan halaman instalasi untuk **ESP32-C3 Super Mini** + LCD TFT
 ESP32 3V3 → LCD + SD + TTP223
 ```
 
-## 💾 SD (opsional)
+## 💾 Kartu SD (opsional — hanya GIF)
 
 ```text
-/gif/<tema>/<nama>.gif
-/sfx/<tema>/<nama>.wav
+/gif/<tema>/<nama>.gif     ← dipakai firmware (tema animasi)
+/sfx/<tema>/<nama>.wav     ← cadangan / masa depan; belum diputar
 ```
+
+FAT32. Tanpa SD, Mochi tetap jalan dari 10 GIF reaksi di flash.
 
 ## 🛠️ Build
 
