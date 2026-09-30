@@ -1,0 +1,30 @@
+name: Import wiring diagram
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - '.github/workflows/import-wiring.yml'
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Download image
+        run: |
+          mkdir -p docs
+          curl -fsSL -o docs/wiring-0.5.1.jpg https://litter.catbox.moe/569aig.jpg
+          echo fa6d778428273ed251f67ecd50059e43fae3b10c7f4c19c617401f5870fe4661  docs/wiring-0.5.1.jpg | sha256sum -c
+          ls -la docs/wiring-0.5.1.jpg
+      - name: Commit
+        run: |
+          git config user.name rzmong-bot
+          git config user.email rz7mong@users.noreply.github.com
+          git add docs/wiring-0.5.1.jpg
+          git diff --cached --quiet && echo nochange && exit 0
+          git commit -m "docs: wiring diagram firmware 0.5.1"
+          git pull --rebase origin main || true
+          git push origin HEAD:main
