@@ -1,35 +1,38 @@
-# 🍡 Mochi rzmong — paket untuk AI lain
-
-Lanjutkan firmware ESP32-C3 Super Mini + ST7789 240×240 milik rzmong.
-Jangan hapus merek rzmong.
-Jangan mengembalikan ketuk 1× menjadi ganti GIF tema.
+# 🍡 Mochi rzmong — handoff AI
 
 - Repo: https://github.com/rz7mong/mochi-rzmong
 - Situs: https://rz7mong.github.io/mochi-rzmong/
-- Versi: **0.2.3**
+- Versi: **0.2.4**
+- Jangan hapus merek rzmong. Ketuk 1× = reaksi, bukan ganti tema.
 
-## 👆 Gestur
+## Batas fitur (jangan overclaim)
 
-- Ketuk 1× = GIF reaksi PROGMEM
-- Ketuk 2× = menu 16 item
-- Tahan 900 ms = bisu
+- Animasi perangkat: **GIF saja** (bukan MP4)
+- SFX perangkat: **WAV 16-bit** dari `/sfx/` atau jingle flash (bukan MP3 player)
+- Speaker: hanya lewat **MAX98357**, bukan GPIO langsung
 
-## 🔌 Pin map v0.2.3 (boot-safe)
+## Gestur (main.cpp)
 
-Touch=1, SD MISO=**3**, SD CS=5, SCK=4, MOSI=6, TFT CS=7, TFT RST=**0**, TFT DC=10, I2S DIN=**8**, LRC=20, BCLK=21.
+- Ketuk 1× (hold < 900 ms) → GIF reaksi + SFX
+- Ketuk 2× → menu
+- Tahan **≥ 900 ms** → bisu/bunyi
 
-**Jangan pakai GPIO2 / GPIO9** untuk peripheral (strapping / BOOT).
+## Menu reaksi
 
-## ⚡ Power
+- **Reaksi acak/tetap**: mode `acak` vs `tetap`
+- **Model reaksi**: pilih 1 dari 10 + set mode `tetap`
 
-```
-LiPo → TP4056 → Saklar → VIN ESP32 + VIN MAX98357
-ESP32 3V3 → LCD + SD + TTP223
-```
+## Pin boot-safe
 
-## 🛠️ Build
+Touch=1, MISO=3, CS=5, SCK=4, MOSI=6, TFT CS=7, RST=0, DC=10, DIN=8, LRC=20, BCLK=21. GPIO2/9 kosong.
+
+## Build
+
+Python 3.11+, PlatformIO, `espressif32`, board `esp32-c3-devkitm-1`.
+Libs: TFT_eSPI^2.5.43, AnimatedGIF^2.1.1, ChronosESP32^1.8.0, ArduinoJson^7.2.1.
 
 ```bash
+pip install -U platformio pillow esptool
 python firmware/tools/embed_assets.py
 cd firmware && pio run -e esp32-c3-super-mini
 ```
