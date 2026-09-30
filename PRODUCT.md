@@ -12,6 +12,7 @@
 | **Chronos BLE name** | `rzmong` |
 | **Theme pack** | Release `assets-v1` |
 | **Media** | GIF 240×240 + WAV 16-bit mono ~22 kHz |
+| **Hardware** | ESP32-C3 Super Mini + ST7789 1.3" 240×240 (PCB 23×40 mm) |
 
 ```c
 #define MOCHI_VERSION "0.5.1"

@@ -1,8 +1,10 @@
 #pragma once
 #define MOCHI_BRAND   "rzmong"
 #define MOCHI_WATERMARK MOCHI_BRAND
-#define MOCHI_AP_NAME "Mochi-rzmong"
-#define MOCHI_VERSION "0.2.5"
+#define MOCHI_AP_NAME "rzmong mochi"
+#define MOCHI_AP_PASS "rzmong123"
+#define MOCHI_VERSION "0.5.1"
+/* v0.5.1: same constants as firmware/include/MochiRzmong.h */
 #define MOCHI_PIN_TOUCH 1
 #define MOCHI_PIN_SD_SCK 4
 #define MOCHI_PIN_SD_MISO 3

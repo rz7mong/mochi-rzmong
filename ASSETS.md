@@ -30,3 +30,4 @@ See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). You are responsible for ri
 | --- | --- |
 | ≥ 0.2.6 | `assets-v1` (9 themes, WAV SFX) |
 | 0.2.8+ | Same + AP `rzmong mochi` / `rzmong123` |
+| **0.5.1** | Same pack + captive upload + Chronos nav |

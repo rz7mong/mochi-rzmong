@@ -1,5 +1,7 @@
 # Library tema Mochi rzmong
 
+Firmware / konstanta: **v0.5.1** — salinan `firmware/include/MochiRzmong.h`.
+
 Katalog: `themes.json`
 
 Pack penuh (GIF + WAV):
