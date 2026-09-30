@@ -2,11 +2,7 @@
 #define MOCHI_BRAND   "rzmong"
 #define MOCHI_WATERMARK MOCHI_BRAND
 #define MOCHI_AP_NAME "Mochi-rzmong"
-#define MOCHI_VERSION "0.2.3"
-/* Pin map v0.2.3 — boot-safe for ESP32-C3
- * Strapping pins: GPIO2, GPIO8, GPIO9
- * Free: GPIO2, GPIO9 (BOOT). Only GPIO8 used (I2S DIN, high-Z at reset).
- */
+#define MOCHI_VERSION "0.2.4"
 #define MOCHI_PIN_TOUCH 1
 #define MOCHI_PIN_SD_SCK 4
 #define MOCHI_PIN_SD_MISO 3
