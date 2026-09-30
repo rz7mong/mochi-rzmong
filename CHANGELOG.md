@@ -1,28 +1,33 @@
 # Changelog
 
+## [0.4.7] — 2026-09-30
+
+### Changed
+- **Docs sync**: all Pages + PRODUCT + README + firmware version string → **0.4.7**
+- **Studio**: GIF target **599 KB**; tries longer duration first (up to ~8s), then lowers quality
+- **pengaturan.html**: clear offline-first guidance; mixed-content warning for Pages→HTTP AP
+
+### Notes
+- Prefer **http://192.168.4.1/** on device AP for settings (no mixed content, works without internet)
+- Studio on GitHub Pages needs internet (FFmpeg.wasm); upload still needs join AP
+
+## [0.4.5] — 2026-09-30
+
+### Added
+- GIF+SFX path pairing on SD (`playSfxForGifPath`)
+- Studio auto-extract WAV from video track
+
 ## [0.4.0] — 2026-09-30
 
 ### Added
-- **Studio Convert + Upload**: halaman `studio.html` convert MP4→GIF 240×240 dan MP3→WAV 16-bit di browser (FFmpeg.wasm), lalu upload ke SD lewat Wi-Fi AP
-- **API** `POST /api/upload?tema=&stem=&type=gif|wav` — tulis file ke `/gif/<tema>/` atau `/sfx/<tema>/` (max ~600 KB, hormati `sdBusy`)
-
-### Notes
-- Upload hanya jalan jika kartu SD terpasang dan user tersambung ke AP `rzmong mochi`
-- API tetap **tanpa autentikasi** (siapa pun di AP bisa upload)
+- Studio Convert + Upload (FFmpeg.wasm + `POST /api/upload`)
+- Upload max ~600 KB, SD required
 
 ## [0.3.0] — 2026-09-30
 
 ### Added
-- **Captive settings UI** at `http://192.168.4.1/` (and `/index.html`) — works offline on the device AP
-- Document Chronos (optional BLE companion, menu toggle); single radio — test if AP+BLE both on
-
-### Changed
-- `platformio.ini`: pin `espressif32@6.9.0` for reproducible builds
-- Partitions: documented **no dual-slot OTA** (single factory app)
-- Install guide: Erase wipes NVS warning; prefer on-device UI over github.io from phone AP
-
-### Security note
-- HTTP API on the AP has **no auth** (lab default). Anyone on the AP can POST `/api/settings`.
+- Captive settings UI at `http://192.168.4.1/`
+- Chronos optional BLE documented
 
 ## [0.2.9] — 2026-09-30
 

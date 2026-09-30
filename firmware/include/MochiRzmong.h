@@ -3,14 +3,15 @@
 #define MOCHI_WATERMARK MOCHI_BRAND
 #define MOCHI_AP_NAME "rzmong mochi"
 #define MOCHI_AP_PASS "rzmong123"
-#define MOCHI_VERSION "0.4.5"
+#define MOCHI_VERSION "0.4.7"
 /* Pin map — ESP32-C3
  * Strapping: GPIO2, GPIO8, GPIO9 — leave 2/9 unconnected; do not pull 8 LOW at reset.
  * GPIO8 = I2S DIN after boot. GPIO20/21 = UART0; USB CDC used for console.
  * TFT+SD share SPI SCK/MOSI (4/6); firmware uses sdBusy to avoid concurrent SD access.
- * Settings UI: http://192.168.4.1/ on the device AP (offline).
+ * Settings UI: http://192.168.4.1/ on the device AP (offline, recommended).
  * Upload: POST /api/upload?tema=&stem=&type=gif|wav (multipart) → /gif|/sfx on SD.
  * GIF+SFX pair: /gif/<tema>/<stem>.gif plays with /sfx/<tema>/<stem>.wav if present.
+ * Studio (Pages): convert video→GIF+WAV, max ~599 KB per file.
  */
 #define MOCHI_PIN_TOUCH 1
 #define MOCHI_PIN_SD_SCK 4
