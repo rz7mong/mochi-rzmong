@@ -2,9 +2,11 @@
 #define MOCHI_BRAND   "rzmong"
 #define MOCHI_WATERMARK MOCHI_BRAND
 #define MOCHI_AP_NAME "Mochi-rzmong"
-#define MOCHI_VERSION "0.2.6"
-/* Pin map v0.2.3+ — boot-safe ESP32-C3
- * Strap: GPIO2,8,9 — free GPIO2 & GPIO9; GPIO8 = I2S DIN only
+#define MOCHI_VERSION "0.2.7"
+/* Pin map — ESP32-C3
+ * Strapping: GPIO2, GPIO8, GPIO9 — avoid forcing wrong level at reset.
+ * GPIO8 used as I2S DIN (after boot OK if not pulled LOW at reset).
+ * GPIO20/21 = UART0; USB CDC used for console so they can be I2S.
  */
 #define MOCHI_PIN_TOUCH 1
 #define MOCHI_PIN_SD_SCK 4
@@ -29,7 +31,6 @@ static const MochiReact MOCHI_REACT[] = {
   {"cemberut","anime","pinky"}
 };
 static const int MOCHI_REACT_COUNT = 10;
-/* Urutan sama dengan pack SD /themes.json */
 static const char *MOCHI_THEMES[] = {
   "wajah","gundam","mobil","polisi","musik","neon","anime","makanan","intro"
 };
