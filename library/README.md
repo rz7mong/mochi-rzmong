@@ -1,18 +1,18 @@
 # Pustaka Mochi rzmong
 
-Sertakan `MochiRzmong.h` di sketch ESP32-C3.
+Reaksi sentuh memakai **GIF katalog**, bukan teks wajah.
 
-## Reaksi sentuh
-10 model: tickle, kedip, cinta, marah, ketawa, nangis, ngantuk, kaget, kedip-satu, cemberut.
+| Nama | File SD |
+|---|---|
+| tickle | `/gif/wajah/yelling.gif` |
+| kedip | `/gif/wajah/distracted_2.gif` |
+| cinta | `/gif/wajah/dumb_love.gif` |
+| marah | `/gif/gundam/hadouken_hit.gif` |
+| ketawa | `/gif/wajah/awkward_laugh.gif` |
+| nangis | `/gif/wajah/crying_smile.gif` |
+| ngantuk | `/gif/intro/keep_it_up.gif` |
+| kaget | `/gif/wajah/big_sneeze.gif` |
+| kedip-satu | `/gif/gundam/blade.gif` |
+| cemberut | `/gif/anime/pinky.gif` |
 
-Mode `react_mode`:
-- `acak` — setiap sentuh model berbeda
-- `tetap` — satu model dari menu Pengaturan
-
-## Gestur
-1 ketuk = reaksi (bukan ganti GIF)
-2 ketuk = menu pengaturan
-Tahan 1 dtk = bisu
-
-## Menu perangkat
-Tema, ekspresi, mode putar, model reaksi, SD/flash, volume, rotasi, Chronos, merek, info AP, tutup.
+Tanpa SD, firmware memutar GIF bawaan flash dengan stem yang sama.
