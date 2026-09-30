@@ -25,7 +25,7 @@ footer{color:var(--muted);font-size:12px;padding:12px 22px 40px}
 <body>
 <div class="wm">rzmong</div>
 <header>
-  <div class="kicker">instalasi · rzmong · v0.2.4</div>
+  <div class="kicker">instalasi · rzmong · v0.2.5</div>
   <h1>🍡 Mochi rzmong</h1>
   <nav>
     <a class="pri" href="#flash">⚡ Instalasi ESP32</a>
@@ -42,20 +42,28 @@ footer{color:var(--muted);font-size:12px;padding:12px 22px 40px}
   <div class="step"><div class="num">1</div><div><b>🌐 Pakai Chrome atau Edge</b><br>Jangan Safari / browser dalam aplikasi.</div></div>
   <div class="step"><div class="num">2</div><div><b>🔘 Mode flash</b><br>Tahan <b>BOOT</b>, colok USB-C, lepas BOOT.</div></div>
   <div class="step"><div class="num">3</div><div><b>📥 Instal</b><br>Tombol di bawah → pilih port → Reset. GIF flash langsung jalan (SD opsional).</div></div>
-  <div class="step"><div class="num">4</div><div><b>📶 Wi-Fi</b><br><code>Mochi-rzmong</code> / <code>rzmong24</code>.</div></div>
-  <div class="step"><div class="num">5</div><div><b>💾 SD opsional</b><br>Hanya <code>/gif/</code> (animasi GIF) + <code>/sfx/</code> (WAV 16-bit). Bukan pemutar MP3/MP4.</div></div>
+  <div class="step"><div class="num">4</div><div><b>📶 Wi-Fi</b><br><code>Mochi-rzmong</code> / <code>rzmong24</code> → buka <a href="thietlap.html" style="color:#54a0ff">Pengaturan</a> untuk pilih tema default.</div></div>
+  <div class="step"><div class="num">5</div><div><b>💾 SD opsional</b><br>Ekstrak pack tema ke root SD: <code>/gif/<tema>/</code> + <code>/sfx/<tema>/</code> + <code>themes.json</code>. Hanya GIF + WAV 16-bit.</div></div>
   <p style="margin-top:18px"><esp-web-install-button manifest="./firmware/manifest.json"></esp-web-install-button></p>
+</section>
+<section class="card">
+  <h2>🎨 Tema: web = default, ESP32 = manual</h2>
+  <ol class="plain">
+    <li><b>Web</b> — sambung Wi-Fi Mochi → <a href="thietlap.html" style="color:#54a0ff">Pengaturan</a> → pilih tema (wajah, gundam, mobil, polisi, …) → Simpan. Jadi default boot.</li>
+    <li><b>ESP32 + SD</b> — ketuk 2× → menu <b>Pilih tema</b> untuk ganti manual kapan saja.</li>
+    <li><b>Tanpa SD</b> — pakai GIF flash bawaan; tema SD tidak aktif.</li>
+  </ol>
 </section>
 <section class="card">
   <h2>✨ Ringkas cara pakai</h2>
   <ol class="plain">
     <li>👆 Ketuk 1× = GIF reaksi + SFX (WAV SD atau jingle flash).</li>
-    <li>👆👆 Ketuk 2× = menu PENGATURAN.</li>
+    <li>👆👆 Ketuk 2× = menu PENGATURAN (Pilih tema, Sumber SD/Flash, …).</li>
     <li>✊ Tahan <b>≥ 900 ms</b> = bisu / bunyi.</li>
-    <li>🎞️ Ganti GIF tema: menu → GIF berikutnya.</li>
+    <li>🎞️ Ganti GIF dalam tema: menu → GIF berikutnya.</li>
   </ol>
   <p style="margin-top:14px"><a href="panduan.html" style="color:#54a0ff">📖 Panduan →</a>   <a href="hardware.html" style="color:#54a0ff">🔧 Merakit →</a></p>
 </section>
 </main>
-<footer>© rzmong · v0.2.4</footer>
+<footer>© rzmong · v0.2.5</footer>
 </body></html>
