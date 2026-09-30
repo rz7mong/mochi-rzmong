@@ -1,16 +1,13 @@
 
-// chronos_ui.inc — Chronos full: notif, call, find, time, navigation (ESP32-C3 240x240)
-// Touch (unik, tidak bentrok):
-//   Notif   = ketuk 1x singkat → tutup
-//   Ringer  = tahan ≥600 ms → tutup
-//   Nav     = ketuk 2x cepat → sembunyikan overlay (nav tetap aktif di app)
-// Menu/play tetap: 1x scroll, 2x apply, tahan mute
-void playJingleMs(int ms); // forward (defined later in main.cpp)
+// chronos_ui.inc — Chronos full + nav (dirty redraw)
+// Touch: Notif=1x · Ringer=hold 0.6s · Nav=2x hide · Menu/play unchanged
+void playJingleMs(int ms);
 
 bool navHide = false;
 uint32_t navIconCRC = 0xFFFFFFFF;
 String navTitle, navDir, navDist, navEta, navSpeed;
 bool navActive = false;
+bool navDirty = true;
 
 void drawChronosNotif(){
   tft.fillScreen(C_BG);
@@ -42,6 +39,8 @@ void drawChronosRinger(){
   tft.drawCentreString("tahan 0.6s = tutup",120,200,1);
 }
 void drawChronosNav(){
+  if(!navDirty) return;
+  navDirty = false;
   tft.fillScreen(C_BG);
   tft.fillRect(0,0,240,28,C_BLUE);
   tft.setTextColor(TFT_WHITE,C_BLUE);
@@ -75,7 +74,8 @@ void drawChronosNav(){
 void refreshNavFromWatch(){
   Navigation &nv = watch.getNavigation();
   navActive = nv.active;
-  if(!nv.active){ navHide=false; return; }
+  if(!nv.active){ navHide=false; navDirty=true; return; }
+  navDirty = true;
   navTitle = nv.title; if(navTitle.length()>28) navTitle=navTitle.substring(0,28);
   navDir = nv.directions; if(navDir.length()>80) navDir=navDir.substring(0,80);
   navDist = nv.distance;
