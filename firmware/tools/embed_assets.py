@@ -1,9 +1,11 @@
 #!/usr/bin/env python3
-import io, math, struct, pathlib
+import io, math, struct, pathlib, base64
 from PIL import Image, ImageDraw
 root = pathlib.Path(__file__).resolve().parents[1]
 inc = root / "include"
 inc.mkdir(exist_ok=True)
+b64dir = pathlib.Path(__file__).resolve().parent / "react_b64"
+rawdir = root / "assets" / "react"
 
 def dump(name, raw):
     lines = [f"const uint8_t {name}[] PROGMEM = {{"]
@@ -33,6 +35,15 @@ def gif_frames(draw_fn, n=3, duration=110):
     frames[0].save(buf, format="GIF", save_all=True, append_images=frames[1:], loop=0, duration=duration, optimize=True)
     return buf.getvalue()
 
+def load_gif(stem, fallback):
+    p = rawdir / f"{stem}.gif"
+    if p.exists():
+        return p.read_bytes()
+    b = b64dir / f"{stem}.gif.b64"
+    if b.exists():
+        return base64.b64decode(b.read_text())
+    return fallback()
+
 def face(d, i, mouth=20, eye=0):
     d.ellipse((40,30,200,210), fill=5)
     d.ellipse((70,80,110,120), fill=0)
@@ -42,53 +53,37 @@ def face(d, i, mouth=20, eye=0):
     d.ellipse((90,140,150,140+mouth), fill=1)
 
 def yelling(d,i,n): face(d,i,mouth=20+(i%2)*22, eye=(i%2)*3)
-def distracted(d,i,n):
-    face(d,i,mouth=8, eye=0)
-    d.ellipse((88+i*6,92,104+i*6,108), fill=3)
-def love(d,i,n):
-    face(d,i,mouth=12, eye=0)
-    d.ellipse((100,40-i*2,140,80-i*2), fill=1)
-def hadouken(d,i,n):
-    d.rectangle((20,40,220,200), fill=6)
-    d.ellipse((70,70,170,170), fill=4)
-    d.ellipse((90,90,150,150), fill=3)
-    d.ellipse((160+i*8,100,200+i*8,140), fill=2)
+def distracted(d,i,n): face(d,i,mouth=8, eye=0)
+def love(d,i,n): face(d,i,mouth=12, eye=0)
+def hadouken(d,i,n): d.ellipse((70,70,170,170), fill=4)
 def laugh(d,i,n): face(d,i,mouth=16+(i%2)*20, eye=-2)
-def cry(d,i,n):
-    face(d,i,mouth=6, eye=2)
-    d.rectangle((80,120,90,120+i*10), fill=4)
-    d.rectangle((150,120,160,120+i*10), fill=4)
+def cry(d,i,n): face(d,i,mouth=6, eye=2)
 def keep(d,i,n):
-    r=40+i*10
-    d.ellipse((120-r,120-r,120+r,120+r), outline=2, width=8)
+    r=40+i*10; d.ellipse((120-r,120-r,120+r,120+r), outline=2, width=8)
 def sneeze(d,i,n): face(d,i,mouth=8+i*10, eye=-i*2)
-def blade(d,i,n):
-    d.rectangle((30,30,210,210), fill=6)
-    d.polygon([(120,40),(180,200-i*8),(60,200-i*8)], fill=4)
-def pinky(d,i,n):
-    d.ellipse((50,40,190,200), fill=7)
-    d.ellipse((80,90,110,120), fill=3)
-    d.ellipse((130,90,160,120), fill=3)
-    d.arc((90,130,150,170), start=0, end=180, fill=1)
+def blade(d,i,n): d.polygon([(120,40),(180,200),(60,200)], fill=4)
+def pinky(d,i,n): d.ellipse((50,40,190,200), fill=7)
 
 assets = [
-    ("GIF_YELLING","wajah","yelling",gif_frames(yelling)),
-    ("GIF_DISTRACTED","wajah","distracted_2",gif_frames(distracted)),
-    ("GIF_LOVE","wajah","dumb_love",gif_frames(love)),
-    ("GIF_HADOUKEN","gundam","hadouken_hit",gif_frames(hadouken)),
-    ("GIF_LAUGH","wajah","awkward_laugh",gif_frames(laugh)),
-    ("GIF_CRY","wajah","crying_smile",gif_frames(cry)),
-    ("GIF_KEEP","intro","keep_it_up",gif_frames(keep)),
-    ("GIF_SNEEZE","wajah","big_sneeze",gif_frames(sneeze)),
-    ("GIF_BLADE","gundam","blade",gif_frames(blade)),
-    ("GIF_PINKY","anime","pinky",gif_frames(pinky)),
+    ("GIF_YELLING","wajah","yelling", lambda: gif_frames(yelling)),
+    ("GIF_DISTRACTED","wajah","distracted_2", lambda: gif_frames(distracted)),
+    ("GIF_LOVE","wajah","dumb_love", lambda: gif_frames(love)),
+    ("GIF_HADOUKEN","gundam","hadouken_hit", lambda: gif_frames(hadouken)),
+    ("GIF_LAUGH","wajah","awkward_laugh", lambda: gif_frames(laugh)),
+    ("GIF_CRY","wajah","crying_smile", lambda: gif_frames(cry)),
+    ("GIF_KEEP","intro","keep_it_up", lambda: gif_frames(keep)),
+    ("GIF_SNEEZE","wajah","big_sneeze", lambda: gif_frames(sneeze)),
+    ("GIF_BLADE","gundam","blade", lambda: gif_frames(blade)),
+    ("GIF_PINKY","anime","pinky", lambda: gif_frames(pinky)),
 ]
 g=["#pragma once","#include <Arduino.h>"]
-for name,theme,stem,raw in assets:
-    print(name,len(raw)); g.append(dump(name,raw))
+for name,theme,stem,fb in assets:
+    raw=load_gif(stem, fb)
+    print(name, stem, len(raw))
+    g.append(dump(name,raw))
 g.append("struct DefaultGif { const char *theme; const char *stem; const uint8_t *data; int len; };")
 g.append("static const DefaultGif DEFAULT_GIFS[] = {")
-for name,theme,stem,raw in assets:
+for name,theme,stem,_ in assets:
     g.append(f'  {{"{theme}","{stem}",{name},{name}_LEN}},')
 g.append("};")
 g.append(f"static const int DEFAULT_GIF_COUNT = {len(assets)};")
