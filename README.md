@@ -1,87 +1,52 @@
 # 🍡 Mochi rzmong
 
-Firmware, pustaka, dan halaman instalasi untuk **ESP32-C3 Super Mini** + LCD TFT **ST7789 240×240**.
+Firmware **ESP32-C3 Super Mini** + **ST7789 240×240** + **MAX98357 I2S**.
 
 | | |
 | --- | --- |
 | 🏷️ Merek | **rzmong** |
-| 📦 Repo | [rz7mong/mochi-rzmong](https://github.com/rz7mong/mochi-rzmong) |
+| 📌 Versi | **0.2.4** |
 | 🌐 Instal | [rz7mong.github.io/mochi-rzmong](https://rz7mong.github.io/mochi-rzmong/) |
-| 📌 Versi | **0.2.3** |
 
-## ✨ Fitur yang ada
+## ✨ Fitur
 
-- 🌐 Instal dari browser (ESP Web Tools)
-- 🎬 10 GIF reaksi sentuh di flash (PROGMEM)
-- 🎨 **Tema GIF dari SD** (opsional) — hanya animasi wajah/tema, bukan pemutar musik
-- 📋 Menu 16 baris di LCD
-- 📶 Wi-Fi AP `Mochi-rzmong` / `rzmong24`
-- 🔊 **Jingle pendek dari flash** (I2S MAX98357) — volume 0–21, bisu
-- 🗺️ Chronos opsional
+- 🎬 10 GIF reaksi di flash + opsional dari SD `/gif/`
+- 🔊 **SFX reaksi**: file **WAV** di SD `/sfx/` jika ada, kalau tidak → jingle flash
+- 📋 Menu LCD 16 baris · 📶 AP `Mochi-rzmong` / `rzmong24`
 
-## ❌ Belum ada / jangan diasumsikan
+## ❌ Bukan pemutar musik penuh
 
-- 🎵 **Pemutar MP3 / musik dari kartu SD** — tidak diimplementasikan
-- 🔊 Pemutaran file `.wav` / `.mp3` dari folder `/sfx/` — struktur folder boleh ada, firmware **belum** memutarnya
-- Overlay teks `o_o` di layar
-- Ketuk 1× untuk ganti GIF tema (hanya lewat menu)
+- Decoder **MP3 di ESP32-C3 belum diaktifkan** (library umum butuh dual-core)
+- Untuk SFX: simpan **WAV 16-bit PCM** (mono/stereo, 8–48 kHz)
+- Konversi MP3 → WAV lewat Audacity jika perlu
 
-Suara yang keluar saat ini = **jingle PCM tertanam di flash**, bukan trek dari SD.
+## 🔊 Speaker — penting
 
-## 👆 Sentuh
-
-| Gestur | Aksi |
-| --- | --- |
-| 👆 Ketuk 1× | GIF reaksi + jingle flash |
-| 👆👆 Ketuk 2× | Menu Pengaturan |
-| ✊ Tahan ≥1 d | Bisu / bunyi |
-
-## 🔌 Pin map v0.2.3 (boot-safe)
-
-| Fungsi | GPIO | Catatan |
-| --- | --- | --- |
-| 👆 TTP223 OUT | **1** | aman |
-| 💾 SD MISO | **3** | bukan GPIO2 (strap) |
-| 📺 TFT SCLK + SD SCK | **4** | |
-| 💾 SD CS | **5** | |
-| 📺 TFT MOSI + SD MOSI | **6** | |
-| 📺 TFT CS | **7** | |
-| 📺 TFT RST | **0** | bukan GPIO8 |
-| 🔊 I2S DIN | **8** | satu-satunya strap yang dipakai |
-| 📺 TFT DC | **10** | |
-| 🔊 I2S LRC | **20** | |
-| 🔊 I2S BCLK | **21** | |
-
-**GPIO2 & GPIO9 kosong** (BOOT tetap normal).
-
-## ⚡ Power path
+**Jangan** sambungkan speaker HP langsung ke GPIO ESP32.
 
 ```
-🔋 LiPo → TP4056 → 🔌 Saklar → VIN ESP32 + VIN MAX98357
-ESP32 3V3 → LCD + SD + TTP223
+ESP32 I2S (BCLK/LRC/DIN) → MAX98357 → OUT+/OUT− → speaker 4–8Ω
 ```
 
-## 💾 Kartu SD (opsional — hanya GIF)
+GPIO hanya sinyal digital I2S; amp yang menggerakkan speaker.
+
+## 💾 Struktur SD
 
 ```text
-/gif/<tema>/<nama>.gif     ← dipakai firmware (tema animasi)
-/sfx/<tema>/<nama>.wav     ← cadangan / masa depan; belum diputar
+/gif/<tema>/<nama>.gif
+/sfx/<tema>/<stem>.wav     ← diprioritaskan (contoh yelling.wav)
+/sfx/<stem>.wav
+/sfx/<nama-reaksi>.wav     ← tickle, marah, …
 ```
 
-FAT32. Tanpa SD, Mochi tetap jalan dari 10 GIF reaksi di flash.
+Contoh stem reaksi: `yelling`, `dumb_love`, `hadouken_hit`, `awkward_laugh`, …
 
-## 🛠️ Build
+## 🔌 Pin (boot-safe)
 
-```bash
-python firmware/tools/embed_assets.py
-cd firmware
-pio run -e esp32-c3-super-mini
-```
+Touch=1 · SD MISO=**3** · SCK=4 · CS=5 · MOSI=6 · TFT CS=7 · RST=**0** · DC=10 · I2S DIN=**8** · LRC=20 · BCLK=21 · GPIO2/9 kosong
 
-## 🔗 Tautan
+## ⚡ Power
 
-- 🍡 [Instalasi](https://rz7mong.github.io/mochi-rzmong/)
-- 🔧 [Hardware](https://rz7mong.github.io/mochi-rzmong/hardware.html)
-- 📖 [Panduan](https://rz7mong.github.io/mochi-rzmong/panduan.html)
+`LiPo → TP4056 → Saklar → VIN ESP32 + VIN MAX98357` · 3V3 → LCD/SD/touch
 
 Copyright rzmong
