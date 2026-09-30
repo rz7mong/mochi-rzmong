@@ -1,0 +1,31 @@
+name: Apply auto-advance + cleanup
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/apply-052.yml'
+      - 'firmware/tools/patch_052.py'
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Auto-advance + cleanup stubs
+        run: |
+          python3 firmware/tools/patch_052.py || true
+          rm -rf firmware/tools/main_payload firmware/tools/main_051
+          rm -f firmware/tools/run_main_051.py
+          rm -f firmware/tools/patch_nav.py firmware/tools/patch_chronos.py
+          # leave PLACEHOLDER b64 stubs empty-safe for embed
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A firmware/src/main.cpp firmware/tools || true
+          if git diff --staged --quiet; then echo No changes; else
+            git commit -m "feat: auto-advance GIF + remove one-shot patch leftovers"
+            git push
+          fi
