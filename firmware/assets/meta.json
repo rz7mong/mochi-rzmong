@@ -1,1 +1,17 @@
-{"sr": 8000, "meta": [["GIF_MOBIL", "mobil", "car"], ["GIF_INTRO", "intro", "intro_3"], ["GIF_WAJAH", "wajah", "yelling"]]}
+{
+  "brand": "rzmong",
+  "version": "0.2.1",
+  "sample_rate": 8000,
+  "reacts": [
+    ["GIF_YELLING", "wajah", "yelling"],
+    ["GIF_DISTRACTED", "wajah", "distracted_2"],
+    ["GIF_LOVE", "wajah", "dumb_love"],
+    ["GIF_HADOUKEN", "gundam", "hadouken_hit"],
+    ["GIF_LAUGH", "wajah", "awkward_laugh"],
+    ["GIF_CRY", "wajah", "crying_smile"],
+    ["GIF_KEEP", "intro", "keep_it_up"],
+    ["GIF_SNEEZE", "wajah", "big_sneeze"],
+    ["GIF_BLADE", "gundam", "blade"],
+    ["GIF_PINKY", "anime", "pinky"]
+  ]
+}

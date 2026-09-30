@@ -1,53 +1,85 @@
 # Mochi rzmong
 
-Firmware, pustaka, dan halaman instalasi untuk ESP32-C3 Super Mini + LCD TFT ST7789 240×240.
+Firmware, pustaka, dan halaman instalasi untuk **ESP32-C3 Super Mini** + LCD TFT **ST7789 240×240**.
 
-Merek: **rzmong** · Repo: [rz7mong/mochi-rzmong](https://github.com/rz7mong/mochi-rzmong)  
-Instal: **[rz7mong.github.io/mochi-rzmong](https://rz7mong.github.io/mochi-rzmong/)**
+| | |
+| --- | --- |
+| Merek | **rzmong** |
+| Repo | [rz7mong/mochi-rzmong](https://github.com/rz7mong/mochi-rzmong) |
+| Instal | [rz7mong.github.io/mochi-rzmong](https://rz7mong.github.io/mochi-rzmong/) |
+| Versi | **0.2.1** |
 
-Versi pustaka: **0.2.1**
-
-## Fitur yang benar-benar ada di firmware
+## Fitur di firmware ini
 
 - Instal dari browser (ESP Web Tools)
-- 10 GIF reaksi sentuh di **flash ESP32** (PROGMEM), tanpa SD
+- 10 GIF reaksi sentuh di flash ESP32 (PROGMEM), tanpa kartu SD
 - Tema SD opsional: wajah, gundam, mobil, neon, anime, makanan, musik, intro
-- Menu pengaturan di LCD (16 baris, bergulir, gaya iPod)
-- Wi-Fi AP `Mochi-rzmong` / `rzmong24` + halaman pengaturan web
+- Menu pengaturan di LCD (16 baris, bergulir)
+- Wi-Fi AP `Mochi-rzmong` / sandi `rzmong24` + halaman pengaturan web
 - Jingle I2S (MAX98357), volume 0–21, bisu
-- Chronos opsional (peta & notifikasi)
-- Merek rzmong di LCD / web / repo
+- Chronos opsional (peta dan notifikasi)
+- Merek rzmong di LCD, web, dan repo
 
-Yang **tidak** ada di firmware ini: pemutar MP3 dari SD, overlay teks `o_o`, ketuk 1× untuk ganti GIF.
+Tidak ada di firmware ini:
 
-## Sentuh (jangan tertukar)
+- pemutar MP3 dari kartu SD
+- overlay teks `o_o`
+- ketuk 1× untuk ganti GIF tema
+
+## Sentuh
 
 | Gestur | Aksi |
-|---|---|
-| Jari turun / ketuk 1× | Putar **GIF reaksi** dari flash (~1,6 dtk) + jingle. GIF tema **tidak** berganti. |
-| Ketuk 2× | Buka menu PENGATURAN |
-| Tahan ≥1 detik | Bisu / bunyi |
-| Di menu, ketuk 1× | Geser highlight (otomatis gulir) |
-| Di menu, ketuk 2× | Jalankan baris |
+| --- | --- |
+| Ketuk 1× | Putar GIF reaksi dari flash (sekitar 1,6 detik) plus jingle. GIF tema tidak berganti. |
+| Ketuk 2× | Buka menu Pengaturan |
+| Tahan 1 detik atau lebih | Bisu atau bunyi |
+| Di menu, ketuk 1× | Geser sorotan (daftar bergulir sendiri) |
+| Di menu, ketuk 2× | Jalankan baris yang tersorot |
 
-Ganti GIF tema hanya lewat menu **GIF berikutnya** atau Pengaturan web.
+Ganti GIF tema hanya lewat menu **GIF berikutnya** atau halaman Pengaturan web.
 
-### 10 reaksi flash
+### Sepuluh reaksi di flash
 
-tickle `yelling` · kedip `distracted_2` · cinta `dumb_love` · marah `hadouken_hit` · ketawa `awkward_laugh` · nangis `crying_smile` · ngantuk `keep_it_up` · kaget `big_sneeze` · kedip-satu `blade` · cemberut `pinky`
+| Nama | File di memori |
+| --- | --- |
+| tickle | `yelling` |
+| kedip | `distracted_2` |
+| cinta | `dumb_love` |
+| marah | `hadouken_hit` |
+| ketawa | `awkward_laugh` |
+| nangis | `crying_smile` |
+| ngantuk | `keep_it_up` |
+| kaget | `big_sneeze` |
+| kedip-satu | `blade` |
+| cemberut | `pinky` |
 
-Mode reaksi: **acak** (default) atau **tetap** (pilih di menu Model reaksi).
+Mode reaksi: **acak** (bawaan) atau **tetap** (pilih di menu Model reaksi).
 
-## Menu LCD (16)
+## Menu LCD (16 baris)
 
-GIF berikutnya · Pilih tema · Ekspresi flash · Mode putar · Reaksi acak/tetap · Model reaksi · Sumber SD/Flash · Volume + · Volume − · Bisu · Rotasi layar · Chronos · Merek LCD · Info Wi-Fi AP · Tentang rzmong · Tutup
+1. GIF berikutnya
+2. Pilih tema
+3. Ekspresi flash
+4. Mode putar
+5. Reaksi acak/tetap
+6. Model reaksi
+7. Sumber SD/Flash
+8. Volume +
+9. Volume −
+10. Bisu
+11. Rotasi layar
+12. Chronos
+13. Merek LCD
+14. Info Wi-Fi AP
+15. Tentang rzmong
+16. Tutup
 
-**Musik tes** = jingle di flash, bukan file MP3.
+Tes bunyi di menu memutar jingle di flash, bukan berkas MP3.
 
-## Pin (satu sumber, jangan diganti semaunya)
+## Pin
 
 | Fungsi | GPIO |
-|---|---|
+| --- | --- |
 | TTP223 OUT | 1 |
 | SD MISO | 2 |
 | TFT SCLK + SD SCK | 4 |
@@ -60,16 +92,16 @@ GIF berikutnya · Pilih tema · Ekspresi flash · Mode putar · Reaksi acak/teta
 | I2S LRC | 20 |
 | I2S BCLK | 21 |
 
-## SD (opsional)
+## Kartu SD (opsional)
 
-```
+```text
 /gif/<tema>/<nama>.gif
 /sfx/<tema>/<nama>.wav
 ```
 
-FAT32. Tanpa SD, Mochi tetap jalan dari flash.
+Format FAT32. Tanpa SD, Mochi tetap berjalan dari flash.
 
-## Bangun
+## Bangun firmware
 
 ```bash
 python firmware/tools/embed_assets.py
@@ -77,7 +109,7 @@ cd firmware
 pio run -e esp32-c3-super-mini
 ```
 
-GIF reaksi sumber: `firmware/assets/react/` atau `firmware/tools/react_b64/`.
+Sumber GIF reaksi: `firmware/assets/react/` atau `firmware/tools/react_b64/`.
 
 ## Tautan
 
@@ -87,4 +119,4 @@ GIF reaksi sumber: `firmware/assets/react/` atau `firmware/tools/react_b64/`.
 - [Pengaturan](https://rz7mong.github.io/mochi-rzmong/thietlap.html)
 - Pustaka: `library/MochiRzmong.h`
 
-© rzmong
+Copyright rzmong

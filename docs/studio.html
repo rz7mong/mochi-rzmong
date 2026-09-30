@@ -1,19 +1,95 @@
-<!DOCTYPE html><html lang=id><head><meta charset=UTF-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Studio tema — Mochi rzmong</title>
-<style>:root{--bg:#0e1116;--card:#171b22;--line:#2a3140;--ink:#eef2f7;--muted:#8b95a7;--acc:#ff6b6b}*{box-sizing:border-box}body{margin:0;font-family:ui-sans-serif,system-ui;background:var(--bg);color:var(--ink)}header,main,footer{max-width:980px;margin:0 auto;padding:0 22px}header{padding-top:28px}a{color:#54a0ff}.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0}label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px}input,select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#10141b;color:var(--ink)}button{background:var(--acc);color:#fff;border:0;border-radius:10px;padding:10px 16px;cursor:pointer}#prev{width:240px;height:240px;background:#000;border-radius:12px;object-fit:contain}.wm{position:fixed;right:14px;bottom:10px;opacity:.28;letter-spacing:.18em;text-transform:uppercase;font-size:12px}.row{display:grid;grid-template-columns:240px 1fr;gap:16px}@media(max-width:720px){.row{grid-template-columns:1fr}}pre{background:#0b0e13;padding:12px;border-radius:10px;font-size:12px;overflow:auto}</style></head>
-<body><div class=wm>rzmong</div>
-<header><h1>🎨 Buat tema Mochi</h1><p>Unggah GIF/MP4 + SFX MP3/WAV. Salin ke SD, jangan digabung jadi satu file. <a href=index.html>Instalasi</a> · <a href=thietlap.html>Pengaturan</a></p></header>
-<main><div class=card><div class=row><div><video id=prev muted loop playsinline></video><p id=meta>240x240</p></div><div>
-<label>Gerakan GIF/MP4</label><input type=file id=vid accept="image/gif,video/mp4,video/webm">
-<label>Nama bagian</label><input id=stem placeholder=helm_siaga>
-<label>Tema</label><select id=tema><option>gundam</option><option>wajah</option><option>mobil</option><option>neon</option><option>anime</option><option>makanan</option><option>musik</option><option>intro</option></select>
-<label>SFX MP3/WAV/OGG</label><input type=file id=sfx accept=audio/*><audio id=aud controls style=width:100%;margin-top:8px></audio>
-<p><button id=pack>Buat instruksi paket</button></p></div></div></div>
-<div class=card><pre id=out>Pilih file dulu.</pre></div></main>
-<footer style=color:#8b95a7;padding:20px>© rzmong</footer>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Studio tema — Mochi rzmong</title>
+<style>
+:root{--bg:#0e1116;--card:#171b22;--line:#2a3140;--ink:#eef2f7;--muted:#8b95a7;--acc:#ff6b6b}
+*{box-sizing:border-box}
+body{margin:0;font-family:ui-sans-serif,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+header,main,footer{max-width:980px;margin:0 auto;padding:0 22px}
+header{padding-top:28px}
+a{color:#54a0ff}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0}
+label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px}
+input,select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#10141b;color:var(--ink)}
+button{background:var(--acc);color:#fff;border:0;border-radius:10px;padding:10px 16px;cursor:pointer}
+#prev{width:240px;height:240px;background:#000;border-radius:12px;object-fit:contain}
+.wm{position:fixed;right:14px;bottom:10px;opacity:.28;letter-spacing:.18em;text-transform:uppercase;font-size:12px}
+.row{display:grid;grid-template-columns:240px 1fr;gap:16px}
+@media(max-width:720px){.row{grid-template-columns:1fr}}
+pre{background:#0b0e13;padding:12px;border-radius:10px;font-size:12px;overflow:auto}
+.kicker{letter-spacing:.2em;text-transform:uppercase;font-size:11px;color:var(--muted)}
+</style>
+</head>
+<body>
+<div class="wm">rzmong</div>
+<header>
+  <div class="kicker">studio · rzmong · v0.2.1</div>
+  <h1>Buat tema Mochi</h1>
+  <p>Unggah GIF atau MP4 plus SFX. Hasilnya untuk kartu SD (opsional). Reaksi sentuh tetap memakai 10 GIF di flash.</p>
+  <p><a href="index.html">Instalasi</a> · <a href="thietlap.html">Pengaturan</a> · <a href="panduan.html">Panduan</a></p>
+</header>
+<main>
+<div class="card">
+  <div class="row">
+    <div>
+      <video id="prev" muted loop playsinline></video>
+      <p id="meta">Target 240×240</p>
+    </div>
+    <div>
+      <label>Gerakan GIF atau MP4</label>
+      <input type="file" id="vid" accept="image/gif,video/mp4,video/webm">
+      <label>Nama bagian</label>
+      <input id="stem" placeholder="helm_siaga">
+      <label>Tema</label>
+      <select id="tema">
+        <option>wajah</option>
+        <option>gundam</option>
+        <option>mobil</option>
+        <option>neon</option>
+        <option>anime</option>
+        <option>makanan</option>
+        <option>musik</option>
+        <option>intro</option>
+      </select>
+      <label>SFX (WAV / MP3 / OGG)</label>
+      <input type="file" id="sfx" accept="audio/*">
+      <audio id="aud" controls style="width:100%;margin-top:8px"></audio>
+      <p><button id="pack" type="button">Buat instruksi paket</button></p>
+    </div>
+  </div>
+</div>
+<div class="card"><pre id="out">Pilih berkas dulu.</pre></div>
+</main>
+<footer style="color:#8b95a7;padding:20px">Copyright rzmong</footer>
 <script>
-const $=id=>document.getElementById(id);
-$('vid').onchange=e=>{const f=e.target.files[0];if(!f)return;$('prev').src=URL.createObjectURL(f);$('prev').play().catch(()=>{});if(!$('stem').value)$('stem').value=f.name.replace(/\.[^.]+$/,'').replace(/\s+/g,'_').toLowerCase();$('meta').textContent=f.name+' · target 240x240';};
-$('sfx').onchange=e=>{const f=e.target.files[0];if(f)$('aud').src=URL.createObjectURL(f);};
-$('pack').onclick=()=>{const t=$('tema').value,s=($('stem').value||'bagian').replace(/[^\w\-]+/g,'_');const a=$('sfx').files[0];const ext=a?a.name.split('.').pop():'wav';
-$('out').textContent='# rzmong\nffmpeg -i input.mp4 -vf "scale=240:240:force_original_aspect_ratio=increase,crop=240:240,fps=10" -loop 0 '+s+'.gif\n\nSalin ke SD:\n/gif/'+t+'/'+s+'.gif\n/sfx/'+t+'/'+s+'.'+ext;};
-</script></body></html>
+const $ = (id) => document.getElementById(id);
+$("vid").onchange = (e) => {
+  const f = e.target.files[0];
+  if (!f) return;
+  $("prev").src = URL.createObjectURL(f);
+  $("prev").play().catch(() => {});
+  if (!$("stem").value) {
+    $("stem").value = f.name.replace(/\.[^.]+$/, "").replace(/\s+/g, "_").toLowerCase();
+  }
+  $("meta").textContent = f.name + " · target 240×240";
+};
+$("sfx").onchange = (e) => {
+  const f = e.target.files[0];
+  if (f) $("aud").src = URL.createObjectURL(f);
+};
+$("pack").onclick = () => {
+  const t = $("tema").value;
+  const s = ($("stem").value || "bagian").replace(/[^\w\-]+/g, "_");
+  const a = $("sfx").files[0];
+  const ext = a ? a.name.split(".").pop() : "wav";
+  $("out").textContent =
+    "# rzmong\n" +
+    "ffmpeg -i input.mp4 -vf \"scale=240:240:force_original_aspect_ratio=increase,crop=240:240,fps=10\" -loop 0 " + s + ".gif\n\n" +
+    "Salin ke kartu SD:\n/gif/" + t + "/" + s + ".gif\n/sfx/" + t + "/" + s + "." + ext;
+};
+</script>
+</body>
+</html>
