@@ -177,6 +177,12 @@ bool playOpen(const uint8_t *mem,int len,const char *path){
   if(!sdOk) return false;
   return gif.open(path,gifOpen,gifClose,gifRead,gifSeek,GIFDraw);
 }
+void serviceNet(){
+  dnsServer.processNextRequest();
+  server.handleClient();
+  if(chronosOn) watch.loop();
+  yield();
+}
 void playReactGif(){
   int r=pickReact(); playSfxForReact(r);
   String path=String("/gif/")+MOCHI_REACT[r].theme+"/"+MOCHI_REACT[r].stem+".gif";
@@ -185,7 +191,7 @@ void playReactGif(){
   if(!ok){ for(int i=0;i<DEFAULT_GIF_COUNT;i++){ if(strcmp(DEFAULT_GIFS[i].stem,MOCHI_REACT[r].stem)==0){ ok=playOpen(DEFAULT_GIFS[i].data,DEFAULT_GIFS[i].len,NULL); break; } } }
   if(!ok){ sdBusy=false; return; }
   tft.fillScreen(TFT_BLACK); uint32_t t0=millis();
-  while(gif.playFrame(true,NULL)){ server.handleClient(); if(millis()-t0>1600) break; yield(); }
+  while(gif.playFrame(true,NULL)){ serviceNet(); if(millis()-t0>1600) break; }
   gif.close(); sdBusy=false;
 }
 void brandMark(){if(!showWm)return; tft.setTextColor(C_DIM,TFT_BLACK); tft.drawString(MOCHI_BRAND,168,226,1);}
@@ -245,33 +251,46 @@ void applyMenu(){
 void finishTaps(){
   if(!taps||millis()-lastTap<=320)return;
   if(ui==UI_MENU){ if(taps==1) menuRow=(menuRow+1)%NMENU; else applyMenu(); }
-  else { if(taps>=2){ui=UI_MENU; menuRow=0; menuTop=0; drawMenu();} }
+  else {
+    if(taps>=2){ ui=UI_MENU; menuRow=0; menuTop=0; taps=0; drawMenu(); return; }
+    if(taps==1) playReactGif();
+  }
   taps=0;
 }
 bool playCurrent(){
   bool ok;
   bool fromSd=useSd&&sdOk&&nparts>0;
-  // SFX sepasang dengan GIF (tema+stem sama) — diputar sebelum animasi
   if(fromSd && soundOn) playSfxForGifPath(parts[idx].c_str());
   if(fromSd){ sdBusy=true; ok=playOpen(NULL,0,parts[idx].c_str()); }
   else ok=playOpen(DEFAULT_GIFS[defIdx].data,DEFAULT_GIFS[defIdx].len,NULL);
-  if(!ok){ sdBusy=false; return false; }
+  if(!ok){
+    sdBusy=false;
+    ok=playOpen(DEFAULT_GIFS[defIdx].data,DEFAULT_GIFS[defIdx].len,NULL);
+    if(!ok){ delay(40); return false; }
+  }
   tft.fillScreen(TFT_BLACK);
   while(gif.playFrame(true,NULL)){
-    server.handleClient();
+    serviceNet();
     bool down=digitalRead(MOCHI_PIN_TOUCH)==HIGH;
-    if(down&&!prevDown){
-      downAt=millis(); gif.close(); sdBusy=false;
-      playReactGif(); prevDown=true; return true;
-    }
+    if(down&&!prevDown) downAt=millis();
     if(!down&&prevDown){
       uint32_t held=millis()-downAt;
-      if(held>=900){soundOn=!soundOn; savePrefs();} else {taps++; lastTap=millis();}
+      if(held>=900){ soundOn=!soundOn; savePrefs(); }
+      else { taps++; lastTap=millis(); }
       prevDown=down; break;
     }
-    prevDown=down; yield();
+    prevDown=down;
   }
   gif.close(); sdBusy=false; brandMark(); return true;
+}
+void sendCorsHeaders(){
+  server.sendHeader("Access-Control-Allow-Origin","*");
+  server.sendHeader("Access-Control-Allow-Methods","GET,POST,OPTIONS");
+  server.sendHeader("Access-Control-Allow-Headers","Content-Type");
+}
+void handleOptions(){
+  sendCorsHeaders();
+  server.send(204);
 }
 void handleRoot(){
   server.sendHeader("Cache-Control","no-store");
@@ -292,7 +311,7 @@ void handleStatus(){
   d["react_gif"]=String("/gif/")+MOCHI_REACT[reactIdx].theme+"/"+MOCHI_REACT[reactIdx].stem+".gif";
   d["sound"]=soundOn; d["vol"]=volume; d["storage"]=(useSd&&sdOk)?"sd":"flash"; d["sd"]=sdOk;
   d["sfx"]="wav_sd_or_jingle"; d["def"]=defIdx; d["gif_count"]=nparts;
-  d["ap_ssid"]=MOCHI_AP_NAME; d["ap_pass"]=MOCHI_AP_PASS; d["sd_busy"]=sdBusy;
+  d["ap_ssid"]=MOCHI_AP_NAME; d["sd_busy"]=sdBusy;
   d["chronos"]=chronosOn;
   d["chronos_conn"]=chronosOn && watch.isConnected();
   d["chronos_run"]=chronosOn && watch.isRunning();
@@ -303,7 +322,7 @@ void handleStatus(){
   if(navActive){ d["nav_title"]=navTitle; d["nav_dist"]=navDist; }
   JsonArray themes=d["themes"].to<JsonArray>();
   for(int i=0;i<MOCHI_THEME_COUNT;i++) themes.add(MOCHI_THEMES[i]);
-  String s; serializeJson(d,s); server.send(200,"application/json",s);
+  String s; serializeJson(d,s); sendCorsHeaders(); server.send(200,"application/json",s);
 }
 void handleThemes(){
   if(sdBusy){server.send(503,"application/json","{\"error\":\"sd_busy\"}");return;}
@@ -316,7 +335,7 @@ void handleThemes(){
     }
     o["gif_count"]=cnt; o["available"]=(cnt>0)||(!sdOk && i==0);
   }
-  String s; serializeJson(d,s); server.send(200,"application/json",s);
+  String s; serializeJson(d,s); sendCorsHeaders(); server.send(200,"application/json",s);
 }
 void handleSettings(){
   JsonDocument d; if(deserializeJson(d,server.arg("plain"))){server.send(400,"text/plain","bad");return;}
@@ -335,8 +354,8 @@ void handleSettings(){
   if(useSd && !sdOk) useSd=false;
   savePrefs(); if(useSd && sdOk && !sdBusy){ scanTheme(theme); idx=0; }
   JsonDocument out; out["ok"]=true; out["brand"]=MOCHI_BRAND; out["theme"]=theme;
-  out["storage"]=(useSd&&sdOk)?"sd":"flash"; out["gif_count"]=nparts; out["sd"]=sdOk; out["ap_pass"]=MOCHI_AP_PASS;
-  String s; serializeJson(out,s); server.send(200,"application/json",s);
+  out["storage"]=(useSd&&sdOk)?"sd":"flash"; out["gif_count"]=nparts; out["sd"]=sdOk;
+  String s; serializeJson(out,s); sendCorsHeaders(); server.send(200,"application/json",s);
 }
 
 // ===== Upload file ke SD (GIF / WAV) =====
@@ -451,15 +470,17 @@ void setup(){
   server.on("/api/themes",handleThemes);
   server.on("/api/settings",HTTP_POST,handleSettings);
   server.on("/api/upload", HTTP_POST, [](){}, handleUpload);
+  server.on("/api/status", HTTP_OPTIONS, handleOptions);
+  server.on("/api/themes", HTTP_OPTIONS, handleOptions);
+  server.on("/api/settings", HTTP_OPTIONS, handleOptions);
+  server.on("/api/upload", HTTP_OPTIONS, handleOptions);
   server.onNotFound(handleNotFound);
   server.begin();
   chronosSetupCallbacks();
   if(chronosOn) chronosApply();
 }
 void loop(){
-  dnsServer.processNextRequest();
-  server.handleClient();
-  if(chronosOn) watch.loop();
+  serviceNet();
 
   if(chronosOn && ringerOn){
     drawChronosRinger();
