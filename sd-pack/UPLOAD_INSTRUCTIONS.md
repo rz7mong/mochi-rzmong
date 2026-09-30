@@ -1,20 +1,11 @@
-# Upload binary assets
+# Upload selesai
 
-File `mochi-themes.zip` (~24 MB) berisi **84 GIF + 85 WAV**.
+Pack penuh sudah di Release:
 
-Karena ukuran besar, upload manual via GitHub web:
+- Tag: **assets-v1**
+- URL: https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1
+- Download: https://github.com/user-attachments/files/32840215/mochi-themes.zip
 
-1. Buka https://github.com/rz7mong/mochi-rzmong
-2. **Releases** → Create a new release → tag `assets-v1` → upload `mochi-themes.zip`
-   **ATAU**
-3. Drag-drop folder `sd-pack/gif/` dan `sd-pack/sfx/` dari zip yang diextract ke folder `sd-pack/` di repo (web UI).
+Isi: 84 GIF + 85 WAV + themes.json
 
-Struktur setelah extract zip:
-```
-mochi-themes/
-├── themes.json
-├── gif/<tema>/*.gif
-└── sfx/<tema>/*.wav
-```
-
-Salin ke SD card root (FAT32).
+Untuk SD card: extract zip ke root FAT32 (folder `gif/`, `sfx/`, file `themes.json`).

@@ -1,6 +1,11 @@
 # 🍡 Paket SD Mochi rzmong
 
-Salin **seluruh isi folder ini** ke **akar kartu microSD (FAT32)**:
+## Download pack penuh
+
+**Release:** https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1  
+**File:** [mochi-themes.zip](https://github.com/user-attachments/files/32840215/mochi-themes.zip) (84 GIF + 85 WAV)
+
+Salin **isi zip** ke **akar kartu microSD (FAT32)**:
 
 ```text
 /
@@ -16,7 +21,7 @@ Salin **seluruh isi folder ini** ke **akar kartu microSD (FAT32)**:
 │   ├── intro/
 │   └── polisi/
 └── sfx/
-    └── <tema yang sama>/*.wav   (WAV 16-bit PCM mono)
+    └── <tema yang sama>/*.wav   (WAV 16-bit PCM)
 ```
 
 ## Tema (9 kategori)
@@ -48,7 +53,5 @@ Salin **seluruh isi folder ini** ke **akar kartu microSD (FAT32)**:
 
 ## Format
 - **GIF** saja (240×240 disarankan). Bukan MP4.
-- **SFX** = **WAV 16-bit PCM**. Bukan MP3 (decoder MP3 tidak ada di ESP32-C3 single-core).
+- **SFX** = **WAV 16-bit PCM**. Bukan MP3.
 - Speaker wajib lewat **MAX98357 I2S** (jangan GPIO langsung).
-
-Sumber: `mochi-themes.zip` (84 GIF + 85 WAV).
