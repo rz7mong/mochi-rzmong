@@ -1,6 +1,6 @@
 {
   "name": "Mochi rzmong",
-  "version": "0.2.6",
+  "version": "0.2.8",
   "funding_url": "https://github.com/rz7mong/mochi-rzmong",
   "new_install_prompt_erase": true,
   "builds": [

@@ -1,33 +1,30 @@
 # Handoff (internal / AI)
 
-Catatan ringkas untuk kontributor dan asisten AI. Bukan panduan pengguna akhir — lihat [README](../README.md) dan [situs](https://rz7mong.github.io/mochi-rzmong/).
+Bukan panduan pengguna — lihat [README](../README.md) dan [PRODUCT.md](../PRODUCT.md).
 
-- Repo: https://github.com/rz7mong/mochi-rzmong
-- Version: **0.2.6**
-- Theme pack release: `assets-v1`
-- Do not remove brand **rzmong**. Single tap = reaction, not theme change.
+| Key | Value |
+| --- | --- |
+| Version | **0.2.8** |
+| AP SSID | `rzmong mochi` |
+| AP password | `rzmong123` |
+| Settings UI | `docs/pengaturan.html` |
+| Theme pack | Release `assets-v1` |
+
+Firmware constants: `firmware/include/MochiRzmong.h` (`MOCHI_VERSION`, `MOCHI_AP_NAME`, `MOCHI_AP_PASS`).
 
 ## Theme dual-select
 
-- Web (`thietlap.html`): save theme → Preferences default
+- Web (`pengaturan.html`): save → Preferences default
 - LCD: double-tap → Pilih tema (needs SD)
 - API: `GET /api/status`, `GET /api/themes`, `POST /api/settings`
 
 ## Limits
 
-- Device animation: **GIF only**
-- SFX: **WAV 16-bit** or flash jingle (no MP3)
-- Speaker: **MAX98357 only**
-
-## Gestures
-
-- 1× tap (< 900 ms) → react GIF + SFX
-- 2× tap → menu
-- Hold ≥ 900 ms → mute toggle
+- GIF only · WAV 16-bit or jingle · MAX98357 only · no MP3/MP4 on device
 
 ## Pins
 
-Touch=1, MISO=3, CS=5, SCK=4, MOSI=6, TFT CS=7, RST=0, DC=10, DIN=8, LRC=20, BCLK=21. Leave GPIO2/9 free.
+Touch=1, MISO=3, CS=5, SCK=4, MOSI=6, TFT CS=7, RST=0, DC=10, DIN=8 (strapping), LRC=20, BCLK=21. Leave GPIO2/9 free.
 
 ## Build
 

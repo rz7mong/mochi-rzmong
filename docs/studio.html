@@ -5,102 +5,51 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>🎨 Studio tema — Mochi rzmong</title>
 <style>
-:root{--bg:#0e1116;--card:#171b22;--line:#2a3140;--ink:#eef2f7;--muted:#8b95a7;--acc:#ff6b6b}
-*{box-sizing:border-box}
-body{margin:0;font-family:ui-sans-serif,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
-header,main,footer{max-width:980px;margin:0 auto;padding:0 22px}
-header{padding-top:28px}
-a{color:#54a0ff}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0}
-label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px}
-input,select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#10141b;color:var(--ink)}
-button{background:var(--acc);color:#fff;border:0;border-radius:10px;padding:10px 16px;cursor:pointer}
-#prev{width:240px;height:240px;background:#000;border-radius:12px;object-fit:contain}
-.wm{position:fixed;right:14px;bottom:10px;opacity:.28;letter-spacing:.18em;text-transform:uppercase;font-size:12px}
-.row{display:grid;grid-template-columns:240px 1fr;gap:16px}
-@media(max-width:720px){.row{grid-template-columns:1fr}}
-pre{background:#0b0e13;padding:12px;border-radius:10px;font-size:12px;overflow:auto}
+:root{--bg:#0e1116;--card:#171b22;--line:#2a3140;--ink:#eef2f7;--muted:#8b95a7;--warn:#ffb86c}
+*{box-sizing:border-box}body{margin:0;font-family:ui-sans-serif,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
+header,main,footer{max-width:900px;margin:0 auto;padding:0 22px}header{padding-top:28px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin:12px 0}
 .kicker{letter-spacing:.2em;text-transform:uppercase;font-size:11px;color:var(--muted)}
-.warn{color:#ffb86c;font-size:13px}
-.hint{font-size:13px;color:var(--muted);line-height:1.5}
+.warn{color:var(--warn)}.hint{color:var(--muted);font-size:13px;line-height:1.5}
+a{color:#54a0ff}
+label{display:block;margin:10px 0 4px;font-size:13px;color:var(--muted)}
+input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#10141b;color:var(--ink)}
+button{background:#ff6b6b;color:#fff;border:0;border-radius:10px;padding:10px 16px;cursor:pointer;margin-top:12px}
+pre{background:#10141b;padding:12px;border-radius:10px;overflow:auto;font-size:12px}
 </style>
 </head>
 <body>
-<div class="wm">rzmong</div>
 <header>
-  <div class="kicker">studio · rzmong · v0.2.5</div>
-  <h1>🎨 Buat tema Mochi</h1>
-  <p>Bantu siapkan berkas untuk kartu SD. <b>Di ESP32 hanya GIF + WAV</b> yang diputar.</p>
-  <p class="warn">⚠️ MP4 tidak diputar di perangkat — harus dikonversi ke GIF 240×240. MP3 tidak di-decode — simpan SFX sebagai WAV 16-bit.</p>
-  <p class="hint">Pack siap pakai: ekstrak ke root SD. Pilih default di <a href="thietlap.html">Pengaturan</a>; di perangkat ganti lewat menu <b>Pilih tema</b>.</p>
-  <p><a href="index.html">🍡 Instalasi</a> · <a href="thietlap.html">⚙️ Pengaturan</a> · <a href="panduan.html">📖 Panduan</a></p>
+  <div class="kicker">studio · rzmong · v0.2.8</div>
+  <h1>🎨 Studio tema</h1>
+  <p class="warn">⚠️ MP4 tidak diputar di perangkat — konversi ke GIF 240×240. MP3 tidak di-decode — SFX harus WAV 16-bit.</p>
+  <p class="hint">Pack: <a href="https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1">assets-v1</a>. Default tema di <a href="pengaturan.html">Pengaturan</a> (Wi-Fi <code>rzmong mochi</code> / <code>rzmong123</code>).</p>
+  <p><a href="index.html">Instalasi</a> · <a href="pengaturan.html">Pengaturan</a> · <a href="panduan.html">Panduan</a></p>
 </header>
 <main>
 <div class="card">
-  <div class="row">
-    <div>
-      <video id="prev" muted loop playsinline></video>
-      <p id="meta">🎯 Target GIF 240×240</p>
-    </div>
-    <div>
-      <label>🎬 Sumber (GIF langsung, atau MP4 untuk dikonversi)</label>
-      <input type="file" id="vid" accept="image/gif,video/mp4,video/webm">
-      <label>📝 Nama bagian (stem)</label>
-      <input id="stem" placeholder="helm_siaga">
-      <label>🎨 Tema</label>
-      <select id="tema">
-        <option value="wajah">wajah — Wajah Mochi</option>
-        <option value="gundam">gundam — Gundam / Mecha</option>
-        <option value="mobil">mobil — Mobil / JDM</option>
-        <option value="polisi">polisi — Polisi</option>
-        <option value="musik">musik — Musik</option>
-        <option value="neon">neon — Neon / Kota</option>
-        <option value="anime">anime — Anime</option>
-        <option value="makanan">makanan — Makanan</option>
-        <option value="intro">intro — Intro / Logo</option>
-      </select>
-      <label>🔊 SFX (disarankan WAV 16-bit; MP3 hanya untuk referensi)</label>
-      <input type="file" id="sfx" accept="audio/wav,audio/x-wav,audio/*">
-      <audio id="aud" controls style="width:100%;margin-top:8px"></audio>
-      <p><button id="pack" type="button">📦 Buat instruksi paket</button></p>
-    </div>
-  </div>
+  <label>Nama tema (folder)</label>
+  <input id="tema" value="wajah"/>
+  <label>Nama file GIF (tanpa .gif)</label>
+  <input id="stem" value="yelling"/>
+  <label>Catatan</label>
+  <textarea id="note" rows="3">GIF 240×240, loop. SFX: /sfx/&lt;tema&gt;/&lt;stem&gt;.wav</textarea>
+  <button type="button" onclick="gen()">Buat skrip ffmpeg</button>
+  <pre id="out"></pre>
 </div>
-<div class="card"><pre id="out">Pilih berkas dulu.</pre></div>
 </main>
-<footer style="color:#8b95a7;padding:20px">© rzmong · v0.2.5</footer>
+<footer style="color:#8b95a7;padding:20px">© rzmong · MIT · v0.2.8</footer>
 <script>
-const $ = (id) => document.getElementById(id);
-$("vid").onchange = (e) => {
-  const f = e.target.files[0];
-  if (!f) return;
-  $("prev").src = URL.createObjectURL(f);
-  $("prev").play().catch(() => {});
-  if (!$("stem").value) $("stem").value = f.name.replace(/\.[^.]+$/, "").replace(/\s+/g, "_").toLowerCase();
-  $("meta").textContent = f.name + " · di perangkat harus jadi .gif 240×240";
-};
-$("sfx").onchange = (e) => {
-  const f = e.target.files[0];
-  if (f) $("aud").src = URL.createObjectURL(f);
-};
-$("pack").onclick = () => {
-  const t = $("tema").value;
-  const s = ($("stem").value || "bagian").replace(/[^\w\-]+/g, "_");
-  const a = $("sfx").files[0];
-  const isGif = $("vid").files[0] && /\.gif$/i.test($("vid").files[0].name);
-  let out = "# rzmong · paket SD (firmware hanya GIF + WAV)\n\n";
-  if (!isGif) {
-    out += "# Konversi video → GIF (wajib jika sumber MP4):\n";
-    out += "ffmpeg -i input.mp4 -vf \"scale=240:240:force_original_aspect_ratio=increase,crop=240:240,fps=10\" -loop 0 " + s + ".gif\n\n";
-  }
-  out += "# SFX: pakai WAV 16-bit mono/stereo (MP3 tidak diputar di ESP32-C3)\n";
-  if (a && !/\.wav$/i.test(a.name)) {
-    out += "ffmpeg -i " + a.name + " -acodec pcm_s16le -ar 22050 -ac 1 " + s + ".wav\n\n";
-  }
-  out += "Salin ke kartu SD:\n/gif/" + t + "/" + s + ".gif\n/sfx/" + t + "/" + s + ".wav\n";
-  out += "\n# Setelah di SD: di web Pengaturan pilih tema default; di ESP32 ketuk 2× → Pilih tema.\n";
-  $("out").textContent = out;
-};
+function gen(){
+  const t=document.getElementById('tema').value.trim()||'wajah';
+  const s=document.getElementById('stem').value.trim()||'clip';
+  let out='# Konversi video → GIF (wajib jika sumber MP4):\n';
+  out += `ffmpeg -i input.mp4 -vf "scale=240:240:force_original_aspect_ratio=decrease,pad=240:240:(ow-iw)/2:(oh-ih)/2" -loop 0 gif/${t}/${s}.gif\n`;
+  out += '# SFX: WAV 16-bit (MP3 tidak diputar di ESP32-C3)\n';
+  out += `ffmpeg -i sfx_in.wav -acodec pcm_s16le -ar 22050 -ac 1 sfx/${t}/${s}.wav\n`;
+  out += `# Letakkan di root SD: gif/${t}/${s}.gif dan sfx/${t}/${s}.wav\n`;
+  document.getElementById('out').textContent=out;
+}
 </script>
 </body>
 </html>
