@@ -4,10 +4,9 @@
 #define MOCHI_AP_NAME "rzmong mochi"
 #define MOCHI_AP_PASS "rzmong123"
 #define MOCHI_VERSION "0.5.0"
-/* Chronos full: notif, call, find, time, map/nav overlay.
+/* Chronos full: notif, call, find, time, map/nav.
  * Touch: notif=1tap, ringer=hold 0.6s, nav=2tap hide.
- * Pair via Chronos app — BLE name rzmong. ESP32-C3 shares radio with Wi-Fi AP.
- * Settings: http://192.168.4.1/ (captive) or docs/pengaturan.html
+ * Pair Chronos app · BLE rzmong · settings http://192.168.4.1/
  */
 #define MOCHI_PIN_TOUCH 1
 #define MOCHI_PIN_SD_SCK 4
