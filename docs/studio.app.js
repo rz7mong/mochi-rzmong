@@ -78,10 +78,14 @@ async function loadFFmpeg() {
 
 async function makeSmallGif(maxBytes) {
   const presets = [
-    { t: "3", fps: "6", colors: "48", size: "240" },
-    { t: "2", fps: "5", colors: "32", size: "200" },
-    { t: "2", fps: "4", colors: "24", size: "160" },
-    { t: "1.5", fps: "4", colors: "16", size: "160" }
+    { t: "8", fps: "8", colors: "64", size: "240" },
+    { t: "8", fps: "6", colors: "48", size: "240" },
+    { t: "6", fps: "6", colors: "48", size: "240" },
+    { t: "6", fps: "5", colors: "32", size: "200" },
+    { t: "5", fps: "5", colors: "32", size: "200" },
+    { t: "4", fps: "5", colors: "24", size: "200" },
+    { t: "4", fps: "4", colors: "24", size: "160" },
+    { t: "3", fps: "4", colors: "16", size: "160" }
   ];
   let lastBlob = null;
   for (let pi = 0; pi < presets.length; pi++) {
@@ -130,13 +134,13 @@ async function makeSmallGif(maxBytes) {
 async function convertVideoToPair(file) {
   await ffmpeg.writeFile("input", await fetchFile(file));
   log("Source: " + file.name + " (" + fmtSize(file.size) + ")");
-  const gifBlob = await makeSmallGif(550000);
+  const gifBlob = await makeSmallGif(599000);
   log("GIF final: " + fmtSize(gifBlob.size));
   let wavBlob = null;
   setStatus("Extract audio from video...", false);
   const audioTries = [
-    ["-i", "input", "-t", "3", "-vn", "-map", "0:a:0", "-acodec", "pcm_s16le", "-ar", "22050", "-ac", "1", "-y", "out_from_vid.wav"],
-    ["-i", "input", "-t", "3", "-vn", "-acodec", "pcm_s16le", "-ar", "22050", "-ac", "1", "-y", "out_from_vid.wav"]
+    ["-i", "input", "-t", "8", "-vn", "-map", "0:a:0", "-acodec", "pcm_s16le", "-ar", "22050", "-ac", "1", "-y", "out_from_vid.wav"],
+    ["-i", "input", "-t", "8", "-vn", "-acodec", "pcm_s16le", "-ar", "22050", "-ac", "1", "-y", "out_from_vid.wav"]
   ];
   for (let ti = 0; ti < audioTries.length; ti++) {
     try {
@@ -161,7 +165,7 @@ async function convertAudioOnly(file) {
   await ffmpeg.writeFile("ain", await fetchFile(file));
   await ffmpeg.exec([
     "-i", "ain",
-    "-t", "5",
+    "-t", "8",
     "-acodec", "pcm_s16le",
     "-ar", "22050",
     "-ac", "1",
@@ -228,13 +232,13 @@ async function doConvert() {
       log("WAV: " + fmtSize(result.wav.size));
     }
     if (result.gif) {
-      if (result.gif.size > 600000) {
-        setStatus("GIF still over 600 KB after compress — use Save", false);
+      if (result.gif.size > 599000) {
+        setStatus("GIF still over 599 KB after compress — use Save", false);
         log("TIP: try a shorter / simpler clip");
       }
     }
     if (result.wav) {
-      if (result.wav.size > 600000) setStatus("WAV over 600 KB", false);
+      if (result.wav.size > 599000) setStatus("WAV over 599 KB", false);
     }
     result.tema = tema;
     result.stem = stem;
@@ -309,13 +313,13 @@ async function doUpload() {
   btn.disabled = true;
   try {
     if (result.gif) {
-      if (result.gif.size > 600000) throw new Error("GIF too large (max 600 KB)");
+      if (result.gif.size > 599000) throw new Error("GIF too large (max 599 KB)");
       setStatus("Upload GIF...", false);
       const res = await uploadOne(result.gif, "gif", result.tema, result.stem);
       log("GIF OK " + res.path + " " + res.size + " bytes");
     }
     if (result.wav) {
-      if (result.wav.size > 600000) throw new Error("WAV too large (max 600 KB)");
+      if (result.wav.size > 599000) throw new Error("WAV too large (max 599 KB)");
       setStatus("Upload WAV...", false);
       const res = await uploadOne(result.wav, "wav", result.tema, result.stem);
       log("WAV OK " + res.path + " " + res.size + " bytes");
