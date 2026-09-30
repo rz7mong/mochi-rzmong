@@ -1,4 +1,4 @@
-// Mochi rzmong 0.2.6 — theme web=default, LCD manual if SD; SFX WAV via MAX98357
+// Mochi rzmong 0.2.7 — AP pass from MAC; theme web/LCD; SFX WAV via MAX98357
 #include <Arduino.h>
 #include <TFT_eSPI.h>
 #include <AnimatedGIF.h>
@@ -13,14 +13,13 @@
 #include "MochiRzmong.h"
 #include "defaults_gif.h"
 #include "jingle.h"
-/* Theme: web sets default; LCD "Pilih tema" manual if SD */
 
 static const int W=240,H=240;
 static const uint16_t C_BG=0x1082,C_BAR=0xFD20,C_SEL=0xFE60,C_TEXT=0xEF7D,C_DIM=0x8410;
 static const uint16_t C_RED=0xF985,C_TEAL=0x07F4,C_BLUE=0x3C7F,C_PINK=0xF81F,C_YEL=0xFFE0;
 
 TFT_eSPI tft; AnimatedGIF gif; WebServer server(80); ChronosESP32 watch; Preferences prefs;
-String theme="wajah", playMode="kategori", reactMode="acak";
+String theme="wajah", playMode="kategori", reactMode="acak", apPass="rzmong24";
 bool soundOn=true, useSd=false, chronosOn=false, showWm=true;
 int defIdx=0, reactIdx=0, volume=12, rot=0, menuRow=0, menuTop=0;
 String parts[32]; int nparts=0, idx=0; File gifFile; bool sdOk=false, i2sOk=false;
@@ -82,20 +81,12 @@ void playJingleMs(int ms){
   if(!soundOn||!i2sOk)return;
   i2s_set_sample_rates(I2S_NUM_0, JINGLE_SR);
   int bytes=JINGLE_SR*2*ms/1000; if(bytes>JINGLE_PCM_LEN)bytes=JINGLE_PCM_LEN; if(bytes<2)bytes=2;
-  int16_t buf[256];
-  int off=0;
+  int16_t buf[256]; int off=0;
   while(off<bytes){
-    int n=bytes-off; if(n>512)n=512;
-    int samples=n/2;
+    int n=bytes-off; if(n>512)n=512; int samples=n/2;
     const int16_t *src=(const int16_t*)(JINGLE_PCM+off);
-    for(int i=0;i<samples;i++){
-      int v=(int)src[i]*(volume+1)/22;
-      if(v>32767)v=32767; if(v<-32768)v=-32768;
-      buf[i]=(int16_t)v;
-    }
-    size_t wr=0;
-    i2s_write(I2S_NUM_0,buf,(size_t)samples*2,&wr,pdMS_TO_TICKS(200));
-    off+=n;
+    for(int i=0;i<samples;i++){ int v=(int)src[i]*(volume+1)/22; if(v>32767)v=32767; if(v<-32768)v=-32768; buf[i]=(int16_t)v; }
+    size_t wr=0; i2s_write(I2S_NUM_0,buf,(size_t)samples*2,&wr,pdMS_TO_TICKS(200)); off+=n;
   }
 }
 
@@ -109,72 +100,37 @@ bool playWavFromSd(const char *path){
   uint32_t sampleRate=22050, dataSize=0;
   bool gotFmt=false, gotData=false;
   while(f.available()){
-    uint8_t ch[8];
-    if(f.read(ch,8)<8) break;
+    uint8_t ch[8]; if(f.read(ch,8)<8) break;
     uint32_t sz=ch[4]|(ch[5]<<8)|(ch[6]<<16)|(ch[7]<<24);
     if(memcmp(ch,"fmt ",4)==0){
-      uint8_t fmt[16];
-      int need=sz>16?16:(int)sz;
+      uint8_t fmt[16]; int need=sz>16?16:(int)sz;
       if(f.read(fmt,need)<need){f.close(); return false;}
       if(sz>(uint32_t)need) f.seek(f.position()+(sz-need));
-      audioFormat=fmt[0]|(fmt[1]<<8);
-      channels=fmt[2]|(fmt[3]<<8);
-      sampleRate=fmt[4]|(fmt[5]<<8)|(fmt[6]<<16)|(fmt[7]<<24);
-      bits=fmt[14]|(fmt[15]<<8);
-      gotFmt=true;
-    } else if(memcmp(ch,"data",4)==0){
-      dataSize=sz; gotData=true; break;
-    } else {
-      f.seek(f.position()+sz);
-    }
+      audioFormat=fmt[0]|(fmt[1]<<8); channels=fmt[2]|(fmt[3]<<8);
+      sampleRate=fmt[4]|(fmt[5]<<8)|(fmt[6]<<16)|(fmt[7]<<24); bits=fmt[14]|(fmt[15]<<8); gotFmt=true;
+    } else if(memcmp(ch,"data",4)==0){ dataSize=sz; gotData=true; break; }
+    else f.seek(f.position()+sz);
   }
   if(!gotFmt||!gotData||audioFormat!=1||bits!=16||channels<1||channels>2){f.close(); return false;}
-  if(sampleRate<8000) sampleRate=8000;
-  if(sampleRate>48000) sampleRate=48000;
+  if(sampleRate<8000) sampleRate=8000; if(sampleRate>48000) sampleRate=48000;
   i2s_set_sample_rates(I2S_NUM_0, sampleRate);
-  const size_t CHUNK=512;
-  uint8_t raw[CHUNK];
-  int16_t out[CHUNK];
-  uint32_t left=dataSize;
-  uint32_t t0=millis();
+  const size_t CHUNK=512; uint8_t raw[CHUNK]; int16_t out[CHUNK];
+  uint32_t left=dataSize; uint32_t t0=millis();
   while(left>0 && f.available()){
-    size_t n=left>CHUNK?CHUNK:left;
-    int rd=f.read(raw,n);
-    if(rd<=0) break;
-    int samples=rd/2;
-    int16_t *src=(int16_t*)raw;
-    int outN=0;
-    if(channels==2){
-      for(int i=0;i+1<samples;i+=2){
-        int v=((int)src[i]+(int)src[i+1])/2;
-        v=v*(volume+1)/22;
-        if(v>32767)v=32767; if(v<-32768)v=-32768;
-        out[outN++]=(int16_t)v;
-      }
-    } else {
-      for(int i=0;i<samples;i++){
-        int v=(int)src[i]*(volume+1)/22;
-        if(v>32767)v=32767; if(v<-32768)v=-32768;
-        out[outN++]=(int16_t)v;
-      }
-    }
-    size_t wr=0;
-    if(outN>0) i2s_write(I2S_NUM_0,out,(size_t)outN*2,&wr,pdMS_TO_TICKS(300));
-    left-=(uint32_t)rd;
-    if(millis()-t0>4000) break;
-    yield();
+    size_t n=left>CHUNK?CHUNK:left; int rd=f.read(raw,n); if(rd<=0) break;
+    int samples=rd/2; int16_t *src=(int16_t*)raw; int outN=0;
+    if(channels==2){ for(int i=0;i+1<samples;i+=2){ int v=((int)src[i]+(int)src[i+1])/2; v=v*(volume+1)/22; if(v>32767)v=32767; if(v<-32768)v=-32768; out[outN++]=(int16_t)v; } }
+    else { for(int i=0;i<samples;i++){ int v=(int)src[i]*(volume+1)/22; if(v>32767)v=32767; if(v<-32768)v=-32768; out[outN++]=(int16_t)v; } }
+    size_t wr=0; if(outN>0) i2s_write(I2S_NUM_0,out,(size_t)outN*2,&wr,pdMS_TO_TICKS(300));
+    left-=(uint32_t)rd; if(millis()-t0>4000) break; yield();
   }
-  f.close();
-  i2s_set_sample_rates(I2S_NUM_0, JINGLE_SR);
-  return true;
+  f.close(); i2s_set_sample_rates(I2S_NUM_0, JINGLE_SR); return true;
 }
 
 bool playSfxForReact(int r){
   if(!soundOn||!i2sOk) return false;
   if(r<0||r>=MOCHI_REACT_COUNT) r=0;
-  const char *themeR=MOCHI_REACT[r].theme;
-  const char *stem=MOCHI_REACT[r].stem;
-  const char *name=MOCHI_REACT[r].name;
+  const char *themeR=MOCHI_REACT[r].theme; const char *stem=MOCHI_REACT[r].stem; const char *name=MOCHI_REACT[r].name;
   if(sdOk){
     char path[96];
     snprintf(path,sizeof(path),"/sfx/%s/%s.wav",themeR,stem);
@@ -183,11 +139,8 @@ bool playSfxForReact(int r){
     if(SD.exists(path) && playWavFromSd(path)) return true;
     snprintf(path,sizeof(path),"/sfx/%s.wav",name);
     if(SD.exists(path) && playWavFromSd(path)) return true;
-    snprintf(path,sizeof(path),"/sfx/%s/%s.mp3",themeR,stem);
-    if(SD.exists(path)){ Serial.println("SFX mp3: konversi ke WAV 16-bit mono"); }
   }
-  playJingleMs(220);
-  return true;
+  playJingleMs(220); return true;
 }
 
 int pickReact(){ return (reactMode=="acak") ? random(MOCHI_REACT_COUNT) : reactIdx; }
@@ -197,24 +150,14 @@ bool playOpen(const uint8_t *mem,int len,const char *path){
   return gif.open(path,gifOpen,gifClose,gifRead,gifSeek,GIFDraw);
 }
 void playReactGif(){
-  int r=pickReact();
-  playSfxForReact(r);
+  int r=pickReact(); playSfxForReact(r);
   String path=String("/gif/")+MOCHI_REACT[r].theme+"/"+MOCHI_REACT[r].stem+".gif";
   bool ok=false;
   if(sdOk && SD.exists(path.c_str())) ok=playOpen(NULL,0,path.c_str());
-  if(!ok){
-    for(int i=0;i<DEFAULT_GIF_COUNT;i++){
-      if(strcmp(DEFAULT_GIFS[i].stem,MOCHI_REACT[r].stem)==0){ ok=playOpen(DEFAULT_GIFS[i].data,DEFAULT_GIFS[i].len,NULL); break; }
-    }
-  }
+  if(!ok){ for(int i=0;i<DEFAULT_GIF_COUNT;i++){ if(strcmp(DEFAULT_GIFS[i].stem,MOCHI_REACT[r].stem)==0){ ok=playOpen(DEFAULT_GIFS[i].data,DEFAULT_GIFS[i].len,NULL); break; } } }
   if(!ok) return;
-  tft.fillScreen(TFT_BLACK);
-  uint32_t t0=millis();
-  while(gif.playFrame(true,NULL)){
-    server.handleClient();
-    if(millis()-t0>1600) break;
-    yield();
-  }
+  tft.fillScreen(TFT_BLACK); uint32_t t0=millis();
+  while(gif.playFrame(true,NULL)){ server.handleClient(); if(millis()-t0>1600) break; yield(); }
   gif.close();
 }
 void brandMark(){if(!showWm)return; tft.setTextColor(C_DIM,TFT_BLACK); tft.drawString(MOCHI_BRAND,168,226,1);}
@@ -223,8 +166,7 @@ void bootMark(){
   tft.setTextColor(TFT_BLACK,C_BAR); tft.drawCentreString("Mochi",120,96,4); tft.drawCentreString(MOCHI_BRAND,120,128,2); delay(400);
 }
 void drawMenu(){
-  if(menuRow<menuTop) menuTop=menuRow;
-  if(menuRow>=menuTop+VIS) menuTop=menuRow-VIS+1;
+  if(menuRow<menuTop) menuTop=menuRow; if(menuRow>=menuTop+VIS) menuTop=menuRow-VIS+1;
   tft.fillScreen(C_BG); tft.fillRect(0,0,240,34,C_BAR);
   tft.setTextColor(TFT_BLACK,C_BAR); tft.drawCentreString("PENGATURAN",120,4,2); tft.drawCentreString("rzmong",120,20,1);
   for(int i=0;i<VIS;i++){
@@ -240,8 +182,7 @@ void drawMenu(){
 void nextPart(){
   if(useSd&&sdOk){
     if(playMode=="acak"){theme=MOCHI_THEMES[random(MOCHI_THEME_COUNT)]; scanTheme(theme);}
-    if(nparts==0)scanTheme(theme);
-    if(nparts==0){useSd=false;return;}
+    if(nparts==0)scanTheme(theme); if(nparts==0){useSd=false;return;}
     idx=(playMode=="acak_tema")?random(nparts):(idx+1)%nparts;
   } else { defIdx=(defIdx+1)%DEFAULT_GIF_COUNT; theme=DEFAULT_GIFS[defIdx].theme; savePrefs(); }
 }
@@ -254,11 +195,9 @@ void applyMenu(){
   else if(menuRow==1){
     int i=0; for(;i<MOCHI_THEME_COUNT;i++) if(theme==MOCHI_THEMES[i]) break;
     theme=MOCHI_THEMES[(i+1)%MOCHI_THEME_COUNT];
-    if(sdOk){ useSd=true; scanTheme(theme); idx=0; }
-    savePrefs();
+    if(sdOk){ useSd=true; scanTheme(theme); idx=0; } savePrefs();
     if(sdOk && nparts>0) showInfo(theme.c_str(), (String(nparts)+" GIF").c_str());
-    else if(sdOk) showInfo(theme.c_str(),"kosong di SD");
-    else showInfo(theme.c_str(),"default (no SD)");
+    else if(sdOk) showInfo(theme.c_str(),"kosong di SD"); else showInfo(theme.c_str(),"default (no SD)");
   }
   else if(menuRow==2){defIdx=(defIdx+1)%DEFAULT_GIF_COUNT; savePrefs(); showInfo("ekspresi",DEFAULT_GIFS[defIdx].stem);}
   else if(menuRow==3){playMode=(playMode=="kategori")?"acak":(playMode=="acak"?"acak_tema":"kategori"); savePrefs(); showInfo("mode",playMode.c_str());}
@@ -271,7 +210,7 @@ void applyMenu(){
   else if(menuRow==10){rot=(rot+1)&3; tft.setRotation(rot); savePrefs();}
   else if(menuRow==11){chronosOn=!chronosOn; savePrefs(); showInfo("chronos",chronosOn?"ON":"OFF");}
   else if(menuRow==12){showWm=!showWm; savePrefs();}
-  else if(menuRow==13){showInfo(MOCHI_AP_NAME,"rzmong24");}
+  else if(menuRow==13){showInfo(MOCHI_AP_NAME, apPass.c_str());}
   else if(menuRow==14){bootMark();}
   else ui=UI_PLAY;
 }
@@ -293,8 +232,7 @@ bool playCurrent(){
     if(down&&!prevDown){ downAt=millis(); gif.close(); playReactGif(); prevDown=true; return true; }
     if(!down&&prevDown){
       uint32_t held=millis()-downAt;
-      if(held>=900){soundOn=!soundOn; savePrefs();}
-      else {taps++; lastTap=millis();}
+      if(held>=900){soundOn=!soundOn; savePrefs();} else {taps++; lastTap=millis();}
       prevDown=down; break;
     }
     prevDown=down; yield();
@@ -308,31 +246,20 @@ void handleStatus(){
   d["react_gif"]=String("/gif/")+MOCHI_REACT[reactIdx].theme+"/"+MOCHI_REACT[reactIdx].stem+".gif";
   d["sound"]=soundOn; d["vol"]=volume; d["storage"]=(useSd&&sdOk)?"sd":"flash"; d["sd"]=sdOk;
   d["sfx"]="wav_sd_or_jingle"; d["def"]=defIdx; d["gif_count"]=nparts;
+  d["ap_ssid"]=MOCHI_AP_NAME; d["ap_pass"]=apPass;
   JsonArray themes=d["themes"].to<JsonArray>();
   for(int i=0;i<MOCHI_THEME_COUNT;i++) themes.add(MOCHI_THEMES[i]);
   String s; serializeJson(d,s); server.send(200,"application/json",s);
 }
 void handleThemes(){
-  JsonDocument d;
-  d["sd"]=sdOk; d["current"]=theme; d["storage"]=(useSd&&sdOk)?"sd":"flash";
+  JsonDocument d; d["sd"]=sdOk; d["current"]=theme; d["storage"]=(useSd&&sdOk)?"sd":"flash";
   JsonArray arr=d["themes"].to<JsonArray>();
   for(int i=0;i<MOCHI_THEME_COUNT;i++){
-    JsonObject o=arr.add<JsonObject>();
-    o["id"]=MOCHI_THEMES[i];
-    int cnt=0;
-    if(sdOk){
-      String dir=String("/gif/")+MOCHI_THEMES[i];
-      File dd=SD.open(dir);
-      if(dd){
-        while(true){File f=dd.openNextFile(); if(!f)break;
-          String n=f.name(); f.close();
-          if(n.endsWith(".gif")) cnt++;
-        }
-        dd.close();
-      }
+    JsonObject o=arr.add<JsonObject>(); o["id"]=MOCHI_THEMES[i]; int cnt=0;
+    if(sdOk){ String dir=String("/gif/")+MOCHI_THEMES[i]; File dd=SD.open(dir);
+      if(dd){ while(true){File f=dd.openNextFile(); if(!f)break; String n=f.name(); f.close(); if(n.endsWith(".gif")) cnt++; } dd.close(); }
     }
-    o["gif_count"]=cnt;
-    o["available"]=(cnt>0)||(!sdOk && i==0);
+    o["gif_count"]=cnt; o["available"]=(cnt>0)||(!sdOk && i==0);
   }
   String s; serializeJson(d,s); server.send(200,"application/json",s);
 }
@@ -350,11 +277,16 @@ void handleSettings(){
   if(d["volume"].is<int>()){ volume=d["volume"]; if(volume<0)volume=0; if(volume>21)volume=21; }
   if(sdOk && d["theme"].is<const char*>() && !d["storage"].is<const char*>()) useSd=true;
   if(useSd && !sdOk) useSd=false;
-  savePrefs();
-  if(useSd && sdOk){ scanTheme(theme); idx=0; }
+  savePrefs(); if(useSd && sdOk){ scanTheme(theme); idx=0; }
   JsonDocument out; out["ok"]=true; out["brand"]=MOCHI_BRAND; out["theme"]=theme;
-  out["storage"]=(useSd&&sdOk)?"sd":"flash"; out["gif_count"]=nparts; out["sd"]=sdOk;
+  out["storage"]=(useSd&&sdOk)?"sd":"flash"; out["gif_count"]=nparts; out["sd"]=sdOk; out["ap_pass"]=apPass;
   String s; serializeJson(out,s); server.send(200,"application/json",s);
+}
+void makeApPass(){
+  uint8_t mac[6]; WiFi.macAddress(mac);
+  char buf[12];
+  snprintf(buf, sizeof(buf), "rz%02x%02x", mac[4], mac[5]);
+  apPass = buf;
 }
 void setup(){
   Serial.begin(115200); pinMode(MOCHI_PIN_TOUCH,INPUT_PULLDOWN); loadPrefs();
@@ -362,7 +294,7 @@ void setup(){
   SPI.begin(MOCHI_PIN_SD_SCK,MOCHI_PIN_SD_MISO,MOCHI_PIN_SD_MOSI,MOCHI_PIN_SD_CS);
   sdOk=SD.begin(MOCHI_PIN_SD_CS,SPI); if(sdOk) scanTheme(theme);
   if(useSd&&(!sdOk||nparts==0)) useSd=false;
-  audioInit(); WiFi.softAP(MOCHI_AP_NAME,"rzmong24");
+  audioInit(); makeApPass(); WiFi.softAP(MOCHI_AP_NAME, apPass.c_str());
   server.on("/api/status",handleStatus); server.on("/api/themes",handleThemes); server.on("/api/settings",HTTP_POST,handleSettings); server.begin();
   if(chronosOn) watch.begin();
 }
