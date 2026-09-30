@@ -18,11 +18,10 @@ code{padding:1px 6px}pre{padding:12px;overflow:auto;font-size:12px;line-height:1
 .kicker{letter-spacing:.2em;text-transform:uppercase;font-size:11px;color:var(--muted)}
 ol,ul{color:#d5dbe6;line-height:1.55}
 .warn{color:#ffb86c}
-.ok{color:#50fa7b}
 </style></head>
 <body>
 <header>
-  <div class="kicker">blueprint · rzmong · v0.2.8</div>
+  <div class="kicker">blueprint · rzmong · v0.2.9</div>
   <h1>🔧 Cara membuat Mochi</h1>
   <p><a href="index.html">🍡 Instalasi</a> · <a href="panduan.html">📖 Cara pakai</a> · <a href="https://github.com/rz7mong/mochi-rzmong">🐙 GitHub</a></p>
 </header>
@@ -35,7 +34,7 @@ ol,ul{color:#d5dbe6;line-height:1.55}
 <tr><td>Otak</td><td>ESP32-C3 Super Mini</td></tr>
 <tr><td>Layar</td><td>ST7789 1.3" 240×240 SPI</td></tr>
 <tr><td>Baterai</td><td>LiPo 3.7V 400–800 mAh</td></tr>
-<tr><td>Charger</td><td><b>TP4056 + proteksi DW01/8205A</b> (jangan modul tanpa proteksi)</td></tr>
+<tr><td>Charger</td><td><b>TP4056 + proteksi DW01/8205A</b></td></tr>
 <tr><td>Saklar</td><td>On/Off</td></tr>
 <tr><td>Sentuh</td><td>TTP223</td></tr>
 <tr><td>Suara</td><td>MAX98357A I2S + speaker 4–8Ω</td></tr>
@@ -48,40 +47,35 @@ ol,ul{color:#d5dbe6;line-height:1.55}
 <table>
 <tr><th>Modul</th><th>Sinyal</th><th>GPIO</th><th>Catatan</th></tr>
 <tr><td>Touch</td><td>OUT</td><td><b>1</b></td><td>TTP223 HIGH saat sentuh</td></tr>
-<tr><td rowspan="4">SD</td><td>SCK</td><td><b>4</b></td><td rowspan="4">SPI <b>berbagi</b> SCK/MOSI dengan TFT</td></tr>
+<tr><td rowspan="4">SD</td><td>SCK</td><td><b>4</b></td><td rowspan="4">SPI <b>berbagi</b> SCK/MOSI dengan TFT. Firmware memakai <code>sdBusy</code>.</td></tr>
 <tr><td>MOSI</td><td><b>6</b></td></tr>
 <tr><td>MISO</td><td><b>3</b></td></tr>
 <tr><td>CS</td><td><b>5</b></td></tr>
-<tr><td rowspan="5">TFT ST7789</td><td>SCLK</td><td><b>4</b></td><td rowspan="5">RST=0. BLK → 3V3</td></tr>
+<tr><td rowspan="5">TFT</td><td>SCLK</td><td><b>4</b></td><td rowspan="5">RST=0. BLK → 3V3</td></tr>
 <tr><td>MOSI</td><td><b>6</b></td></tr>
 <tr><td>CS</td><td><b>7</b></td></tr>
 <tr><td>DC</td><td><b>10</b></td></tr>
 <tr><td>RST</td><td><b>0</b></td></tr>
-<tr><td rowspan="3">MAX98357</td><td>BCLK</td><td><b>21</b></td><td rowspan="3">GPIO20/21 = UART0 default; firmware pakai USB CDC. GPIO8 = <b>strapping</b> + sering LED onboard — jangan tarik LOW saat reset.</td></tr>
+<tr><td rowspan="3">MAX98357</td><td>BCLK</td><td><b>21</b></td><td rowspan="3">GPIO8 strapping — jangan tarik LOW saat reset. 20/21 = UART0; pakai USB CDC.</td></tr>
 <tr><td>LRC</td><td><b>20</b></td></tr>
 <tr><td>DIN</td><td><b>8</b></td></tr>
-<tr><td>Hindari di boot</td><td>—</td><td><b>2, 9</b></td><td>Strapping boot mode</td></tr>
+<tr><td>Strapping</td><td>—</td><td><b>2, 9</b></td><td><b>Biarkan tidak terhubung</b>; jangan ditarik LOW saat boot</td></tr>
 </table>
-<p class="warn">⚠️ Tidak klaim “boot-safe penuh” untuk GPIO8. Uji board Super Mini Anda.</p>
-</div>
-
-<div class="card">
-<h2>🔈 Speaker</h2>
-<p class="warn">Jangan sambung speaker ke GPIO langsung.</p>
-<pre>
-ESP32 BCLK/LRC/DIN → MAX98357
-MAX98357 VIN ← setelah saklar (baterai)
-OUT+/OUT− → speaker 4–8Ω
-</pre>
 </div>
 
 <div class="card">
 <h2>⚡ Power</h2>
+<p style="color:#8b95a7;font-size:13px">Beban tetap terpasang saat charging dapat membuat terminasi isi TP4056 kurang akurat. Ideal: saklar memutus beban saat charge, atau modul dengan jalur beban terpisah.</p>
 <pre>
 LiPo → TP4056 (+DW01) → Saklar → VIN ESP32 + VIN MAX98357
 ESP32 3V3 → LCD + SD + TTP223
 GND bersama
 </pre>
+</div>
+
+<div class="card">
+<h2>🔈 Speaker</h2>
+<p class="warn">Jangan sambung speaker ke GPIO langsung — hanya lewat MAX98357 OUT+/OUT−.</p>
 </div>
 
 <div class="card">
@@ -91,10 +85,10 @@ GND bersama
 <li>GND → 3V3 → SPI → touch → I2S</li>
 <li>Speaker ke OUT amp</li>
 <li>TP4056 berproteksi → saklar → VIN</li>
-<li>Flash firmware ≥ <b>0.2.8</b></li>
+<li>Flash firmware terbaru dari halaman instalasi</li>
 </ol>
 </div>
 
 </main>
-<footer style="color:#8b95a7;font-size:12px;padding:16px 22px 40px">© rzmong · MIT · v0.2.8</footer>
+<footer style="color:#8b95a7;font-size:12px;padding:16px 22px 40px">© rzmong · MIT · v0.2.9</footer>
 </body></html>
