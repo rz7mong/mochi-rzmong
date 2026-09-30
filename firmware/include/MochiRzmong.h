@@ -3,16 +3,9 @@
 #define MOCHI_WATERMARK MOCHI_BRAND
 #define MOCHI_AP_NAME "rzmong mochi"
 #define MOCHI_AP_PASS "rzmong123"
-#define MOCHI_VERSION "0.4.8"
-/* Pin map — ESP32-C3
- * Strapping: GPIO2, GPIO8, GPIO9 — leave 2/9 unconnected; do not pull 8 LOW at reset.
- * GPIO8 = I2S DIN after boot. GPIO20/21 = UART0; USB CDC used for console.
- * TFT+SD share SPI SCK/MOSI (4/6); firmware uses sdBusy to avoid concurrent SD access.
- * Settings UI: http://192.168.4.1/ on the device AP (offline, recommended).
- * Captive: DNSServer * → AP IP; probes /generate_204, /hotspot-detect.html, etc.
- * Upload: POST /api/upload?tema=&stem=&type=gif|wav (multipart) → /gif|/sfx on SD.
- * GIF+SFX pair: /gif/<tema>/<stem>.gif plays with /sfx/<tema>/<stem>.wav if present.
- * Studio (Pages): convert video→GIF+WAV, max ~599 KB per file.
+#define MOCHI_VERSION "0.4.9"
+/* Chronos: BLE name rzmong · pair via Chronos app (not system BT).
+ * ESP32-C3 shares 2.4GHz radio with Wi-Fi AP — expect lag if both busy.
  */
 #define MOCHI_PIN_TOUCH 1
 #define MOCHI_PIN_SD_SCK 4
