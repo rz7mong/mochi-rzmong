@@ -3,11 +3,11 @@
 #define MOCHI_WATERMARK MOCHI_BRAND
 #define MOCHI_AP_NAME "rzmong mochi"
 #define MOCHI_AP_PASS "rzmong123"
-#define MOCHI_VERSION "0.2.8"
+#define MOCHI_VERSION "0.2.9"
 /* Pin map — ESP32-C3
- * Strapping: GPIO2, GPIO8, GPIO9 — avoid forcing wrong level at reset.
- * GPIO8 used as I2S DIN (after boot OK if not pulled LOW at reset).
- * GPIO20/21 = UART0; USB CDC used for console so they can be I2S.
+ * Strapping: GPIO2, GPIO8, GPIO9 — leave 2/9 unconnected; do not pull 8 LOW at reset.
+ * GPIO8 = I2S DIN after boot. GPIO20/21 = UART0; USB CDC used for console.
+ * TFT+SD share SPI SCK/MOSI (4/6); firmware uses sdBusy to avoid concurrent SD access.
  */
 #define MOCHI_PIN_TOUCH 1
 #define MOCHI_PIN_SD_SCK 4
