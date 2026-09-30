@@ -1,61 +1,90 @@
-# 🍡 Mochi rzmong
+# Mochi rzmong
 
 Firmware, pustaka, dan halaman instalasi untuk ESP32-C3 Super Mini + LCD TFT ST7789 240×240.
 
 Merek: **rzmong** · Repo: [rz7mong/mochi-rzmong](https://github.com/rz7mong/mochi-rzmong)  
-Instal dari browser (Chrome / Edge): **[rz7mong.github.io/mochi-rzmong](https://rz7mong.github.io/mochi-rzmong/)**
+Instal: **[rz7mong.github.io/mochi-rzmong](https://rz7mong.github.io/mochi-rzmong/)**
 
-![badge](https://img.shields.io/badge/rzmong-Mochi-ff6b6b?style=flat-square)
-![badge](https://img.shields.io/badge/ESP32--C3-ST7789_240x240-1dd1a1?style=flat-square)
-![badge](https://img.shields.io/badge/tema-wajah_gundam_mobil-54a0ff?style=flat-square)
+Versi pustaka: **0.2.1**
 
-## ✨ Fitur
+## Fitur yang benar-benar ada di firmware
 
-|  | |
-|---|---|
-| 🔌 | Instal firmware dari web (ESP Web Tools) |
-| 🎭 | Tema: wajah · gundam · mobil · neon · anime · makanan · musik · intro |
-| 🎲 | Mode acak atau tetap di satu tema |
-| 👇 | Kontrol sentuh: ketuk, ketuk 2×, tahan |
-| 🔇 | Bisu / bersuara |
-| 🛠️ | Studio web: unggah GIF atau MP4 + SFX |
-| 🎵 | Putar MP3 dari kartu SD `/music/` |
-| 🗺️ | ChronosESP32 — peta & notifikasi HP |
-| 💧 | Merek **rzmong** di boot LCD, web, dan repo |
+- Instal dari browser (ESP Web Tools)
+- 10 GIF reaksi sentuh di **flash ESP32** (PROGMEM), tanpa SD
+- Tema SD opsional: wajah, gundam, mobil, neon, anime, makanan, musik, intro
+- Menu pengaturan di LCD (16 baris, bergulir, gaya iPod)
+- Wi-Fi AP `Mochi-rzmong` / `rzmong24` + halaman pengaturan web
+- Jingle I2S (MAX98357), volume 0–21, bisu
+- Chronos opsional (peta & notifikasi)
+- Merek rzmong di LCD / web / repo
 
-## 📦 Isi kartu SD
+Yang **tidak** ada di firmware ini: pemutar MP3 dari SD, overlay teks `o_o`, ketuk 1× untuk ganti GIF.
 
-```
-/themes.json
-/gif/<tema>/<nama>.gif
-/sfx/<tema>/<nama>.wav
-/music/*.mp3
-```
-
-Tema Gundam berisi bagian terpisah: kokpit, helm, isyarat, tembak, pilot.
-
-## 👇 Sentuh
+## Sentuh (jangan tertukar)
 
 | Gestur | Aksi |
 |---|---|
-| Ketuk 1× | Bagian berikutnya dalam tema |
-| Ketuk 2× | Buka menu di LCD |
-| Tahan 1 detik | Bisu / bunyi |
+| Jari turun / ketuk 1× | Putar **GIF reaksi** dari flash (~1,6 dtk) + jingle. GIF tema **tidak** berganti. |
+| Ketuk 2× | Buka menu PENGATURAN |
+| Tahan ≥1 detik | Bisu / bunyi |
+| Di menu, ketuk 1× | Geser highlight (otomatis gulir) |
+| Di menu, ketuk 2× | Jalankan baris |
 
-Menu LCD: Tema · Acak · Musik · Suara · Chronos · Tentang rzmong
+Ganti GIF tema hanya lewat menu **GIF berikutnya** atau Pengaturan web.
 
-## 🛠️ Bangun firmware
+### 10 reaksi flash
 
-```bash
-cd firmware
-pio run -e esp32-c3-super-mini
-pio run -t upload
+tickle `yelling` · kedip `distracted_2` · cinta `dumb_love` · marah `hadouken_hit` · ketawa `awkward_laugh` · nangis `crying_smile` · ngantuk `keep_it_up` · kaget `big_sneeze` · kedip-satu `blade` · cemberut `pinky`
+
+Mode reaksi: **acak** (default) atau **tetap** (pilih di menu Model reaksi).
+
+## Menu LCD (16)
+
+GIF berikutnya · Pilih tema · Ekspresi flash · Mode putar · Reaksi acak/tetap · Model reaksi · Sumber SD/Flash · Volume + · Volume − · Bisu · Rotasi layar · Chronos · Merek LCD · Info Wi-Fi AP · Tentang rzmong · Tutup
+
+**Musik tes** = jingle di flash, bukan file MP3.
+
+## Pin (satu sumber, jangan diganti semaunya)
+
+| Fungsi | GPIO |
+|---|---|
+| TTP223 OUT | 1 |
+| SD MISO | 2 |
+| TFT SCLK + SD SCK | 4 |
+| SD CS | 5 |
+| TFT MOSI + SD MOSI | 6 |
+| TFT CS | 7 |
+| TFT RST | 8 |
+| I2S DIN | 9 |
+| TFT DC | 10 |
+| I2S LRC | 20 |
+| I2S BCLK | 21 |
+
+## SD (opsional)
+
+```
+/gif/<tema>/<nama>.gif
+/sfx/<tema>/<nama>.wav
 ```
 
-Bin hasil: `docs/firmware/firmware.bin`.
+FAT32. Tanpa SD, Mochi tetap jalan dari flash.
 
-## 📚 Pustaka
+## Bangun
 
-Header `library/MochiRzmong.h` + `library/themes.json`.
+```bash
+python firmware/tools/embed_assets.py
+cd firmware
+pio run -e esp32-c3-super-mini
+```
 
-© rzmong · 🍡
+GIF reaksi sumber: `firmware/assets/react/` atau `firmware/tools/react_b64/`.
+
+## Tautan
+
+- [Instalasi](https://rz7mong.github.io/mochi-rzmong/)
+- [Panduan](https://rz7mong.github.io/mochi-rzmong/panduan.html)
+- [Hardware](https://rz7mong.github.io/mochi-rzmong/hardware.html)
+- [Pengaturan](https://rz7mong.github.io/mochi-rzmong/thietlap.html)
+- Pustaka: `library/MochiRzmong.h`
+
+© rzmong

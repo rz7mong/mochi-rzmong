@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>📖 Panduan pakai — Mochi rzmong</title>
+<title>Panduan pakai — Mochi rzmong</title>
 <style>
 :root{--bg:#0e1116;--card:#171b22;--line:#2a3140;--ink:#eef2f7;--muted:#8b95a7;--acc:#ff6b6b}
 *{box-sizing:border-box}body{margin:0;font-family:ui-sans-serif,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
@@ -15,107 +15,109 @@ a{color:#54a0ff}
 table{width:100%;border-collapse:collapse;font-size:14px}
 td,th{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top}
 code{background:#10141b;padding:1px 6px;border-radius:6px}
-ul{margin:6px 0 0;padding-left:18px;line-height:1.55;color:#d5dbe6}
+ul,ol{margin:6px 0 0;padding-left:18px;line-height:1.55;color:#d5dbe6}
 .kicker{letter-spacing:.2em;text-transform:uppercase;font-size:11px;color:var(--muted)}
 </style></head>
 <body>
 <div class="wm">rzmong</div>
 <header>
-  <div class="kicker">panduan · rzmong</div>
-  <h1>📖 Cara memakai Mochi</h1>
-  <p><a href="index.html">← Instalasi</a> · <a href="thietlap.html">Pengaturan</a> · <a href="studio.html">Studio</a></p>
+  <div class="kicker">panduan · rzmong · v0.2.1</div>
+  <h1>Cara memakai Mochi</h1>
+  <p><a href="index.html">Instalasi</a> · <a href="thietlap.html">Pengaturan</a> · <a href="hardware.html">Merakit</a></p>
 </header>
 <main>
 
 <div class="card">
-<h2>👆 Kontrol sentuh</h2>
+<h2>Kontrol sentuh</h2>
 <table>
 <tr><th>Gestur</th><th>Yang terjadi</th></tr>
-<tr><td>👆 Ketuk 1×</td><td>Ganti <b>bagian GIF</b> dalam tema yang sedang aktif.</td></tr>
-<tr><td>👆👆 Ketuk 2× cepat</td><td>Buka <b>menu LCD</b>.</td></tr>
-<tr><td>⏳ Tahan ±1 detik</td><td><b>Bisu / bunyi</b> SFX.</td></tr>
+<tr><td>Ketuk 1×</td><td>Putar <b>GIF reaksi</b> dari memori chip. Tema yang sedang jalan <b>tidak</b> berganti.</td></tr>
+<tr><td>Ketuk 2× cepat</td><td>Buka menu <b>PENGATURAN</b>.</td></tr>
+<tr><td>Tahan ≥1 detik</td><td><b>Bisu / bunyi</b>.</td></tr>
 </table>
-<p style="color:#8b95a7;font-size:13px;margin:10px 0 0">Sensor TTP223 di kepala / case. Bukan layar sentuh — jangan digeser.</p>
+<p style="color:#8b95a7;font-size:13px;margin:10px 0 0">TTP223 di kepala, aktif HIGH ke GPIO1. Bukan layar sentuh.</p>
 </div>
 
 <div class="card">
-<h2>↕️ Cara jalan / “scrol” menu</h2>
-<p>Menu <b>tidak bisa digeser</b>. Yang bergerak hanya tanda <code>></code> tiap kali kepala diketuk.</p>
-<ol style="color:#d5dbe6;line-height:1.6">
-<li>👆👆 Ketuk 2× — menu muncul, baris pertama ada <code>></code>.</li>
-<li>👆 Ketuk 1× — <code>></code> pindah ke baris bawah. Sampai bawah, ketuk lagi kembali ke atas.</li>
-<li>👆👆 Ketuk 2× — menjalankan baris yang ada <code>></code>.</li>
-<li>Pilih <b>Tutup</b> kalau hanya ingin keluar tanpa ganti apa pun.</li>
+<h2>10 GIF reaksi (di flash)</h2>
+<table>
+<tr><th>Nama</th><th>File memori</th></tr>
+<tr><td>tickle</td><td>yelling</td></tr>
+<tr><td>kedip</td><td>distracted_2</td></tr>
+<tr><td>cinta</td><td>dumb_love</td></tr>
+<tr><td>marah</td><td>hadouken_hit</td></tr>
+<tr><td>ketawa</td><td>awkward_laugh</td></tr>
+<tr><td>nangis</td><td>crying_smile</td></tr>
+<tr><td>ngantuk</td><td>keep_it_up</td></tr>
+<tr><td>kaget</td><td>big_sneeze</td></tr>
+<tr><td>kedip-satu</td><td>blade</td></tr>
+<tr><td>cemberut</td><td>pinky</td></tr>
+</table>
+<p>Default <b>acak</b>. Menu → Reaksi acak/tetap + Model reaksi untuk mengunci satu GIF.</p>
+</div>
+
+<div class="card">
+<h2>Cara jalan menu</h2>
+<ol>
+<li>Ketuk 2× — menu oranye muncul.</li>
+<li>Ketuk 1× — highlight pindah; daftar otomatis gulir (16 item, 7 terlihat).</li>
+<li>Ketuk 2× — menjalankan baris.</li>
+<li>Pilih <b>Tutup</b> untuk kembali ke GIF tema.</li>
 </ol>
-<p>Urutan baris: Tema berikutnya → Mode acak → Musik → Bisu → Chronos → Tentang rzmong → Tutup.</p>
 </div>
 
 <div class="card">
-<h2>🎮 Isi menu LCD</h2>
+<h2>Isi menu LCD</h2>
 <ul>
-<li>🎭 <b>Tema berikutnya</b> — wajah → gundam → mobil → neon → anime → makanan → musik → intro.</li>
-<li>🎲 <b>Mode acak</b> — ketuk 1× bisa loncat lintas tema.</li>
-<li>🎵 <b>Musik /music</b> — putar MP3 dari kartu SD.</li>
-<li>🔇 <b>Bisu / bunyi</b> — matikan SFX tanpa ganti tema.</li>
-<li>🗺️ <b>Chronos</b> — peta & notifikasi HP.</li>
-<li>💧 <b>Tentang rzmong</b> — layar boot.</li>
-<li>✖ <b>Tutup</b> — kembali ke GIF.</li>
+<li>GIF berikutnya — satu-satunya cara ganti GIF tema dari sentuh</li>
+<li>Pilih tema — wajah → gundam → … → intro</li>
+<li>Ekspresi flash — putar GIF bawaan berikutnya</li>
+<li>Mode putar — kategori / acak / acak_tema</li>
+<li>Reaksi acak/tetap</li>
+<li>Model reaksi — kunci salah satu dari 10</li>
+<li>Sumber SD/Flash</li>
+<li>Volume + / Volume − (0–21)</li>
+<li>Bisu / bunyi</li>
+<li>Rotasi layar</li>
+<li>Chronos</li>
+<li>Merek LCD</li>
+<li>Info Wi-Fi AP — tampilkan <code>Mochi-rzmong</code> / <code>rzmong24</code></li>
+<li>Tentang rzmong</li>
+<li>Tutup</li>
+</ul>
+<p>Baris bunyi tes memutar jingle flash. Bukan pemutar MP3.</p>
+</div>
+
+<div class="card">
+<h2>Tema SD (opsional)</h2>
+<p>Tanpa SD, Mochi tetap hidup dari flash. SD hanya menambah GIF tema.</p>
+<pre style="background:#0b0e13;padding:12px;border-radius:10px">/gif/&lt;tema&gt;/*.gif
+/sfx/&lt;tema&gt;/*.wav</pre>
+<p>FAT32. Tema: wajah, gundam, mobil, neon, anime, makanan, musik, intro.</p>
+</div>
+
+<div class="card">
+<h2>Wi-Fi &amp; web</h2>
+<ul>
+<li>AP: <code>Mochi-rzmong</code> / <code>rzmong24</code></li>
+<li>Pengaturan: <a href="thietlap.html">thietlap.html</a></li>
+<li>Studio unggah GIF SD: <a href="studio.html">studio.html</a></li>
 </ul>
 </div>
 
 <div class="card">
-<h2>🎭 Ganti tema</h2>
-<p>Tema seperti tema HP. Gundam hanya GIF Gundam. Mobil hanya mesin, lampu, polisi.</p>
-<ul>
-<li>📱 Di Mochi: ketuk 2× → jalankan <b>Tema berikutnya</b>.</li>
-<li>🌐 Di web: Wi-Fi <code>Mochi-rzmong</code> / <code>rzmong24</code> → <a href="thietlap.html">Pengaturan</a> → pilih chip tema → Simpan.</li>
-<li>🎲 Mode: tetap kategori · acak semua · acak dalam tema.</li>
-</ul>
+<h2>Chronos</h2>
+<p>Nyalakan di menu atau Pengaturan web, lalu pakai aplikasi Chronos di HP. Opsional.</p>
 </div>
 
 <div class="card">
-<h2>🤪 Pasang / ganti ekspresi GIF</h2>
-<p>Satu file = satu bagian. Jangan gabung helm+kokpit+tembak.</p>
+<h2>Kalau tidak jalan</h2>
 <ul>
-<li>📁 <code>/gif/wajah/happy.gif</code> + <code>/sfx/wajah/happy.wav</code></li>
-<li>🎨 Unggah lewat <a href="studio.html">Studio</a>, salin ke SD, restart Mochi.</li>
-<li>🎬 MP4 ubah ke GIF 240×240 dulu.</li>
-</ul>
-</div>
-
-<div class="card">
-<h2>🎵 Musik</h2>
-<ul>
-<li>MP3 di <code>/music/</code>.</li>
-<li>Menu → <b>Musik /music</b>.</li>
-<li>Ketuk 1× = lagu berikutnya. Tahan = bisu.</li>
-</ul>
-</div>
-
-<div class="card">
-<h2>🗺️ Chronos</h2>
-<ul>
-<li>App Chronos (Android, fbiego), izinkan notifikasi + peta.</li>
-<li>Nyalakan Chronos di menu atau Pengaturan web.</li>
-</ul>
-</div>
-
-<div class="card">
-<h2>💾 Kartu SD</h2>
-<pre style="background:#0b0e13;padding:12px;border-radius:10px">/themes.json
-/gif/<tema>/*.gif
-/sfx/<tema>/*.wav
-/music/*.mp3</pre>
-<p>Format FAT32.</p>
-</div>
-
-<div class="card">
-<h2>❓ Kalau tidak jalan</h2>
-<ul>
-<li>LCD hitam — cek kabel ST7789.</li>
-<li>Tidak ada wajah — folder <code>/gif/<tema>/</code> kosong / SD belum kebaca.</li>
-<li>Tidak ada suara — cek bisu dan nama SFX.</li>
-<li>Gagal instal — tahan BOOT sebelum colok, pakai Chrome.</li>
+<li>LCD hitam — pin ST7789: SCLK 4, MOSI 6, CS 7, DC 10, RST 8.</li>
+<li>Sentuh mati — TTP223 OUT ke GPIO1, aktif HIGH.</li>
+<li>Tidak ada reaksi — flash firmware v0.2.1+ (reaksi ada di chip, bukan SD).</li>
+<li>SD tidak kebaca — MISO harus GPIO2, CS GPIO5, jangan GPIO5 untuk MISO.</li>
+<li>Gagal instal — BOOT + Chrome.</li>
 </ul>
 </div>
 
