@@ -37,11 +37,18 @@ def gif_frames(draw_fn, n=3, duration=110):
 
 def load_gif(stem, fallback):
     p = rawdir / f"{stem}.gif"
-    if p.exists():
+    if p.exists() and p.stat().st_size > 100:
         return p.read_bytes()
     b = b64dir / f"{stem}.gif.b64"
     if b.exists():
-        return base64.b64decode(b.read_text())
+        try:
+            txt = b.read_text().strip()
+            if txt and txt != "PLACEHOLDER" and len(txt) > 32:
+                raw = base64.b64decode(txt)
+                if len(raw) > 100 and raw[:3] == b"GIF":
+                    return raw
+        except Exception as e:
+            print("b64 skip", stem, e)
     return fallback()
 
 def face(d, i, mouth=20, eye=0):
