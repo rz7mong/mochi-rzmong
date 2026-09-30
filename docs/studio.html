@@ -2,10 +2,56 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8"/>
-<title>Studio Mochi</title>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Studio tema - Mochi rzmong</title>
+<link rel="stylesheet" href="./studio.css"/>
 </head>
 <body>
-<h1>Studio loading...</h1>
-<p>If you see this, file write works. Full studio coming next.</p>
+<header>
+  <div class="kicker">studio · rzmong · v0.4.4</div>
+  <h1>Studio + Upload</h1>
+  <p class="hint">1) Convert → 2) Preview → 3) Save or Upload</p>
+  <p class="hint warn">Upload: join Wi-Fi rzmong mochi / rzmong123 first.</p>
+  <p><a href="index.html">Install</a> · <a href="pengaturan.html">Settings</a> · <a href="panduan.html">Guide</a></p>
+</header>
+<main>
+<div class="card">
+  <label>Mochi address (AP)</label>
+  <input id="host" value="http://192.168.4.1"/>
+  <div class="row"><button type="button" class="sec" id="btnPing">Test connection</button></div>
+  <p id="pingst" class="hint"></p>
+</div>
+<div class="card">
+  <label>Theme folder</label>
+  <input id="tema" value="wajah" list="temalist"/>
+  <datalist id="temalist">
+    <option value="wajah"/><option value="gundam"/><option value="mobil"/>
+    <option value="polisi"/><option value="musik"/><option value="neon"/>
+    <option value="anime"/><option value="makanan"/><option value="intro"/>
+  </datalist>
+  <label>File name (no extension)</label>
+  <input id="stem" value="yelling"/>
+  <label>Video / GIF file</label>
+  <input type="file" id="vid" accept="video/*,image/gif,.gif,.mp4,.webm,.mov"/>
+  <label>Sound file (optional)</label>
+  <input type="file" id="sfx" accept="audio/*,.mp3,.wav,.m4a,.ogg"/>
+  <button id="btnConvert">1. Convert and Preview</button>
+  <p id="status" class="hint"></p>
+  <div id="log"></div>
+  <div id="previewBox" class="preview-box">
+    <div class="hint">Preview</div>
+    <img id="previewGif" alt="preview" style="display:none"/>
+    <div id="audioMeta" class="meta" style="display:none"></div>
+    <div id="sizeMeta" class="meta"></div>
+    <div class="row">
+      <button type="button" class="blue" id="btnSave">2. Save to device</button>
+      <button type="button" class="ok" id="btnUpload">3. Upload to Mochi</button>
+    </div>
+  </div>
+</div>
+</main>
+<footer>rzmong · MIT · v0.4.4</footer>
+<script src="https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js"></script>
+<script src="./studio.app.js"></script>
 </body>
 </html>
