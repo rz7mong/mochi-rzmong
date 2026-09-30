@@ -1,38 +1,35 @@
 # 🍡 Mochi rzmong
 
-Palm-sized **ESP32-C3** desk buddy: **GIF** faces on ST7789, touch reactions, **WAV** SFX via MAX98357.
+[![Build firmware](https://github.com/rz7mong/mochi-rzmong/actions/workflows/firmware.yml/badge.svg)](https://github.com/rz7mong/mochi-rzmong/actions/workflows/firmware.yml)
+[![Pages](https://github.com/rz7mong/mochi-rzmong/actions/workflows/pages.yml/badge.svg)](https://github.com/rz7mong/mochi-rzmong/actions/workflows/pages.yml)
 
-> Independent open-source project inspired by expressive desk toys. **Not affiliated** with any commercial brand.
+Teman meja **ESP32-C3**: wajah **GIF** di ST7789, reaksi sentuh, SFX **WAV** lewat MAX98357.
+
+> Proyek open-source **independen**. Tidak berafiliasi dengan merek komersial mana pun. English: [README.en.md](README.en.md).
 
 | | |
 | --- | --- |
-| 🏷️ Brand | **rzmong** |
-| 📌 Version | **0.2.8** — see [PRODUCT.md](PRODUCT.md) |
-| 📜 License | [MIT](LICENSE) |
-| 🌐 Install | [rz7mong.github.io/mochi-rzmong](https://rz7mong.github.io/mochi-rzmong/) |
-| 📦 Theme pack | [Release `assets-v1`](https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1) only |
-| 📶 Wi-Fi | SSID **`rzmong mochi`** · password **`rzmong123`** |
-
-## English summary
-
-ESP32-C3 Super Mini + ST7789 240×240 + MAX98357. **GIF + WAV 16-bit only** on device (no MP4 player, no MP3 decoder). Flash with Chrome/Edge. Change AP credentials in `firmware/include/MochiRzmong.h` (`MOCHI_AP_NAME` / `MOCHI_AP_PASS`) then rebuild.
-
----
+| 🏷️ Merek | **rzmong** (opsional di pojok LCD, bisa dimatikan di menu) |
+| 📌 Versi | Lihat [PRODUCT.md](PRODUCT.md) (saat ini **0.2.9**) |
+| 📜 Lisensi kode | [MIT](LICENSE) · [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) |
+| 🌐 Instalasi | [rz7mong.github.io/mochi-rzmong](https://rz7mong.github.io/mochi-rzmong/) |
+| 📦 Pack tema | [Release `assets-v1`](https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1) |
+| 📶 Wi-Fi | SSID **`rzmong mochi`** · sandi **`rzmong123`** |
 
 ## ✨ Fitur
 
 | Fitur | Keterangan |
 | --- | --- |
-| 🎬 Animasi | **GIF** 240×240 (bukan MP4 di ESP32) |
+| 🎬 Animasi | **GIF** 240×240 di perangkat |
 | 👆 Reaksi | 10 ekspresi + SFX |
 | 🔊 SFX | **WAV 16-bit** di SD, fallback jingle flash |
-| 🎨 Tema | Web = default · LCD = manual jika SD terpasang |
+| 🎨 Tema | Web = default · LCD = manual jika SD ada |
 | 📶 AP | `rzmong mochi` / `rzmong123` |
 
 ## ⚠️ Keterbatasan
 
 - Tidak ada decoder **MP3** / pemutar musik SD penuh
-- Tidak memutar **MP4** di perangkat
+- Tidak memutar **MP4** di ESP32
 - Halaman pengaturan AP **tanpa login**
 
 ## 📶 Wi-Fi
@@ -42,16 +39,18 @@ ESP32-C3 Super Mini + ST7789 240×240 + MAX98357. **GIF + WAV 16-bit only** on d
 | SSID | **`rzmong mochi`** |
 | Password | **`rzmong123`** |
 
-Sumber tunggal: [PRODUCT.md](PRODUCT.md) dan `MOCHI_AP_*` di firmware. Menu LCD **Info Wi-Fi AP** menampilkan nilai yang sama.
+Ganti di `firmware/include/MochiRzmong.h` (`MOCHI_AP_NAME` / `MOCHI_AP_PASS`) → rebuild → flash.
 
-## 🎨 Tema & pack
+## 🎨 Tema
 
 | Tempat | Cara |
 | --- | --- |
 | Web | [pengaturan.html](https://rz7mong.github.io/mochi-rzmong/pengaturan.html) → Simpan |
 | ESP32 + SD | Ketuk 2× → **Pilih tema** |
 
-Unduh pack **hanya** dari [Releases / assets-v1](https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1) → extract ke root microSD FAT32 (`gif/`, `sfx/`, `themes.json`).
+Pack: [assets-v1](https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1) · detail [ASSETS.md](ASSETS.md).
+
+URL lama `thietlap.html` dialihkan ke `pengaturan.html`.
 
 ## 👆 Gestur
 
@@ -61,70 +60,59 @@ Unduh pack **hanya** dari [Releases / assets-v1](https://github.com/rz7mong/moch
 | Ketuk 2× | 2 ketuk cepat | Menu |
 | Tahan | ≥ 900 ms | Bisu / bunyi |
 
-## 🔌 Pin map
+## 🔌 Pin
 
 | Modul | GPIO | Catatan |
 | --- | --- | --- |
-| Touch TTP223 | **1** | |
-| SD SPI | SCK **4**, MOSI **6**, MISO **3**, CS **5** | SCK/MOSI **berbagi** dengan TFT |
-| TFT ST7789 | SCLK **4**, MOSI **6**, CS **7**, DC **10**, RST **0** | |
-| I2S MAX98357 | BCLK **21**, LRC **20**, DIN **8** | Lihat di bawah |
-| Hindari tarik di boot | **2**, **9** | Strapping |
+| Touch | **1** | |
+| SD | SCK **4**, MOSI **6**, MISO **3**, CS **5** | SCK/MOSI **berbagi** dengan TFT |
+| TFT | SCLK **4**, MOSI **6**, CS **7**, DC **10**, RST **0** | |
+| I2S | BCLK **21**, LRC **20**, DIN **8** | GPIO8 = strapping; jangan tarik LOW saat reset |
+| Strapping boot | **2**, **9** | **Biarkan tidak terhubung** (atau jangan ditarik LOW saat boot) |
 
-**GPIO8** = strapping pin (+ sering LED Super Mini). Jangan tarik **LOW** saat reset. Setelah boot boleh dipakai sebagai DIN.  
-**GPIO20/21** = UART0 default; firmware memakai **USB CDC**, jadi pin itu dipakai I2S (bukan Serial UART0).
+**Bus SPI:** TFT dan SD berbagi clock/data. Firmware mengakses SD secara bergiliran (flag `sdBusy`) agar putar GIF dari SD tidak bersamaan dengan API/SFX yang membuka file SD lain.
 
 Detail: [docs/hardware.html](https://rz7mong.github.io/mochi-rzmong/hardware.html)
 
 ## ⚡ Power
 
 ```
-LiPo → TP4056 (+ proteksi DW01/8205A) → Saklar → VIN ESP32 + VIN MAX98357
+LiPo → TP4056 (+ DW01/8205A) → Saklar → VIN ESP32 + VIN MAX98357
 ESP32 3V3 → LCD / SD / touch
 ```
 
-Pakai modul charger **berproteksi**. Speaker **hanya** lewat MAX98357.
+- Pakai modul **berproteksi** (bukan TP4056 polos).
+- Beban yang tetap menyala saat *charging* dapat membuat terminasi pengisian kurang akurat; idealnya beban diputus saat charge atau gunakan modul dengan jalur beban terpisah.
+- Speaker **hanya** lewat MAX98357.
 
-## 🛠️ Build & upload (PlatformIO)
-
-| Item | Nilai |
-| --- | --- |
-| Python | 3.11+ |
-| PlatformIO | 6.x |
-| Env | `esp32-c3-super-mini` |
+## 🛠️ Build
 
 ```bash
 pip install -U platformio pillow esptool
 python firmware/tools/embed_assets.py
 cd firmware
 pio run -e esp32-c3-super-mini
-pio run -e esp32-c3-super-mini -t upload   # USB; tahan BOOT jika perlu
+pio run -e esp32-c3-super-mini -t upload
 ```
 
-Atau flash dari browser: [halaman instalasi](https://rz7mong.github.io/mochi-rzmong/) (**Chrome / Edge** + Web Serial).
-
-Ganti Wi-Fi: edit `MOCHI_AP_NAME` / `MOCHI_AP_PASS` di `firmware/include/MochiRzmong.h` → rebuild → flash.
+Atau flash browser (Chrome/Edge): [instalasi](https://rz7mong.github.io/mochi-rzmong/).
 
 ## 🧰 Troubleshooting
 
 | Gejala | Cek |
 | --- | --- |
-| Layar putih/hitam | RST=0, CS=7, DC=10, SCLK=4, MOSI=6 |
+| Layar putih | RST=0, CS=7, DC=10, SCLK=4, MOSI=6 |
 | SD gagal | FAT32, MISO=3, CS=5 |
-| Tidak ada suara | DIN=8 → amp; speaker ke OUT+/−; volume menu |
-| Gagal boot/flash | Jangan tarik GPIO8 LOW; GPIO2/9 bebas; Chrome + BOOT |
-| Wi-Fi salah sandi | SSID `rzmong mochi` / `rzmong123` (bukan kredensial lama) |
+| Tidak ada suara | DIN=8 → amp; speaker ke OUT amp |
+| Boot/flash gagal | GPIO8 tidak LOW saat reset; **GPIO2 & GPIO9 tidak di-wiring** (jangan ditarik LOW saat boot); Chrome + BOOT |
+| Wi-Fi | SSID `rzmong mochi` / `rzmong123` |
 
 ## 📚 Lisensi & aset
 
-- Kode: **MIT** — [LICENSE](LICENSE)
-- Library: TFT_eSPI, AnimatedGIF, ArduinoJson, ChronosESP32 (masing-masing lisensinya)
-- Pastikan GIF/SFX yang Anda distribusikan **berhak** Anda sebarkan (buatan sendiri atau berlisensi)
+- Kode: **MIT**
+- Library: [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
+- Media pack: hanya bagikan aset yang Anda punya haknya ([ASSETS.md](ASSETS.md))
 
-## 📝 Changelog
+[CHANGELOG.md](CHANGELOG.md) · [PRODUCT.md](PRODUCT.md)
 
-[CHANGELOG.md](CHANGELOG.md) · konstanta produk: [PRODUCT.md](PRODUCT.md)
-
----
-
-Copyright © 2026 rzmong · MIT License
+Copyright © 2026 rzmong · MIT
