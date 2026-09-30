@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>📖 Panduan pakai — Mochi rzmong</title>
 <style>
-:root{--bg:#0e1116;--card:#171b22;--line:#2a3140;--ink:#eef2f7;--muted:#8b95a7;--acc:#ff6b6b}
+:root{--bg:#0e1116;--card:#171b22;--line:#2a3140;--ink:#eef2f7;--muted:#8b95a7}
 *{box-sizing:border-box}body{margin:0;font-family:ui-sans-serif,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
 header,main,footer{max-width:860px;margin:0 auto;padding:0 22px}
 header{padding-top:28px}h1{margin:6px 0 8px}h2{margin:0 0 10px;font-size:20px}
@@ -21,7 +21,7 @@ ul,ol{margin:6px 0 0;padding-left:18px;line-height:1.55;color:#d5dbe6}
 <body>
 <div class="wm">rzmong</div>
 <header>
-  <div class="kicker">panduan · rzmong · v0.2.3</div>
+  <div class="kicker">panduan · rzmong · v0.2.4</div>
   <h1>📖 Cara memakai Mochi</h1>
   <p><a href="index.html">🍡 Instalasi</a> · <a href="thietlap.html">⚙️ Pengaturan</a> · <a href="hardware.html">🔧 Merakit</a></p>
 </header>
@@ -30,18 +30,28 @@ ul,ol{margin:6px 0 0;padding-left:18px;line-height:1.55;color:#d5dbe6}
 <div class="card">
 <h2>👆 Kontrol sentuh</h2>
 <table>
-<tr><th>Gestur</th><th>Yang terjadi</th></tr>
-<tr><td>👆 Ketuk 1×</td><td>Putar <b>GIF reaksi</b> dari memori chip. Tema tidak berganti.</td></tr>
-<tr><td>👆👆 Ketuk 2×</td><td>Buka menu <b>PENGATURAN</b>.</td></tr>
-<tr><td>✊ Tahan ≥1 detik</td><td><b>Bisu / bunyi</b>.</td></tr>
+<tr><th>Gestur</th><th>Ambang (kode)</th><th>Aksi</th></tr>
+<tr><td>👆 Ketuk 1×</td><td>lepas < <b>900 ms</b></td><td>GIF reaksi + SFX (WAV SD atau jingle flash)</td></tr>
+<tr><td>👆👆 Ketuk 2×</td><td>2 ketuk, jarak < ~320 ms</td><td>Menu PENGATURAN</td></tr>
+<tr><td>✊ Tahan</td><td><b>≥ 900 ms</b></td><td>Bisu / bunyi</td></tr>
 </table>
-<p style="color:#8b95a7;font-size:13px;margin:10px 0 0">TTP223 → GPIO1, aktif HIGH.</p>
+<p style="color:#8b95a7;font-size:13px;margin:10px 0 0">TTP223 → GPIO1, aktif HIGH. Bukan layar sentuh.</p>
 </div>
 
 <div class="card">
-<h2>🎬 10 GIF reaksi (flash)</h2>
+<h2>🎲 Reaksi acak/tetap vs 🎭 Model reaksi</h2>
 <table>
-<tr><th>Nama</th><th>File</th></tr>
+<tr><th>Menu</th><th>Arti</th></tr>
+<tr><td>🎲 Reaksi acak/tetap</td><td><b>acak</b> = tiap ketuk pilih random dari 10 GIF. <b>tetap</b> = selalu model yang dipilih.</td></tr>
+<tr><td>🎭 Model reaksi</td><td>Pilih satu dari 10 (tickle, cinta, …) dan otomatis mode <b>tetap</b>.</td></tr>
+</table>
+</div>
+
+<div class="card">
+<h2>🎬 Animasi = GIF saja</h2>
+<p>Firmware hanya memutar <b>.gif</b> (flash atau <code>/gif/</code> di SD). File <b>MP4 tidak diputar di ESP32</b> — pakai Studio untuk konversi MP4→GIF.</p>
+<table>
+<tr><th>Nama</th><th>Stem file</th></tr>
 <tr><td>tickle</td><td>yelling</td></tr>
 <tr><td>kedip</td><td>distracted_2</td></tr>
 <tr><td>cinta</td><td>dumb_love</td></tr>
@@ -56,15 +66,20 @@ ul,ol{margin:6px 0 0;padding-left:18px;line-height:1.55;color:#d5dbe6}
 </div>
 
 <div class="card">
-<h2>📋 Menu LCD</h2>
+<h2>🔊 SFX (bukan pemutar MP3)</h2>
 <ul>
-<li>🎞️ GIF berikutnya</li>
-<li>🎨 Pilih tema</li>
-<li>😊 Ekspresi flash</li>
-<li>🔁 Mode putar</li>
-<li>🎲 Reaksi acak/tetap · 🎭 Model reaksi</li>
-<li>💾 Sumber SD/Flash</li>
-<li>🔊 Volume + / − · 🔇 Bisu</li>
+<li>Di perangkat: <b>WAV 16-bit PCM</b> di <code>/sfx/</code>, atau jingle flash.</li>
+<li><b>MP3 tidak di-decode</b> di ESP32-C3 firmware ini.</li>
+<li>Speaker hanya lewat <b>MAX98357</b> (bukan GPIO langsung).</li>
+</ul>
+</div>
+
+<div class="card">
+<h2>📋 Menu LCD (16)</h2>
+<ul>
+<li>🎞️ GIF berikutnya · 🎨 Pilih tema · 😊 Ekspresi flash</li>
+<li>🔁 Mode putar · 🎲 Reaksi acak/tetap · 🎭 Model reaksi</li>
+<li>💾 Sumber SD/Flash · 🔊 Volume · 🔇 Bisu</li>
 <li>🔄 Rotasi · 🗺️ Chronos · 🏷️ Merek · 📶 Wi-Fi · ℹ️ Tentang · ❌ Tutup</li>
 </ul>
 </div>
@@ -72,15 +87,14 @@ ul,ol{margin:6px 0 0;padding-left:18px;line-height:1.55;color:#d5dbe6}
 <div class="card">
 <h2>🛠️ Kalau tidak jalan</h2>
 <ul>
-<li>📺 LCD hitam — SCLK <b>4</b>, MOSI <b>6</b>, CS <b>7</b>, DC <b>10</b>, RST <b>0</b> (bukan 8).</li>
-<li>👆 Sentuh mati — TTP223 OUT → GPIO1 HIGH.</li>
-<li>💾 SD gagal — MISO <b>GPIO3</b> (bukan 2), CS GPIO5.</li>
-<li>🔊 Suara mati — DIN <b>GPIO8</b>, BCLK 21, LRC 20; VIN amp dari baterai.</li>
-<li>⚡ Gagal boot / flash — jangan wiring ke GPIO2 atau GPIO9; BOOT = GPIO9 kosong.</li>
-<li>📥 Gagal instal — tahan BOOT + Chrome/Edge.</li>
+<li>📺 LCD — SCLK 4, MOSI 6, CS 7, DC 10, RST <b>0</b></li>
+<li>👆 Sentuh — GPIO1 HIGH</li>
+<li>💾 SD — MISO <b>3</b>, CS 5</li>
+<li>🔊 — DIN 8, BCLK 21, LRC 20; speaker ke OUT amp</li>
+<li>⚡ Boot — jangan wiring GPIO2 / GPIO9</li>
 </ul>
 </div>
 
 </main>
-<footer style="color:#8b95a7;font-size:12px;padding:20px 22px 40px">© rzmong · v0.2.3</footer>
+<footer style="color:#8b95a7;font-size:12px;padding:20px 22px 40px">© rzmong · v0.2.4</footer>
 </body></html>
