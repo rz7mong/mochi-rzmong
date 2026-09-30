@@ -21,14 +21,16 @@ button{background:var(--acc);color:#fff;border:0;border-radius:10px;padding:10px
 @media(max-width:720px){.row{grid-template-columns:1fr}}
 pre{background:#0b0e13;padding:12px;border-radius:10px;font-size:12px;overflow:auto}
 .kicker{letter-spacing:.2em;text-transform:uppercase;font-size:11px;color:var(--muted)}
+.warn{color:#ffb86c;font-size:13px}
 </style>
 </head>
 <body>
 <div class="wm">rzmong</div>
 <header>
-  <div class="kicker">studio · rzmong · v0.2.2</div>
+  <div class="kicker">studio · rzmong · v0.2.4</div>
   <h1>🎨 Buat tema Mochi</h1>
-  <p>Unggah GIF atau MP4 plus SFX. Hasilnya untuk kartu SD (opsional). Reaksi sentuh tetap memakai 10 GIF di flash.</p>
+  <p>Bantu siapkan berkas untuk kartu SD. <b>Di ESP32 hanya GIF + WAV</b> yang diputar.</p>
+  <p class="warn">⚠️ MP4 tidak diputar di perangkat — harus dikonversi ke GIF 240×240. MP3 tidak di-decode — simpan SFX sebagai WAV 16-bit.</p>
   <p><a href="index.html">🍡 Instalasi</a> · <a href="thietlap.html">⚙️ Pengaturan</a> · <a href="panduan.html">📖 Panduan</a></p>
 </header>
 <main>
@@ -36,26 +38,20 @@ pre{background:#0b0e13;padding:12px;border-radius:10px;font-size:12px;overflow:a
   <div class="row">
     <div>
       <video id="prev" muted loop playsinline></video>
-      <p id="meta">🎯 Target 240×240</p>
+      <p id="meta">🎯 Target GIF 240×240</p>
     </div>
     <div>
-      <label>🎬 Gerakan GIF atau MP4</label>
+      <label>🎬 Sumber (GIF langsung, atau MP4 untuk dikonversi)</label>
       <input type="file" id="vid" accept="image/gif,video/mp4,video/webm">
-      <label>📝 Nama bagian</label>
+      <label>📝 Nama bagian (stem)</label>
       <input id="stem" placeholder="helm_siaga">
       <label>🎨 Tema</label>
       <select id="tema">
-        <option>wajah</option>
-        <option>gundam</option>
-        <option>mobil</option>
-        <option>neon</option>
-        <option>anime</option>
-        <option>makanan</option>
-        <option>musik</option>
-        <option>intro</option>
+        <option>wajah</option><option>gundam</option><option>mobil</option><option>neon</option>
+        <option>anime</option><option>makanan</option><option>musik</option><option>intro</option>
       </select>
-      <label>🔊 SFX (WAV / MP3 / OGG)</label>
-      <input type="file" id="sfx" accept="audio/*">
+      <label>🔊 SFX (disarankan WAV 16-bit; MP3 hanya untuk referensi)</label>
+      <input type="file" id="sfx" accept="audio/wav,audio/x-wav,audio/*">
       <audio id="aud" controls style="width:100%;margin-top:8px"></audio>
       <p><button id="pack" type="button">📦 Buat instruksi paket</button></p>
     </div>
@@ -63,7 +59,7 @@ pre{background:#0b0e13;padding:12px;border-radius:10px;font-size:12px;overflow:a
 </div>
 <div class="card"><pre id="out">Pilih berkas dulu.</pre></div>
 </main>
-<footer style="color:#8b95a7;padding:20px">© rzmong · v0.2.2</footer>
+<footer style="color:#8b95a7;padding:20px">© rzmong · v0.2.4</footer>
 <script>
 const $ = (id) => document.getElementById(id);
 $("vid").onchange = (e) => {
@@ -71,10 +67,8 @@ $("vid").onchange = (e) => {
   if (!f) return;
   $("prev").src = URL.createObjectURL(f);
   $("prev").play().catch(() => {});
-  if (!$("stem").value) {
-    $("stem").value = f.name.replace(/\.[^.]+$/, "").replace(/\s+/g, "_").toLowerCase();
-  }
-  $("meta").textContent = f.name + " · target 240×240";
+  if (!$("stem").value) $("stem").value = f.name.replace(/\.[^.]+$/, "").replace(/\s+/g, "_").toLowerCase();
+  $("meta").textContent = f.name + " · di perangkat harus jadi .gif 240×240";
 };
 $("sfx").onchange = (e) => {
   const f = e.target.files[0];
@@ -84,11 +78,18 @@ $("pack").onclick = () => {
   const t = $("tema").value;
   const s = ($("stem").value || "bagian").replace(/[^\w\-]+/g, "_");
   const a = $("sfx").files[0];
-  const ext = a ? a.name.split(".").pop() : "wav";
-  $("out").textContent =
-    "# rzmong\n" +
-    "ffmpeg -i input.mp4 -vf \"scale=240:240:force_original_aspect_ratio=increase,crop=240:240,fps=10\" -loop 0 " + s + ".gif\n\n" +
-    "Salin ke kartu SD:\n/gif/" + t + "/" + s + ".gif\n/sfx/" + t + "/" + s + "." + ext;
+  const isGif = $("vid").files[0] && /\.gif$/i.test($("vid").files[0].name);
+  let out = "# rzmong · paket SD (firmware hanya GIF + WAV)\n\n";
+  if (!isGif) {
+    out += "# Konversi video → GIF (wajib jika sumber MP4):\n";
+    out += "ffmpeg -i input.mp4 -vf \"scale=240:240:force_original_aspect_ratio=increase,crop=240:240,fps=10\" -loop 0 " + s + ".gif\n\n";
+  }
+  out += "# SFX: pakai WAV 16-bit mono/stereo (MP3 tidak diputar di ESP32-C3)\n";
+  if (a && !/\.wav$/i.test(a.name)) {
+    out += "ffmpeg -i " + a.name + " -acodec pcm_s16le -ar 22050 -ac 1 " + s + ".wav\n\n";
+  }
+  out += "Salin ke kartu SD:\n/gif/" + t + "/" + s + ".gif\n/sfx/" + t + "/" + s + ".wav\n";
+  $("out").textContent = out;
 };
 </script>
 </body>
