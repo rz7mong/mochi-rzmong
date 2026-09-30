@@ -1,4 +1,4 @@
-// Mochi rzmong — reaksi sentuh + menu iPod
+// Mochi rzmong 0.2 — banyak reaksi + menu pengaturan bergulir
 #include <Arduino.h>
 #include <TFT_eSPI.h>
 #include <AnimatedGIF.h>
@@ -14,49 +14,235 @@
 #include "defaults_gif.h"
 #include "jingle.h"
 
-static const int PIN_TOUCH = 1;
-static const int PIN_SD_SCK = 4, PIN_SD_MISO = 2, PIN_SD_MOSI = 6, PIN_SD_CS = 5;
-static const int PIN_I2S_BCLK = 21, PIN_I2S_LRC = 20, PIN_I2S_DIN = 9;
-static const int W = 240, H = 240;
-static const uint16_t C_BG=0x1082,C_BAR=0xFD20,C_SEL=0xFE60,C_TEXT=0xEF7D,C_DIM=0x8410,C_RED=0xF985,C_TEAL=0x07F4,C_BLUE=0x3C7F,C_PINK=0xF81F;
+static const int W=240,H=240;
+static const uint16_t C_BG=0x1082,C_BAR=0xFD20,C_SEL=0xFE60,C_TEXT=0xEF7D,C_DIM=0x8410;
+static const uint16_t C_RED=0xF985,C_TEAL=0x07F4,C_BLUE=0x3C7F,C_PINK=0xF81F,C_YEL=0xFFE0;
 
 TFT_eSPI tft; AnimatedGIF gif; WebServer server(80); ChronosESP32 watch; Preferences prefs;
-String theme="wajah", playMode="kategori";
+String theme="wajah", playMode="kategori", reactMode="acak";
 bool soundOn=true, useSd=false, chronosOn=false, showWm=true;
-int defIdx=2;
-static const char *THEMES[]={"wajah","gundam","mobil","neon","anime","makanan","musik","intro"};
-static const int NTHEME=8;
+int defIdx=0, reactIdx=0, volume=12, rot=0, menuRow=0, menuTop=0;
 String parts[32]; int nparts=0, idx=0; File gifFile; bool sdOk=false, i2sOk=false;
-enum Ui { UI_PLAY, UI_MENU }; Ui ui=UI_PLAY; int menuRow=0;
-struct MenuItem { const char *icon; const char *label; uint16_t col; };
-static const MenuItem MENU[]={
-  {">","GIF berikutnya",C_TEAL},{"~","Mode acak",C_BAR},{"N","Musik tes",C_PINK},
-  {"S","Sumber SD/Flash",C_BLUE},{"x","Bisu / bunyi",C_RED},{"+","Chronos",C_TEAL},
-  {"i","Tentang rzmong",C_TEXT},{"<","Tutup",C_DIM}
-};
-static const int NMENU=8;
-uint32_t downAt=0, lastTap=0; int taps=0; bool prevDown=false; bool pendingReact=false;
+enum Ui { UI_PLAY, UI_MENU }; Ui ui=UI_PLAY;
+uint32_t downAt=0,lastTap=0; int taps=0; bool prevDown=false;
 
-void loadPrefs(){prefs.begin("rzmong",false);theme=prefs.getString("theme","wajah");playMode=prefs.getString("mode","kategori");soundOn=prefs.getBool("sound",true);useSd=prefs.getBool("usesd",false);chronosOn=prefs.getBool("chrono",false);showWm=prefs.getBool("wm",true);defIdx=prefs.getInt("def",2);if(defIdx<0||defIdx>=DEFAULT_GIF_COUNT)defIdx=0;}
-void savePrefs(){prefs.putString("theme",theme);prefs.putString("mode",playMode);prefs.putBool("sound",soundOn);prefs.putBool("usesd",useSd);prefs.putBool("chrono",chronosOn);prefs.putBool("wm",showWm);prefs.putInt("def",defIdx);}
-void scanTheme(const String &t){nparts=0;if(!sdOk)return;String dir=String("/gif/")+t;File d=SD.open(dir);if(!d)return;while(true){File f=d.openNextFile();if(!f)break;String n=f.name();f.close();if(n.endsWith(".gif")&&nparts<32){int slash=n.lastIndexOf('/');parts[nparts++]=dir+"/"+n.substring(slash<0?0:slash+1);}}d.close();}
-void GIFDraw(GIFDRAW *p){if(p->y>=H)return;uint16_t line[240];uint8_t *s=p->pPixels;int w=p->iWidth;if(w>W)w=W;for(int x=0;x<w;x++){uint8_t c=*s++;if(p->ucHasTransparency&&c==p->ucTransparent){line[x]=TFT_BLACK;continue;}uint8_t *pal=(uint8_t*)p->pPalette+c*3;line[x]=tft.color565(pal[0],pal[1],pal[2]);}int y0=(H-p->iHeight)/2+p->iY+p->y;if(y0<0||y0>=H)return;tft.pushImage((W-p->iWidth)/2+p->iX,y0,w,1,line);}
-void *gifOpen(const char *name,int32_t *sz){gifFile=SD.open(name);if(!gifFile)return NULL;*sz=gifFile.size();return (void*)1;}
+struct MenuItem { const char *icon; const char *label; uint16_t col; };
+static const MenuItem MENU[] = {
+  {">","GIF berikutnya",C_TEAL},
+  {"T","Pilih tema",C_BAR},
+  {"E","Ekspresi flash",C_PINK},
+  {"M","Mode putar",C_YEL},
+  {"R","Reaksi acak/tetap",C_BLUE},
+  {"F","Model reaksi",C_PINK},
+  {"S","Sumber SD/Flash",C_BLUE},
+  {"+","Volume +",C_TEAL},
+  {"-","Volume -",C_TEAL},
+  {"x","Bisu / bunyi",C_RED},
+  {"O","Rotasi layar",C_YEL},
+  {"C","Chronos",C_TEAL},
+  {"W","Merek LCD",C_DIM},
+  {"A","Info Wi-Fi AP",C_BLUE},
+  {"i","Tentang rzmong",C_TEXT},
+  {"<","Tutup",C_DIM}
+};
+static const int NMENU=16;
+static const int VIS=7;
+
+void loadPrefs(){
+  prefs.begin("rzmong",false);
+  theme=prefs.getString("theme","wajah");
+  playMode=prefs.getString("mode","kategori");
+  reactMode=prefs.getString("rmode","acak");
+  soundOn=prefs.getBool("sound",true);
+  useSd=prefs.getBool("usesd",false);
+  chronosOn=prefs.getBool("chrono",false);
+  showWm=prefs.getBool("wm",true);
+  defIdx=prefs.getInt("def",0);
+  reactIdx=prefs.getInt("react",0);
+  volume=prefs.getInt("vol",12);
+  rot=prefs.getInt("rot",0);
+  if(defIdx<0||defIdx>=DEFAULT_GIF_COUNT)defIdx=0;
+  if(reactIdx<0||reactIdx>=MOCHI_REACT_COUNT)reactIdx=0;
+  if(volume<0)volume=0; if(volume>21)volume=21;
+}
+void savePrefs(){
+  prefs.putString("theme",theme); prefs.putString("mode",playMode);
+  prefs.putString("rmode",reactMode);
+  prefs.putBool("sound",soundOn); prefs.putBool("usesd",useSd);
+  prefs.putBool("chrono",chronosOn); prefs.putBool("wm",showWm);
+  prefs.putInt("def",defIdx); prefs.putInt("react",reactIdx);
+  prefs.putInt("vol",volume); prefs.putInt("rot",rot);
+}
+void scanTheme(const String &t){
+  nparts=0; if(!sdOk)return;
+  String dir=String("/gif/")+t; File d=SD.open(dir); if(!d)return;
+  while(true){File f=d.openNextFile(); if(!f)break; String n=f.name(); f.close();
+    if(n.endsWith(".gif")&&nparts<32){int sl=n.lastIndexOf('/'); parts[nparts++]=dir+"/"+n.substring(sl<0?0:sl+1);}}
+  d.close();
+}
+void GIFDraw(GIFDRAW *p){
+  if(p->y>=H)return; uint16_t line[240]; uint8_t *s=p->pPixels; int w=p->iWidth; if(w>W)w=W;
+  for(int x=0;x<w;x++){uint8_t c=*s++; if(p->ucHasTransparency&&c==p->ucTransparent){line[x]=TFT_BLACK;continue;}
+    uint8_t *pal=(uint8_t*)p->pPalette+c*3; line[x]=tft.color565(pal[0],pal[1],pal[2]);}
+  int y0=(H-p->iHeight)/2+p->iY+p->y; if(y0<0||y0>=H)return;
+  tft.pushImage((W-p->iWidth)/2+p->iX,y0,w,1,line);
+}
+void *gifOpen(const char *name,int32_t *sz){gifFile=SD.open(name); if(!gifFile)return NULL; *sz=gifFile.size(); return (void*)1;}
 void gifClose(void*){if(gifFile)gifFile.close();}
-int32_t gifRead(GIFFILE *p,uint8_t *buf,int32_t len){int n=gifFile.read(buf,len);p->iPos=gifFile.position();return n;}
-int32_t gifSeek(GIFFILE *p,int32_t pos){gifFile.seek(pos);p->iPos=gifFile.position();return p->iPos;}
-void audioInit(){i2s_config_t cfg={.mode=(i2s_mode_t)(I2S_MODE_MASTER|I2S_MODE_TX),.sample_rate=JINGLE_SR,.bits_per_sample=I2S_BITS_PER_SAMPLE_16BIT,.channel_format=I2S_CHANNEL_FMT_ONLY_LEFT,.communication_format=I2S_COMM_FORMAT_STAND_I2S,.intr_alloc_flags=0,.dma_buf_count=4,.dma_buf_len=256,.use_apll=false,.tx_desc_auto_clear=true,.fixed_mclk=0};if(i2s_driver_install(I2S_NUM_0,&cfg,0,NULL)!=ESP_OK)return;i2s_pin_config_t pins={.mck_io_num=I2S_PIN_NO_CHANGE,.bck_io_num=PIN_I2S_BCLK,.ws_io_num=PIN_I2S_LRC,.data_out_num=PIN_I2S_DIN,.data_in_num=I2S_PIN_NO_CHANGE};if(i2s_set_pin(I2S_NUM_0,&pins)!=ESP_OK)return;i2sOk=true;}
-void playJingleMs(int ms){if(!soundOn||!i2sOk)return;int bytes=JINGLE_SR*2*ms/1000;if(bytes>JINGLE_PCM_LEN)bytes=JINGLE_PCM_LEN;if(bytes<2)bytes=2;size_t wr=0;i2s_write(I2S_NUM_0,JINGLE_PCM,bytes,&wr,pdMS_TO_TICKS(ms+50));}
-void drawReact(){tft.fillRoundRect(28,78,184,84,18,C_BAR);tft.fillRoundRect(36,86,168,68,14,C_SEL);tft.setTextColor(TFT_BLACK,C_SEL);tft.drawCentreString("o_o",120,100,4);tft.drawCentreString("tickle",120,132,2);}
-void brandMark(){if(!showWm)return;tft.setTextColor(C_DIM,TFT_BLACK);tft.drawString(MOCHI_BRAND,168,226,1);}
-void bootMark(){tft.fillScreen(C_BG);tft.fillRoundRect(20,80,200,80,16,C_BAR);tft.setTextColor(TFT_BLACK,C_BAR);tft.drawCentreString("Mochi",120,96,4);tft.drawCentreString(MOCHI_BRAND,120,128,2);delay(450);}
-void drawMenu(){tft.fillScreen(C_BG);tft.fillRect(0,0,240,34,C_BAR);tft.setTextColor(TFT_BLACK,C_BAR);tft.drawCentreString("MOCHI  rzmong",120,10,2);for(int i=0;i<NMENU;i++){int y=40+i*24;if(i==menuRow){tft.fillRoundRect(6,y-2,228,23,6,C_SEL);tft.fillCircle(20,y+9,7,MENU[i].col);tft.setTextColor(TFT_BLACK,C_SEL);}else{tft.fillCircle(20,y+9,6,MENU[i].col);tft.setTextColor(C_TEXT,C_BG);}tft.drawString(String(MENU[i].icon)+"  "+MENU[i].label,34,y+2,2);}}
-void nextPart(){if(useSd&&sdOk){if(playMode=="acak"){theme=THEMES[random(NTHEME)];scanTheme(theme);}if(nparts==0)scanTheme(theme);if(nparts==0){useSd=false;return;}idx=(playMode=="acak_tema")?random(nparts):(idx+1)%nparts;}else{defIdx=(defIdx+1)%DEFAULT_GIF_COUNT;theme=DEFAULT_GIFS[defIdx].theme;savePrefs();}}
-bool playOpen(const uint8_t *mem,int len,const char *path){if(mem)return gif.open((uint8_t*)mem,len,GIFDraw);if(!sdOk)return false;return gif.open(path,gifOpen,gifClose,gifRead,gifSeek,GIFDraw);}
-bool playCurrent(){bool ok;if(useSd&&sdOk&&nparts>0)ok=playOpen(NULL,0,parts[idx].c_str());else ok=playOpen(DEFAULT_GIFS[defIdx].data,DEFAULT_GIFS[defIdx].len,NULL);if(!ok)return false;tft.fillScreen(TFT_BLACK);while(gif.playFrame(true,NULL)){server.handleClient();bool down=digitalRead(PIN_TOUCH)==HIGH;if(down&&!prevDown){downAt=millis();drawReact();playJingleMs(180);pendingReact=true;}if(!down&&prevDown){uint32_t held=millis()-downAt;if(held>=900){soundOn=!soundOn;savePrefs();}else{taps++;lastTap=millis();}prevDown=down;break;}prevDown=down;yield();}gif.close();brandMark();return true;}
-void applyMenu(){if(menuRow==0){nextPart();ui=UI_PLAY;}else if(menuRow==1){playMode=(playMode=="acak")?"kategori":"acak";savePrefs();ui=UI_PLAY;}else if(menuRow==2){playJingleMs(800);}else if(menuRow==3){useSd=!useSd;if(useSd&&sdOk)scanTheme(theme);else useSd=false;savePrefs();}else if(menuRow==4){soundOn=!soundOn;savePrefs();}else if(menuRow==5){chronosOn=!chronosOn;savePrefs();}else if(menuRow==6){bootMark();}else ui=UI_PLAY;}
-void finishTaps(){if(!taps||millis()-lastTap<=320)return;if(ui==UI_MENU){if(taps==1)menuRow=(menuRow+1)%NMENU;else applyMenu();}else{if(taps>=2){ui=UI_MENU;menuRow=0;drawMenu();}else pendingReact=false;}taps=0;}
-void handleStatus(){JsonDocument d;d["brand"]=MOCHI_BRAND;d["theme"]=theme;d["mode"]=playMode;d["sound"]=soundOn;d["storage"]=(useSd&&sdOk)?"sd":"flash";d["sd"]=sdOk;d["def"]=defIdx;String s;serializeJson(d,s);server.send(200,"application/json",s);}
-void handleSettings(){JsonDocument d;if(deserializeJson(d,server.arg("plain"))){server.send(400,"text/plain","bad");return;}if(d["theme"].is<const char*>())theme=(const char*)d["theme"];if(d["play_mode"].is<const char*>())playMode=(const char*)d["play_mode"];if(d["sound"].is<bool>())soundOn=d["sound"];if(d["chronos"].is<bool>())chronosOn=d["chronos"];if(d["watermark"].is<bool>())showWm=d["watermark"];if(d["storage"].is<const char*>())useSd=(String((const char*)d["storage"])=="sd");if(d["def"].is<int>())defIdx=d["def"];if(d["default_gif"].is<const char*>()){String want=(const char*)d["default_gif"];for(int i=0;i<DEFAULT_GIF_COUNT;i++)if(want==DEFAULT_GIFS[i].stem||want==DEFAULT_GIFS[i].theme)defIdx=i;}savePrefs();if(useSd)scanTheme(theme);server.send(200,"application/json","{\"ok\":true,\"brand\":\"rzmong\"}");}
-void setup(){Serial.begin(115200);pinMode(PIN_TOUCH,INPUT_PULLDOWN);loadPrefs();tft.init();tft.setRotation(0);bootMark();SPI.begin(PIN_SD_SCK,PIN_SD_MISO,PIN_SD_MOSI,PIN_SD_CS);sdOk=SD.begin(PIN_SD_CS,SPI);if(sdOk)scanTheme(theme);if(useSd&&(!sdOk||nparts==0))useSd=false;audioInit();WiFi.softAP(MOCHI_AP_NAME,"rzmong24");server.on("/api/status",handleStatus);server.on("/api/settings",HTTP_POST,handleSettings);server.begin();if(chronosOn)watch.begin();}
-void loop(){server.handleClient();if(chronosOn)watch.loop();bool down=digitalRead(PIN_TOUCH)==HIGH;if(ui==UI_MENU){if(down&&!prevDown)downAt=millis();if(!down&&prevDown){uint32_t held=millis()-downAt;if(held>=900){soundOn=!soundOn;savePrefs();}else{taps++;lastTap=millis();}}prevDown=down;finishTaps();drawMenu();delay(40);return;}finishTaps();playCurrent();}
+int32_t gifRead(GIFFILE *p,uint8_t *buf,int32_t len){int n=gifFile.read(buf,len); p->iPos=gifFile.position(); return n;}
+int32_t gifSeek(GIFFILE *p,int32_t pos){gifFile.seek(pos); p->iPos=gifFile.position(); return p->iPos;}
+void audioInit(){
+  i2s_config_t cfg={.mode=(i2s_mode_t)(I2S_MODE_MASTER|I2S_MODE_TX),.sample_rate=JINGLE_SR,.bits_per_sample=I2S_BITS_PER_SAMPLE_16BIT,.channel_format=I2S_CHANNEL_FMT_ONLY_LEFT,.communication_format=I2S_COMM_FORMAT_STAND_I2S,.intr_alloc_flags=0,.dma_buf_count=4,.dma_buf_len=256,.use_apll=false,.tx_desc_auto_clear=true,.fixed_mclk=0};
+  if(i2s_driver_install(I2S_NUM_0,&cfg,0,NULL)!=ESP_OK)return;
+  i2s_pin_config_t pins={.mck_io_num=I2S_PIN_NO_CHANGE,.bck_io_num=MOCHI_PIN_I2S_BCLK,.ws_io_num=MOCHI_PIN_I2S_LRC,.data_out_num=MOCHI_PIN_I2S_DIN,.data_in_num=I2S_PIN_NO_CHANGE};
+  if(i2s_set_pin(I2S_NUM_0,&pins)!=ESP_OK)return; i2sOk=true;
+}
+void playJingleMs(int ms){
+  if(!soundOn||!i2sOk)return;
+  int bytes=JINGLE_SR*2*ms/1000; if(bytes>JINGLE_PCM_LEN)bytes=JINGLE_PCM_LEN; if(bytes<2)bytes=2;
+  int use=bytes*(volume+1)/22; if(use<2)use=2;
+  size_t wr=0; i2s_write(I2S_NUM_0,JINGLE_PCM,use,&wr,pdMS_TO_TICKS(ms+40));
+}
+int pickReact(){
+  if(reactMode=="acak") return random(MOCHI_REACT_COUNT);
+  return reactIdx;
+}
+void drawReact(){
+  int r=pickReact();
+  tft.fillRoundRect(18,58,204,124,18,C_BAR);
+  tft.fillRoundRect(26,66,188,108,14,C_SEL);
+  tft.setTextColor(TFT_BLACK,C_SEL);
+  tft.drawCentreString(MOCHI_REACT_FACE[r],120,86,4);
+  tft.drawCentreString(MOCHI_REACTS[r],120,128,2);
+  tft.drawCentreString("rzmong",120,148,1);
+}
+void brandMark(){if(!showWm)return; tft.setTextColor(C_DIM,TFT_BLACK); tft.drawString(MOCHI_BRAND,168,226,1);}
+void bootMark(){
+  tft.fillScreen(C_BG); tft.fillRoundRect(20,80,200,80,16,C_BAR);
+  tft.setTextColor(TFT_BLACK,C_BAR); tft.drawCentreString("Mochi",120,96,4); tft.drawCentreString(MOCHI_BRAND,120,128,2); delay(400);
+}
+void drawMenu(){
+  if(menuRow<menuTop) menuTop=menuRow;
+  if(menuRow>=menuTop+VIS) menuTop=menuRow-VIS+1;
+  tft.fillScreen(C_BG);
+  tft.fillRect(0,0,240,34,C_BAR);
+  tft.setTextColor(TFT_BLACK,C_BAR);
+  tft.drawCentreString("PENGATURAN",120,4,2);
+  tft.drawCentreString("rzmong",120,20,1);
+  for(int i=0;i<VIS;i++){
+    int id=menuTop+i; if(id>=NMENU)break;
+    int y=40+i*26;
+    if(id==menuRow){tft.fillRoundRect(6,y-2,228,25,6,C_SEL); tft.fillCircle(20,y+10,7,MENU[id].col); tft.setTextColor(TFT_BLACK,C_SEL);}
+    else {tft.fillCircle(20,y+10,6,MENU[id].col); tft.setTextColor(C_TEXT,C_BG);}
+    tft.drawString(String(MENU[id].icon)+" "+MENU[id].label,34,y+4,2);
+  }
+  tft.setTextColor(C_DIM,C_BG);
+  char foot[48]; snprintf(foot,48,"%d/%d  vol%d  %s",menuRow+1,NMENU,volume,useSd&&sdOk?"SD":"flash");
+  tft.drawString(foot,10,224,1);
+}
+void nextPart(){
+  if(useSd&&sdOk){
+    if(playMode=="acak"){theme=MOCHI_THEMES[random(MOCHI_THEME_COUNT)]; scanTheme(theme);}
+    if(nparts==0)scanTheme(theme);
+    if(nparts==0){useSd=false;return;}
+    idx=(playMode=="acak_tema")?random(nparts):(idx+1)%nparts;
+  } else { defIdx=(defIdx+1)%DEFAULT_GIF_COUNT; theme=DEFAULT_GIFS[defIdx].theme; savePrefs(); }
+}
+void showInfo(const char *a,const char *b){
+  tft.fillScreen(C_BG); tft.fillRoundRect(16,70,208,100,14,C_SEL);
+  tft.setTextColor(TFT_BLACK,C_SEL); tft.drawCentreString(a,120,90,2); tft.drawCentreString(b,120,118,2); delay(900);
+}
+void applyMenu(){
+  if(menuRow==0){nextPart(); ui=UI_PLAY;}
+  else if(menuRow==1){int i=0; for(;i<MOCHI_THEME_COUNT;i++) if(theme==MOCHI_THEMES[i]) break; theme=MOCHI_THEMES[(i+1)%MOCHI_THEME_COUNT]; if(useSd)scanTheme(theme); savePrefs(); showInfo("tema",theme.c_str());}
+  else if(menuRow==2){defIdx=(defIdx+1)%DEFAULT_GIF_COUNT; savePrefs(); showInfo("ekspresi",DEFAULT_GIFS[defIdx].stem);}
+  else if(menuRow==3){playMode=(playMode=="kategori")?"acak":(playMode=="acak"?"acak_tema":"kategori"); savePrefs(); showInfo("mode",playMode.c_str());}
+  else if(menuRow==4){reactMode=(reactMode=="acak")?"tetap":"acak"; savePrefs(); showInfo("reaksi",reactMode.c_str());}
+  else if(menuRow==5){reactIdx=(reactIdx+1)%MOCHI_REACT_COUNT; reactMode="tetap"; savePrefs(); showInfo(MOCHI_REACTS[reactIdx],MOCHI_REACT_FACE[reactIdx]);}
+  else if(menuRow==6){useSd=!useSd; if(useSd&&sdOk)scanTheme(theme); else useSd=false; savePrefs(); showInfo("sumber",useSd?"SD":"flash");}
+  else if(menuRow==7){if(volume<21)volume++; savePrefs(); showInfo("volume",String(volume).c_str());}
+  else if(menuRow==8){if(volume>0)volume--; savePrefs(); showInfo("volume",String(volume).c_str());}
+  else if(menuRow==9){soundOn=!soundOn; savePrefs(); showInfo("suara",soundOn?"ON":"BISU");}
+  else if(menuRow==10){rot=(rot+1)&3; tft.setRotation(rot); savePrefs();}
+  else if(menuRow==11){chronosOn=!chronosOn; savePrefs(); showInfo("chronos",chronosOn?"ON":"OFF");}
+  else if(menuRow==12){showWm=!showWm; savePrefs();}
+  else if(menuRow==13){showInfo(MOCHI_AP_NAME,"rzmong24");}
+  else if(menuRow==14){bootMark();}
+  else ui=UI_PLAY;
+}
+void finishTaps(){
+  if(!taps||millis()-lastTap<=320)return;
+  if(ui==UI_MENU){ if(taps==1) menuRow=(menuRow+1)%NMENU; else applyMenu(); }
+  else { if(taps>=2){ui=UI_MENU; menuRow=0; menuTop=0; drawMenu();} }
+  taps=0;
+}
+bool playOpen(const uint8_t *mem,int len,const char *path){
+  if(mem) return gif.open((uint8_t*)mem,len,GIFDraw);
+  if(!sdOk) return false;
+  return gif.open(path,gifOpen,gifClose,gifRead,gifSeek,GIFDraw);
+}
+bool playCurrent(){
+  bool ok;
+  if(useSd&&sdOk&&nparts>0) ok=playOpen(NULL,0,parts[idx].c_str());
+  else ok=playOpen(DEFAULT_GIFS[defIdx].data,DEFAULT_GIFS[defIdx].len,NULL);
+  if(!ok) return false;
+  tft.fillScreen(TFT_BLACK);
+  while(gif.playFrame(true,NULL)){
+    server.handleClient();
+    bool down=digitalRead(MOCHI_PIN_TOUCH)==HIGH;
+    if(down&&!prevDown){ downAt=millis(); drawReact(); playJingleMs(160+reactIdx*20); }
+    if(!down&&prevDown){
+      uint32_t held=millis()-downAt;
+      if(held>=900){soundOn=!soundOn; savePrefs();}
+      else {taps++; lastTap=millis();}
+      prevDown=down; break;
+    }
+    prevDown=down; yield();
+  }
+  gif.close(); brandMark(); return true;
+}
+void handleStatus(){
+  JsonDocument d; d["brand"]=MOCHI_BRAND; d["ver"]=MOCHI_VERSION; d["theme"]=theme;
+  d["mode"]=playMode; d["react_mode"]=reactMode; d["react"]=MOCHI_REACTS[reactIdx];
+  d["sound"]=soundOn; d["vol"]=volume; d["storage"]=(useSd&&sdOk)?"sd":"flash"; d["sd"]=sdOk;
+  String s; serializeJson(d,s); server.send(200,"application/json",s);
+}
+void handleSettings(){
+  JsonDocument d; if(deserializeJson(d,server.arg("plain"))){server.send(400,"text/plain","bad");return;}
+  if(d["theme"].is<const char*>()) theme=(const char*)d["theme"];
+  if(d["play_mode"].is<const char*>()) playMode=(const char*)d["play_mode"];
+  if(d["react_mode"].is<const char*>()) reactMode=(const char*)d["react_mode"];
+  if(d["sound"].is<bool>()) soundOn=d["sound"];
+  if(d["chronos"].is<bool>()) chronosOn=d["chronos"];
+  if(d["watermark"].is<bool>()) showWm=d["watermark"];
+  if(d["storage"].is<const char*>()) useSd=(String((const char*)d["storage"])=="sd");
+  if(d["def"].is<int>()) defIdx=d["def"];
+  if(d["react"].is<int>()) reactIdx=d["react"];
+  if(d["volume"].is<int>()) volume=d["volume"];
+  if(d["default_gif"].is<const char*>()){
+    String want=(const char*)d["default_gif"];
+    for(int i=0;i<DEFAULT_GIF_COUNT;i++) if(want==DEFAULT_GIFS[i].stem||want==DEFAULT_GIFS[i].theme) defIdx=i;
+  }
+  savePrefs(); if(useSd) scanTheme(theme);
+  server.send(200,"application/json","{\"ok\":true,\"brand\":\"rzmong\"}");
+}
+void setup(){
+  Serial.begin(115200); pinMode(MOCHI_PIN_TOUCH,INPUT_PULLDOWN); loadPrefs();
+  tft.init(); tft.setRotation(rot); bootMark();
+  SPI.begin(MOCHI_PIN_SD_SCK,MOCHI_PIN_SD_MISO,MOCHI_PIN_SD_MOSI,MOCHI_PIN_SD_CS);
+  sdOk=SD.begin(MOCHI_PIN_SD_CS,SPI); if(sdOk) scanTheme(theme);
+  if(useSd&&(!sdOk||nparts==0)) useSd=false;
+  audioInit(); WiFi.softAP(MOCHI_AP_NAME,"rzmong24");
+  server.on("/api/status",handleStatus); server.on("/api/settings",HTTP_POST,handleSettings); server.begin();
+  if(chronosOn) watch.begin();
+}
+void loop(){
+  server.handleClient(); if(chronosOn) watch.loop();
+  bool down=digitalRead(MOCHI_PIN_TOUCH)==HIGH;
+  if(ui==UI_MENU){
+    if(down&&!prevDown) downAt=millis();
+    if(!down&&prevDown){ uint32_t held=millis()-downAt; if(held>=900){soundOn=!soundOn;savePrefs();} else {taps++; lastTap=millis();} }
+    prevDown=down; finishTaps(); drawMenu(); delay(35); return;
+  }
+  finishTaps(); playCurrent();
+}
