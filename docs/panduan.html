@@ -3,87 +3,74 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>📖 Panduan pakai — Mochi rzmong</title>
+<title>Panduan pakai — Mochi rzmong</title>
 <style>
 :root{--bg:#0e1116;--card:#171b22;--line:#2a3140;--ink:#eef2f7;--muted:#8b95a7}
 *{box-sizing:border-box}body{margin:0;font-family:ui-sans-serif,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
-header,main,footer{max-width:860px;margin:0 auto;padding:0 22px}
-header{padding-top:28px}h1{margin:6px 0 8px}h2{margin:0 0 10px;font-size:20px}
-a{color:#54a0ff}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin:12px 0}
+header,main,footer{max-width:860px;margin:0 auto;padding:0 22px}header{padding-top:28px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0}
+h2{margin:0 0 10px;font-size:18px}
 table{width:100%;border-collapse:collapse;font-size:14px}
 td,th{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top}
 code{background:#10141b;padding:1px 6px;border-radius:6px}
 ul,ol{margin:6px 0 0;padding-left:18px;line-height:1.55;color:#d5dbe6}
 .kicker{letter-spacing:.2em;text-transform:uppercase;font-size:11px;color:var(--muted)}
+a{color:#54a0ff}
 </style></head>
 <body>
 <header>
-  <div class="kicker">panduan · rzmong · v0.4.0</div>
-  <h1>📖 Cara memakai Mochi</h1>
-  <p><a href="index.html">🍡 Instalasi</a> · <a href="pengaturan.html">⚙️ Pengaturan</a> · <a href="hardware.html">🔧 Merakit</a> · <a href="studio.html">🎨 Studio</a></p>
+  <div class="kicker">panduan · rzmong · v0.4.7</div>
+  <h1>Cara memakai Mochi</h1>
+  <p><a href="index.html">Instalasi</a> · <a href="pengaturan.html">Pengaturan</a> · <a href="hardware.html">Merakit</a> · <a href="studio.html">Studio</a></p>
 </header>
 <main>
 
 <div class="card">
-<h2>📶 Wi-Fi</h2>
+<h2>Wi-Fi</h2>
 <table>
 <tr><th>SSID</th><td><code>rzmong mochi</code></td></tr>
 <tr><th>Password</th><td><code>rzmong123</code></td></tr>
 </table>
-<p style="color:#8b95a7;font-size:13px;margin:10px 0 0">Ganti di firmware: <code>MOCHI_AP_NAME</code> / <code>MOCHI_AP_PASS</code> di <code>MochiRzmong.h</code>, lalu rebuild. Halaman pengaturan tanpa login.</p>
+<p style="color:#8b95a7;font-size:13px;margin:10px 0 0">Ganti di firmware: <code>MOCHI_AP_NAME</code> / <code>MOCHI_AP_PASS</code> di <code>MochiRzmong.h</code>. Pengaturan offline: <code>http://192.168.4.1/</code>.</p>
 </div>
 
 <div class="card">
-<h2>👆 Kontrol sentuh</h2>
+<h2>Kontrol sentuh</h2>
 <table>
-<tr><th>Gestur</th><th>Ambang</th><th>Aksi</th></tr>
-<tr><td>👆 Ketuk 1×</td><td>lepas &lt; <b>900 ms</b></td><td>GIF reaksi + SFX</td></tr>
-<tr><td>👆👆 Ketuk 2×</td><td>2 ketuk cepat</td><td>Menu PENGATURAN</td></tr>
-<tr><td>✊ Tahan</td><td><b>≥ 900 ms</b></td><td>Bisu / bunyi</td></tr>
+<tr><th>Gestur</th><th>Aksi</th></tr>
+<tr><td>Ketuk 1×</td><td>Reaksi / SFX</td></tr>
+<tr><td>Ketuk 2×</td><td>Menu LCD</td></tr>
 </table>
 </div>
 
 <div class="card">
-<h2>🎨 Tema</h2>
+<h2>Tema dan media</h2>
 <ul>
-<li><b>Web</b> — <a href="pengaturan.html">Pengaturan</a> → pilih tema → Simpan (default di ESP32).</li>
-<li><b>LCD + SD</b> — ketuk 2× → <b>Pilih tema</b>.</li>
+<li><b>Web offline</b> — sambung AP → <code>http://192.168.4.1/</code>.</li>
+<li><b>Studio</b> — <a href="studio.html">studio.html</a> convert GIF+WAV (max ~599 KB), upload ke SD.</li>
 <li>Pack: <a href="https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1">Release assets-v1</a>.</li>
 </ul>
 </div>
 
 <div class="card">
-<h2>🎨 Studio + Upload</h2>
-<ul>
-<li>Sambung Wi-Fi <code>rzmong mochi</code> → buka <a href="studio.html">Studio</a>.</li>
-<li>Convert MP4→GIF 240×240 dan MP3→WAV di browser, lalu upload ke SD.</li>
-<li>Butuh kartu SD terpasang. Firmware ≥ 0.4.0.</li>
-</ul>
+<h2>Studio + Upload</h2>
+<ol>
+<li>Sambung Wi-Fi <code>rzmong mochi</code>.</li>
+<li>Buka <a href="studio.html">Studio</a> (butuh internet untuk FFmpeg).</li>
+<li>Convert → preview → Save atau Upload. Firmware ≥ 0.4.5, SD wajib untuk upload.</li>
+</ol>
 </div>
 
 <div class="card">
-<h2>🎬 / 🔊 Format</h2>
-<ul>
-<li>Animasi: <b>.gif</b> saja (bukan MP4 di perangkat).</li>
-<li>SFX: <b>WAV 16-bit</b> (bukan MP3).</li>
-<li>Speaker: hanya lewat <b>MAX98357</b>.</li>
-</ul>
-</div>
-
-<div class="card">
-<h2>🛠️ Troubleshooting</h2>
+<h2>Troubleshooting</h2>
 <table>
-<tr><th>Gejala</th><th>Periksa</th></tr>
-<tr><td>Layar putih/hitam</td><td>RST=0, CS=7, DC=10, SCLK=4, MOSI=6</td></tr>
-<tr><td>SD gagal</td><td>FAT32, MISO=3, CS=5; jangan GPIO2</td></tr>
-<tr><td>Tidak ada suara</td><td>DIN=8, speaker ke OUT amp; volume</td></tr>
-<tr><td>Wi-Fi tidak muncul</td><td>Flash ≥0.2.8; SSID <code>rzmong mochi</code></td></tr>
-<tr><td>Flash gagal</td><td>Chrome/Edge, tahan BOOT</td></tr>
-<tr><td>Upload gagal</td><td>SD terpasang, firmware ≥0.4.0, sambung AP</td></tr>
+<tr><td>Wi-Fi tidak muncul</td><td>Flash ≥0.4.5; SSID <code>rzmong mochi</code></td></tr>
+<tr><td>Pengaturan Pages gagal</td><td>Mixed content — buka <code>http://192.168.4.1/</code></td></tr>
+<tr><td>Upload gagal</td><td>SD terpasang, firmware ≥0.4.5, sambung AP</td></tr>
+<tr><td>GIF terlalu besar</td><td>Studio target ≤599 KB</td></tr>
 </table>
 </div>
 
 </main>
-<footer style="color:#8b95a7;font-size:12px;padding:20px 22px 40px">© rzmong · MIT · v0.4.0</footer>
+<footer style="color:#8b95a7;font-size:12px;padding:20px 22px 40px">© rzmong · MIT · v0.4.7</footer>
 </body></html>

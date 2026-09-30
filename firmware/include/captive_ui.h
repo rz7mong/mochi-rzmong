@@ -1,16 +1,21 @@
 #pragma once
-// Minimal settings UI served from the device AP (offline).
+// Served at http://192.168.4.1/ — offline settings (no mixed content)
 static const char CAPTIVE_HTML[] PROGMEM = R"MOCHI(
-<!DOCTYPE html><html lang=id><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><title>Mochi</title>
+<!DOCTYPE html><html lang=id><head>
+<meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
+<title>Mochi rzmong</title>
 <style>
-body{font-family:system-ui,sans-serif;background:#0e1116;color:#eef2f7;margin:0;padding:16px}
-h1{font-size:20px;margin:0 0 8px}.card{background:#171b22;border:1px solid #2a3140;border-radius:12px;padding:12px;margin:10px 0}
-label{display:block;font-size:12px;color:#8b95a7;margin:8px 0 4px}select,input{width:100%;padding:8px;border-radius:8px;border:1px solid #2a3140;background:#10141b;color:#eef2f7;box-sizing:border-box}
+body{font-family:system-ui,sans-serif;background:#0e1116;color:#eef2f7;margin:16px;max-width:420px}
+h1{font-size:22px;margin:0 0 8px}h2{font-size:15px;margin:16px 0 8px;color:#8b95a7}
+.card{background:#171b22;border:1px solid #2a3140;border-radius:12px;padding:14px;margin:10px 0}
+label{display:block;font-size:12px;color:#8b95a7;margin:8px 0 4px}
+input,select{width:100%;padding:10px;border-radius:8px;border:1px solid #2a3140;background:#10141b;color:#eef2f7;box-sizing:border-box}
 button{background:#ff6b6b;color:#fff;border:0;border-radius:8px;padding:10px 14px;margin:6px 4px 0 0;cursor:pointer}
-#st{font-size:13px;color:#50fa7b;margin-top:8px}.hint{font-size:12px;color:#8b95a7}
+#st{font-size:13px;color:#50fa7b;margin-top:8px}.hint{font-size:12px;color:#8b95a7;line-height:1.4}
+a{color:#54a0ff}
 </style></head><body>
-<h1>🍡 Mochi rzmong</h1>
-<p class=hint>AP offline · simpan tema default di perangkat</p>
+<h1>Mochi rzmong</h1>
+<p class=hint>AP offline · v dari /api/status · Studio convert di GitHub Pages (butuh internet)</p>
 <div class=card>
 <label>Tema</label><select id=theme></select>
 <label>Sumber</label><select id=storage><option value=flash>Flash</option><option value=sd>SD</option></select>
@@ -22,6 +27,7 @@ button{background:#ff6b6b;color:#fff;border:0;border-radius:8px;padding:10px 14p
 <button type=button onclick=load()>Muat</button>
 <button type=button onclick=save()>Simpan</button>
 </div>
+<p class=hint>Upload GIF/WAV: sambung AP + buka Studio di HP yang masih punya internet, atau salin ke SD manual (/gif/tema/ /sfx/tema/).</p>
 <script>
 const T=['wajah','gundam','mobil','polisi','musik','neon','anime','makanan','intro'];
 const ts=document.getElementById('theme');T.forEach(t=>{const o=document.createElement('option');o.value=t;o.textContent=t;ts.appendChild(o);});
