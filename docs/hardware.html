@@ -33,11 +33,11 @@ ol,ul{color:#d5dbe6;line-height:1.55}
 <h2>Model yang didukung firmware 0.5.1</h2>
 <p><b>ESP32-C3 Super Mini</b> + LCD <b>ST7789 1.3" 240×240</b> modul PCB <b>23×40 mm</b> (8 pin SPI).</p>
 <ul>
-<li>Ini model DIY Dasai-style yang muat case jendela 23×40 mm.</li>
+<li>DIY <b>terinspirasi Dasai Mochi</b> — bukan produk resmi / clone berlisensi.</li>
 <li>LCD <b>1.54"</b> (PCB ~32 mm) <b>tidak</b> muat case ini — jangan pakai tanpa redesign STL.</li>
 <li>Jangan pakai ESP32-WROOM / DevKit besar.</li>
 </ul>
-<p class="warn">Skema lama (TFT RST=GPIO8, SD MISO=GPIO2, I2S DIN=GPIO9) <b>salah untuk firmware ini</b>. Ikuti tabel di bawah.</p>
+<p class="warn">Skema lama (TFT RST=GPIO8, SD MISO=GPIO2, I2S DIN=GPIO9) <b>salah untuk firmware ini</b>. Pin di bawah <b>bukan boot-safe</b>.</p>
 </div>
 
 <div class="card">
@@ -80,7 +80,7 @@ ol,ul{color:#d5dbe6;line-height:1.55}
 <tr><td>CS</td><td><b>7</b></td></tr>
 <tr><td>DC</td><td><b>10</b></td></tr>
 <tr><td>RST / RES</td><td><b>0</b></td></tr>
-<tr><td rowspan="3">MAX98357</td><td>BCLK</td><td><b>21</b></td><td rowspan="3">GPIO8 = strapping. Jangan tarik DIN LOW saat reset. 20/21 = UART0; pakai USB CDC.</td></tr>
+<tr><td rowspan="3">MAX98357</td><td>BCLK</td><td><b>21</b></td><td rowspan="3">GPIO8 = strapping. GPIO20/21 = UART0 — log boot bisa “plok” di speaker. Pakai USB CDC.</td></tr>
 <tr><td>LRC / WS</td><td><b>20</b></td></tr>
 <tr><td>DIN</td><td><b>8</b></td></tr>
 <tr><td>Strapping</td><td>—</td><td><b>2, 9</b></td><td class="warn"><b>Biarkan tidak terhubung</b></td></tr>
@@ -114,7 +114,7 @@ LCD BLK → 3V3 (bukan 5V)
 
 <div class="card">
 <h2>🔊 Speaker</h2>
-<p class="warn">Jangan sambung speaker ke GPIO langsung — hanya lewat MAX98357 OUT+/OUT−.</p>
+<p class="warn">Jangan sambung speaker ke GPIO langsung — hanya lewat MAX98357 OUT+/OUT−. Bunyi “plok” saat boot bisa muncul karena UART0 di GPIO20/21.</p>
 </div>
 
 <div class="card">
@@ -126,7 +126,7 @@ LCD BLK → 3V3 (bukan 5V)
 <li>Speaker ke OUT amp. Jangan pakai GPIO2 atau GPIO9.</li>
 <li>TP4056 berproteksi → saklar → VIN.</li>
 <li>Flash firmware <b>0.5.1</b> dari halaman instalasi (Erase NVS aman; SD tidak terhapus).</li>
-<li>Wi-Fi <code>rzmong mochi</code> / <code>rzmong123</code> → <code>http://192.168.4.1/</code>.</li>
+<li>Wi-Fi <code>rzmong mochi</code> / <code>rzmong123</code> → <code>http://192.168.4.1/</code>. Ganti sandi AP di firmware sebelum dipakai di tempat umum.</li>
 </ol>
 </div>
 
@@ -137,10 +137,11 @@ LCD BLK → 3V3 (bukan 5V)
 <tr><td>SD gagal</td><td>FAT32, MISO=<b>3</b>, CS=5; <b>bukan GPIO2</b></td></tr>
 <tr><td>Tidak boot / aneh</td><td>GPIO2 atau GPIO9 tersolder — cabut</td></tr>
 <tr><td>Tidak ada suara</td><td>DIN=<b>8</b>, speaker ke OUT amp</td></tr>
+<tr><td>Plok saat boot</td><td>UART0 di 20/21 + strapping GPIO8 — uji di hardware</td></tr>
 <tr><td>LCD 1.54" longgar</td><td>Salah model — case ini untuk 23×40 mm</td></tr>
 </table>
 </div>
 
 </main>
-<footer style="color:#8b95a7;font-size:12px;padding:16px 22px 40px">© rzmong · MIT · v0.5.1 · pin = firmware/include</footer>
+<footer style="color:#8b95a7;font-size:12px;padding:16px 22px 40px">MIT © rzmong · v0.5.1 · pin = firmware/include</footer>
 </body></html>
