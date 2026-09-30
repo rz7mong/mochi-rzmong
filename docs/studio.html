@@ -5,50 +5,203 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <title>🎨 Studio tema — Mochi rzmong</title>
 <style>
-:root{--bg:#0e1116;--card:#171b22;--line:#2a3140;--ink:#eef2f7;--muted:#8b95a7;--warn:#ffb86c}
+:root{--bg:#0e1116;--card:#171b22;--line:#2a3140;--ink:#eef2f7;--muted:#8b95a7;--acc:#ff6b6b;--ok:#50fa7b;--warn:#ffb86c}
 *{box-sizing:border-box}body{margin:0;font-family:ui-sans-serif,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
-header,main,footer{max-width:900px;margin:0 auto;padding:0 22px}header{padding-top:28px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin:12px 0}
-.kicker{letter-spacing:.2em;text-transform:uppercase;font-size:11px;color:var(--muted)}
-.warn{color:var(--warn)}.hint{color:var(--muted);font-size:13px;line-height:1.5}
-a{color:#54a0ff}
+header,main,footer{max-width:720px;margin:0 auto;padding:0 18px}header{padding-top:24px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0}
 label{display:block;margin:10px 0 4px;font-size:13px;color:var(--muted)}
-input,select,textarea{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#10141b;color:var(--ink)}
-button{background:#ff6b6b;color:#fff;border:0;border-radius:10px;padding:10px 16px;cursor:pointer;margin-top:12px}
-pre{background:#10141b;padding:12px;border-radius:10px;overflow:auto;font-size:12px}
+input,select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#10141b;color:var(--ink)}
+button{background:var(--acc);color:#fff;border:0;border-radius:10px;padding:11px 18px;cursor:pointer;margin-top:10px;width:100%;font-size:15px}
+button:disabled{opacity:.45;cursor:not-allowed}
+button.sec{background:#2a3140;width:auto;margin-right:6px}
+.hint{font-size:13px;color:var(--muted);line-height:1.45}
+.warn{color:var(--warn)}.ok{color:var(--ok)}
+a{color:#54a0ff}
+.kicker{letter-spacing:.15em;text-transform:uppercase;font-size:11px;color:var(--muted)}
+#log{font-size:12px;white-space:pre-wrap;background:#10141b;padding:10px;border-radius:8px;max-height:180px;overflow:auto;margin-top:10px}
+#preview{max-width:240px;max-height:240px;border-radius:8px;margin-top:10px;display:none}
 </style>
 </head>
 <body>
 <header>
-  <div class="kicker">studio · rzmong · v0.2.8</div>
-  <h1>🎨 Studio tema</h1>
-  <p class="warn">⚠️ MP4 tidak diputar di perangkat — konversi ke GIF 240×240. MP3 tidak di-decode — SFX harus WAV 16-bit.</p>
-  <p class="hint">Pack: <a href="https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1">assets-v1</a>. Default tema di <a href="pengaturan.html">Pengaturan</a> (Wi-Fi <code>rzmong mochi</code> / <code>rzmong123</code>).</p>
+  <div class="kicker">studio · rzmong · v0.4.0</div>
+  <h1>🎨 Studio + Upload</h1>
+  <p class="hint warn">⚠️ Sambungkan ke Wi-Fi <b>rzmong mochi</b> / <b>rzmong123</b> agar upload ke ESP32 berhasil.</p>
+  <p class="hint">MP4 → GIF 240×240 · MP3 → WAV 16-bit mono 22050 Hz. Max ~600 KB per file.</p>
   <p><a href="index.html">Instalasi</a> · <a href="pengaturan.html">Pengaturan</a> · <a href="panduan.html">Panduan</a></p>
 </header>
+
 <main>
 <div class="card">
+  <label>Alamat Mochi (AP)</label>
+  <input id="host" value="http://192.168.4.1"/>
+  <button type="button" class="sec" onclick="ping()">Tes koneksi</button>
+  <span id="pingst" class="hint"></span>
+</div>
+
+<div class="card">
   <label>Nama tema (folder)</label>
-  <input id="tema" value="wajah"/>
-  <label>Nama file GIF (tanpa .gif)</label>
+  <input id="tema" value="wajah" list="temalist"/>
+  <datalist id="temalist">
+    <option value="wajah"/><option value="gundam"/><option value="mobil"/>
+    <option value="polisi"/><option value="musik"/><option value="neon"/>
+    <option value="anime"/><option value="makanan"/><option value="intro"/>
+  </datalist>
+  <label>Nama file (tanpa ekstensi)</label>
   <input id="stem" value="yelling"/>
-  <label>Catatan</label>
-  <textarea id="note" rows="3">GIF 240×240, loop. SFX: /sfx/&lt;tema&gt;/&lt;stem&gt;.wav</textarea>
-  <button type="button" onclick="gen()">Buat skrip ffmpeg</button>
-  <pre id="out"></pre>
+
+  <label>File video / GIF</label>
+  <input type="file" id="vid" accept="video/*,image/gif,.gif,.mp4,.webm,.mov"/>
+
+  <label>File suara (opsional)</label>
+  <input type="file" id="sfx" accept="audio/*,.mp3,.wav,.m4a,.ogg"/>
+
+  <button id="btn" onclick="proses()">Convert &amp; Upload ke Mochi</button>
+  <p id="status" class="hint"></p>
+  <img id="preview" alt="preview GIF"/>
+  <div id="log"></div>
+</div>
+
+<div class="card">
+  <h3 style="margin:0 0 8px;font-size:16px">📋 Skrip ffmpeg (manual)</h3>
+  <p class="hint">Jika tidak pakai upload otomatis, jalankan di komputer:</p>
+  <button type="button" class="sec" onclick="genScript()">Buat skrip</button>
+  <pre id="out" style="background:#10141b;padding:10px;border-radius:8px;overflow:auto;font-size:12px;margin-top:8px"></pre>
 </div>
 </main>
-<footer style="color:#8b95a7;padding:20px">© rzmong · MIT · v0.2.8</footer>
+<footer style="color:#8b95a7;padding:20px 18px 40px;font-size:12px">© rzmong · MIT · v0.4.0</footer>
+
+<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js"></script>
 <script>
-function gen(){
-  const t=document.getElementById('tema').value.trim()||'wajah';
-  const s=document.getElementById('stem').value.trim()||'clip';
-  let out='# Konversi video → GIF (wajib jika sumber MP4):\n';
+const { FFmpeg } = FFmpegWASM;
+const ffmpeg = new FFmpeg();
+let loaded = false;
+
+function log(m){ const el=document.getElementById('log'); el.textContent += m + "\n"; el.scrollTop=el.scrollHeight; }
+function setStatus(t, ok){ const s=document.getElementById('status'); s.textContent=t; s.className = ok === true ? 'ok' : (ok === false ? 'warn' : 'hint'); }
+function host(){ return document.getElementById('host').value.replace(/\/$/,''); }
+
+async function ping(){
+  try {
+    const j = await (await fetch(host() + '/api/status')).json();
+    document.getElementById('pingst').textContent = 'OK · v' + (j.ver||'?') + ' · ' + (j.storage||'') + ' · SD=' + (j.sd?'ya':'tidak');
+    document.getElementById('pingst').className = 'ok';
+  } catch(e) {
+    document.getElementById('pingst').textContent = 'Gagal — sambung Wi-Fi rzmong mochi dulu';
+    document.getElementById('pingst').className = 'warn';
+  }
+}
+
+function genScript(){
+  const t = document.getElementById('tema').value.trim() || 'wajah';
+  const s = document.getElementById('stem').value.trim() || 'clip';
+  let out = '# Konversi video → GIF 240×240:\n';
   out += `ffmpeg -i input.mp4 -vf "scale=240:240:force_original_aspect_ratio=decrease,pad=240:240:(ow-iw)/2:(oh-ih)/2" -loop 0 gif/${t}/${s}.gif\n`;
-  out += '# SFX: WAV 16-bit (MP3 tidak diputar di ESP32-C3)\n';
-  out += `ffmpeg -i sfx_in.wav -acodec pcm_s16le -ar 22050 -ac 1 sfx/${t}/${s}.wav\n`;
-  out += `# Letakkan di root SD: gif/${t}/${s}.gif dan sfx/${t}/${s}.wav\n`;
-  document.getElementById('out').textContent=out;
+  out += '# SFX → WAV 16-bit mono 22050 Hz:\n';
+  out += `ffmpeg -i sfx_in.mp3 -acodec pcm_s16le -ar 22050 -ac 1 sfx/${t}/${s}.wav\n`;
+  out += `# Letakkan di root SD, atau upload lewat Studio (Wi-Fi Mochi)\n`;
+  document.getElementById('out').textContent = out;
+}
+
+async function loadFFmpeg(){
+  if (loaded) return;
+  setStatus('Memuat FFmpeg.wasm (sekali saja)...', false);
+  ffmpeg.on('log', ({ message }) => { /* quiet */ });
+  await ffmpeg.load({
+    coreURL: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js'
+  });
+  loaded = true;
+}
+
+async function convertVideo(file){
+  const buf = new Uint8Array(await file.arrayBuffer());
+  await ffmpeg.writeFile('input', buf);
+  await ffmpeg.exec([
+    '-i', 'input',
+    '-vf', 'scale=240:240:force_original_aspect_ratio=decrease,pad=240:240:(ow-iw)/2:(oh-ih)/2',
+    '-loop', '0',
+    '-y', 'out.gif'
+  ]);
+  const data = await ffmpeg.readFile('out.gif');
+  return new Blob([data.buffer], { type: 'image/gif' });
+}
+
+async function convertAudio(file){
+  const buf = new Uint8Array(await file.arrayBuffer());
+  await ffmpeg.writeFile('ain', buf);
+  await ffmpeg.exec([
+    '-i', 'ain',
+    '-acodec', 'pcm_s16le',
+    '-ar', '22050',
+    '-ac', '1',
+    '-y', 'out.wav'
+  ]);
+  const data = await ffmpeg.readFile('out.wav');
+  return new Blob([data.buffer], { type: 'audio/wav' });
+}
+
+async function upload(blob, type, tema, stem){
+  const fd = new FormData();
+  fd.append('file', blob, stem + '.' + type);
+  const url = host() + '/api/upload?tema=' + encodeURIComponent(tema) +
+              '&stem=' + encodeURIComponent(stem) + '&type=' + type;
+  const r = await fetch(url, { method: 'POST', body: fd });
+  const j = await r.json().catch(() => ({ error: 'bad_response' }));
+  if (!r.ok) throw new Error(j.error || ('HTTP ' + r.status));
+  return j;
+}
+
+async function proses(){
+  const btn = document.getElementById('btn');
+  btn.disabled = true;
+  document.getElementById('log').textContent = '';
+  document.getElementById('preview').style.display = 'none';
+
+  const tema = document.getElementById('tema').value.trim() || 'wajah';
+  const stem = document.getElementById('stem').value.trim() || 'clip';
+  const vid = document.getElementById('vid').files[0];
+  const sfx = document.getElementById('sfx').files[0];
+
+  if (!vid && !sfx) {
+    setStatus('Pilih minimal 1 file (video/GIF atau suara)', false);
+    btn.disabled = false;
+    return;
+  }
+
+  try {
+    await loadFFmpeg();
+
+    if (vid) {
+      setStatus('Convert video → GIF 240×240...', false);
+      log('Convert: ' + vid.name);
+      const gifBlob = await convertVideo(vid);
+      log('GIF size: ' + gifBlob.size + ' byte');
+      if (gifBlob.size > 600000) throw new Error('GIF terlalu besar (>' + Math.round(gifBlob.size/1024) + ' KB). Max ~600 KB.');
+      const url = URL.createObjectURL(gifBlob);
+      const prev = document.getElementById('preview');
+      prev.src = url; prev.style.display = 'block';
+      setStatus('Upload GIF ke Mochi...', false);
+      const res = await upload(gifBlob, 'gif', tema, stem);
+      log('GIF OK → ' + res.path + ' (' + res.size + ' byte)');
+    }
+
+    if (sfx) {
+      setStatus('Convert audio → WAV 16-bit...', false);
+      log('Convert audio: ' + sfx.name);
+      const wavBlob = await convertAudio(sfx);
+      log('WAV size: ' + wavBlob.size + ' byte');
+      if (wavBlob.size > 600000) throw new Error('WAV terlalu besar. Max ~600 KB.');
+      setStatus('Upload WAV ke Mochi...', false);
+      const res = await upload(wavBlob, 'wav', tema, stem);
+      log('WAV OK → ' + res.path + ' (' + res.size + ' byte)');
+    }
+
+    setStatus('✅ Selesai! Ganti tema di menu LCD atau Pengaturan untuk melihat hasilnya.', true);
+  } catch (e) {
+    setStatus('❌ ' + (e.message || e), false);
+    log(String(e));
+  }
+  btn.disabled = false;
 }
 </script>
 </body>
