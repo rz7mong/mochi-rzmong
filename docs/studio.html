@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Studio tema — Mochi rzmong</title>
+<title>🎨 Studio tema — Mochi rzmong</title>
 <style>
 :root{--bg:#0e1116;--card:#171b22;--line:#2a3140;--ink:#eef2f7;--muted:#8b95a7;--acc:#ff6b6b}
 *{box-sizing:border-box}
@@ -26,24 +26,24 @@ pre{background:#0b0e13;padding:12px;border-radius:10px;font-size:12px;overflow:a
 <body>
 <div class="wm">rzmong</div>
 <header>
-  <div class="kicker">studio · rzmong · v0.2.1</div>
-  <h1>Buat tema Mochi</h1>
+  <div class="kicker">studio · rzmong · v0.2.2</div>
+  <h1>🎨 Buat tema Mochi</h1>
   <p>Unggah GIF atau MP4 plus SFX. Hasilnya untuk kartu SD (opsional). Reaksi sentuh tetap memakai 10 GIF di flash.</p>
-  <p><a href="index.html">Instalasi</a> · <a href="thietlap.html">Pengaturan</a> · <a href="panduan.html">Panduan</a></p>
+  <p><a href="index.html">🍡 Instalasi</a> · <a href="thietlap.html">⚙️ Pengaturan</a> · <a href="panduan.html">📖 Panduan</a></p>
 </header>
 <main>
 <div class="card">
   <div class="row">
     <div>
       <video id="prev" muted loop playsinline></video>
-      <p id="meta">Target 240×240</p>
+      <p id="meta">🎯 Target 240×240</p>
     </div>
     <div>
-      <label>Gerakan GIF atau MP4</label>
+      <label>🎬 Gerakan GIF atau MP4</label>
       <input type="file" id="vid" accept="image/gif,video/mp4,video/webm">
-      <label>Nama bagian</label>
+      <label>📝 Nama bagian</label>
       <input id="stem" placeholder="helm_siaga">
-      <label>Tema</label>
+      <label>🎨 Tema</label>
       <select id="tema">
         <option>wajah</option>
         <option>gundam</option>
@@ -54,16 +54,16 @@ pre{background:#0b0e13;padding:12px;border-radius:10px;font-size:12px;overflow:a
         <option>musik</option>
         <option>intro</option>
       </select>
-      <label>SFX (WAV / MP3 / OGG)</label>
+      <label>🔊 SFX (WAV / MP3 / OGG)</label>
       <input type="file" id="sfx" accept="audio/*">
       <audio id="aud" controls style="width:100%;margin-top:8px"></audio>
-      <p><button id="pack" type="button">Buat instruksi paket</button></p>
+      <p><button id="pack" type="button">📦 Buat instruksi paket</button></p>
     </div>
   </div>
 </div>
 <div class="card"><pre id="out">Pilih berkas dulu.</pre></div>
 </main>
-<footer style="color:#8b95a7;padding:20px">Copyright rzmong</footer>
+<footer style="color:#8b95a7;padding:20px">© rzmong · v0.2.2</footer>
 <script>
 const $ = (id) => document.getElementById(id);
 $("vid").onchange = (e) => {
