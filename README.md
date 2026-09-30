@@ -7,6 +7,9 @@ Desk buddy **ESP32-C3 Super Mini** + LCD **ST7789 1.3" 240×240** (PCB 23×40 mm
 
 **Firmware: 0.5.1** · **MIT © rzmong** · English: [README.en.md](README.en.md)
 
+Satu sumber situs/installer: **https://rz7mong.github.io/mochi-rzmong/**  
+(`rz7mong.github.io` tanpa path adalah arsip — jangan flash dari sana.)
+
 Di perangkat: **GIF + WAV 16-bit saja** (tidak ada pemutar MP4, tidak ada decoder MP3).
 
 ## Mulai cepat
@@ -33,20 +36,36 @@ Di perangkat: **GIF + WAV 16-bit saja** (tidak ada pemutar MP4, tidak ada decode
 
 ## Wiring firmware 0.5.1
 
-![Wiring ESP32-C3 Super Mini + ST7789 + TTP223 + MAX98357 + microSD + TP4056](docs/wiring-0.5.1.jpg)
+Sumber pin: `firmware/include/MochiRzmong.h` + `User_Setup_ST7789.h`.
 
 ```
 ESP32-C3 Super Mini
   Touch OUT → GPIO1
-  SD  SCK=4  MOSI=6  MISO=3  CS=5     (SPI berbagi dengan TFT)
-  TFT SCLK=4 MOSI=6  CS=7    DC=10  RST=0   BLK→3V3
-  I2S BCLK=21  LRC=20  DIN=8          (MAX98357; speaker ke OUT amp)
-  GPIO2 dan GPIO9 — jangan disolder (strapping)
+  SD  SCK=4  MOSI=6  MISO=3  CS=5     (SPI berbagi SCK/MOSI dengan TFT)
+  TFT SCLK=4 MOSI=6  CS=7    DC=10  RST=0   BLK→3V3 (bukan 5V)
+  I2S BCLK=21  LRC=20  DIN=8          (MAX98357; speaker ke OUT+/OUT− amp)
+  GPIO2 dan GPIO9 — jangan disolder (strapping C3)
 ```
 
-**Bukan “boot-safe”.** GPIO8 (DIN) adalah pin strapping C3. GPIO20/21 adalah UART0 — log boot bisa bocor ke I2S dan terdengar “plok” di speaker. Uji di hardware; pakai USB CDC, jangan andalkan UART0.
+| Net | Apa yang disambung |
+| --- | --- |
+| GABUNG 3V3 | TFT VCC + BLK, SD VCC, TTP223 VCC |
+| GABUNG GND | semua modul |
+| GABUNG SCK GPIO4 | TFT SCL + SD SCK |
+| GABUNG MOSI GPIO6 | TFT SDA + SD MOSI |
+| GABUNG VIN | ESP VIN + MAX98357 VIN **setelah saklar** |
 
-Blueprint lengkap: [hardware.html](https://rz7mong.github.io/mochi-rzmong/hardware.html).
+CS tidak berbagi: TFT **GPIO7** ≠ SD **GPIO5** ≠ sentuh **GPIO1** ≠ DIN **GPIO8**.
+
+**Bukan “boot-safe”.** GPIO8 (DIN) adalah pin strapping C3. GPIO20/21 adalah UART0 — log boot bisa bocor ke I2S (“plok” di speaker). Pakai **USB CDC**, jangan andalkan UART0.
+
+**Daya:** LiPo → TP4056 **berproteksi** (DW01/8205A) → saklar → GABUNG VIN. LCD/SD/sentuh makan **3V3 ESP**, bukan 5V.
+
+**Amp:** pasang kapasitor **≈470 µF** (elektrolit, ≥10 V) antara **VIN MAX98357 dan GND**, sedekat mungkin ke modul. Tanpa ini amp mudah “ceklek” / brown-out saat bass.
+
+**SD:** modul harus **native 3.3V** (bukan reader 5V / level-shifter 5V). Kartu FAT32. MISO = GPIO3, bukan GPIO2.
+
+Blueprint + STL: [hardware.html](https://rz7mong.github.io/mochi-rzmong/hardware.html).
 
 ## Troubleshooting singkat
 
@@ -56,8 +75,9 @@ Blueprint lengkap: [hardware.html](https://rz7mong.github.io/mochi-rzmong/hardwa
 | Wi-Fi tidak ketemu | Flash **0.5.1**. SSID **`rzmong mochi`**, bukan `Mochi-rzmong`. |
 | Sandi ditolak | Default **`rzmong123`**, bukan `rzmong24`. |
 | Layar putih/hitam | RST=**0**, CS=7, DC=10, SCLK=4, MOSI=6, BLK=3V3 |
-| SD gagal | FAT32, MISO=**3**, CS=5 — bukan GPIO2 |
-| Bunyi plok saat boot | Normal-ish: UART0 di 20/21 + strapping GPIO8. Jangan tarik DIN ke GND. |
+| SD gagal | FAT32, modul **3.3V native**, MISO=**3**, CS=5 — bukan GPIO2 |
+| Amp berisik / mati saat bass | Kapasitor ≈470 µF di VIN amp |
+| Bunyi plok saat boot | UART0 di 20/21 + strapping GPIO8. Jangan tarik DIN ke GND. |
 | Upload dari Pages gagal | Mixed content. Upload lewat `http://192.168.4.1/` |
 
 ## Media
