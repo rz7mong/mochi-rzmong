@@ -32,7 +32,7 @@ a{color:var(--blue)}
 </head>
 <body>
 <header>
-  <div class="kicker">studio · rzmong · v0.4.1</div>
+  <div class="kicker">studio · rzmong · v0.4.2</div>
   <h1>🎨 Studio + Upload</h1>
   <p class="hint">1) Convert → 2) Preview → 3) Simpan ke HP/PC <b>atau</b> Upload ke Mochi</p>
   <p class="hint warn">Upload ke ESP32: sambung Wi-Fi <b>rzmong mochi</b> / <b>rzmong123</b> dulu.</p>
@@ -90,14 +90,14 @@ a{color:var(--blue)}
   <pre id="out" style="background:#10141b;padding:10px;border-radius:8px;overflow:auto;font-size:12px;margin-top:8px"></pre>
 </div>
 </main>
-<footer style="color:#8b95a7;padding:20px 18px 40px;font-size:12px">© rzmong · MIT · v0.4.1</footer>
+<footer style="color:#8b95a7;padding:20px 18px 40px;font-size:12px">© rzmong · MIT · v0.4.2</footer>
 
-<script src="https://unpkg.com/@ffmpeg/ffmpeg@0.12.10/dist/umd/ffmpeg.js"></script>
-<script>
-const { FFmpeg } = FFmpegWASM;
+<script type="module">
+import { FFmpeg } from 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm/index.js';
+import { toBlobURL, fetchFile } from 'https://cdn.jsdelivr.net/npm/@ffmpeg/util@0.12.1/dist/esm/index.js';
+
 const ffmpeg = new FFmpeg();
 let loaded = false;
-/** @type {{ gif: Blob|null, wav: Blob|null, tema: string, stem: string }} */
 let result = { gif: null, wav: null, tema: 'wajah', stem: 'yelling' };
 
 function log(m){ const el=document.getElementById('log'); el.textContent += m + '\n'; el.scrollTop=el.scrollHeight; }
@@ -105,7 +105,7 @@ function setStatus(t, ok){ const s=document.getElementById('status'); s.textCont
 function host(){ return document.getElementById('host').value.replace(/\/$/,''); }
 function fmtSize(n){ return n < 1024 ? n + ' B' : (n < 1048576 ? (n/1024).toFixed(1) + ' KB' : (n/1048576).toFixed(2) + ' MB'); }
 
-async function ping(){
+window.ping = async function(){
   try {
     const j = await (await fetch(host() + '/api/status')).json();
     document.getElementById('pingst').textContent = 'OK · v' + (j.ver||'?') + ' · ' + (j.storage||'') + ' · SD=' + (j.sd?'ya':'tidak');
@@ -114,9 +114,9 @@ async function ping(){
     document.getElementById('pingst').textContent = 'Gagal — sambung Wi-Fi rzmong mochi dulu (hanya perlu untuk Upload)';
     document.getElementById('pingst').className = 'warn';
   }
-}
+};
 
-function genScript(){
+window.genScript = function(){
   const t = document.getElementById('tema').value.trim() || 'wajah';
   const s = document.getElementById('stem').value.trim() || 'clip';
   let out = '# Konversi video → GIF 240×240:\n';
@@ -125,21 +125,25 @@ function genScript(){
   out += `ffmpeg -i sfx_in.mp3 -acodec pcm_s16le -ar 22050 -ac 1 sfx/${t}/${s}.wav\n`;
   out += `# Letakkan di root SD, atau Simpan/Upload lewat Studio\n`;
   document.getElementById('out').textContent = out;
-}
+};
 
 async function loadFFmpeg(){
   if (loaded) return;
-  setStatus('Memuat FFmpeg.wasm (sekali saja)...', false);
-  ffmpeg.on('log', () => {});
+  setStatus('Memuat FFmpeg.wasm (sekali saja, ~30 MB)...', false);
+  log('Mengunduh core + wasm (blob URL, aman di GitHub Pages)...');
+  const base = 'https://cdn.jsdelivr.net/npm/@ffmpeg/core@0.12.6/dist/esm';
+  const ffBase = 'https://cdn.jsdelivr.net/npm/@ffmpeg/ffmpeg@0.12.10/dist/esm';
   await ffmpeg.load({
-    coreURL: 'https://unpkg.com/@ffmpeg/core@0.12.6/dist/umd/ffmpeg-core.js'
+    coreURL: await toBlobURL(base + '/ffmpeg-core.js', 'text/javascript'),
+    wasmURL: await toBlobURL(base + '/ffmpeg-core.wasm', 'application/wasm'),
+    workerURL: await toBlobURL(ffBase + '/worker.js', 'text/javascript'),
   });
   loaded = true;
+  log('FFmpeg siap');
 }
 
 async function convertVideo(file){
-  const buf = new Uint8Array(await file.arrayBuffer());
-  await ffmpeg.writeFile('input', buf);
+  await ffmpeg.writeFile('input', await fetchFile(file));
   await ffmpeg.exec([
     '-i', 'input',
     '-vf', 'scale=240:240:force_original_aspect_ratio=decrease,pad=240:240:(ow-iw)/2:(oh-ih)/2',
@@ -151,8 +155,7 @@ async function convertVideo(file){
 }
 
 async function convertAudio(file){
-  const buf = new Uint8Array(await file.arrayBuffer());
-  await ffmpeg.writeFile('ain', buf);
+  await ffmpeg.writeFile('ain', await fetchFile(file));
   await ffmpeg.exec([
     '-i', 'ain',
     '-acodec', 'pcm_s16le',
@@ -170,7 +173,6 @@ function showPreview(){
   const audioMeta = document.getElementById('audioMeta');
   const sizeMeta = document.getElementById('sizeMeta');
   box.classList.add('show');
-
   let parts = [];
   if (result.gif) {
     img.style.display = 'inline-block';
@@ -189,49 +191,39 @@ function showPreview(){
   sizeMeta.innerHTML = 'Tema <b>' + result.tema + '</b> · file <b>' + result.stem + '</b><br>' + parts.join(' ');
 }
 
-async function doConvert(){
+window.doConvert = async function(){
   const btn = document.getElementById('btnConvert');
   btn.disabled = true;
   document.getElementById('log').textContent = '';
   document.getElementById('previewBox').classList.remove('show');
   result = { gif: null, wav: null, tema: '', stem: '' };
-
   const tema = document.getElementById('tema').value.trim() || 'wajah';
   const stem = document.getElementById('stem').value.trim() || 'clip';
   const vid = document.getElementById('vid').files[0];
   const sfx = document.getElementById('sfx').files[0];
-
   if (!vid && !sfx) {
     setStatus('Pilih minimal 1 file (video/GIF atau suara)', false);
     btn.disabled = false;
     return;
   }
-
   try {
     await loadFFmpeg();
-
     if (vid) {
       setStatus('Convert video → GIF 240×240...', false);
       log('Convert: ' + vid.name);
       const gifBlob = await convertVideo(vid);
       log('GIF: ' + fmtSize(gifBlob.size));
-      if (gifBlob.size > 600000) {
-        setStatus('Peringatan: GIF > 600 KB — upload ke Mochi mungkin ditolak', false);
-      }
+      if (gifBlob.size > 600000) setStatus('Peringatan: GIF > 600 KB — upload ke Mochi mungkin ditolak', false);
       result.gif = gifBlob;
     }
-
     if (sfx) {
       setStatus('Convert audio → WAV 16-bit...', false);
       log('Convert audio: ' + sfx.name);
       const wavBlob = await convertAudio(sfx);
       log('WAV: ' + fmtSize(wavBlob.size));
-      if (wavBlob.size > 600000) {
-        setStatus('Peringatan: WAV > 600 KB — upload ke Mochi mungkin ditolak', false);
-      }
+      if (wavBlob.size > 600000) setStatus('Peringatan: WAV > 600 KB — upload ke Mochi mungkin ditolak', false);
       result.wav = wavBlob;
     }
-
     result.tema = tema;
     result.stem = stem;
     showPreview();
@@ -239,9 +231,10 @@ async function doConvert(){
   } catch (e) {
     setStatus('❌ ' + (e.message || e), false);
     log(String(e));
+    console.error(e);
   }
   btn.disabled = false;
-}
+};
 
 function downloadBlob(blob, filename){
   const a = document.createElement('a');
@@ -252,7 +245,7 @@ function downloadBlob(blob, filename){
   a.remove();
 }
 
-function saveLocal(){
+window.saveLocal = function(){
   if (!result.gif && !result.wav) {
     setStatus('Convert dulu sebelum simpan', false);
     return;
@@ -270,7 +263,7 @@ function saveLocal(){
     }, 400);
   }
   setStatus('File diunduh ke perangkat. Salin ke SD: /gif/' + tema + '/ dan /sfx/' + tema + '/', true);
-}
+};
 
 async function uploadOne(blob, type, tema, stem){
   const fd = new FormData();
@@ -283,7 +276,7 @@ async function uploadOne(blob, type, tema, stem){
   return j;
 }
 
-async function doUpload(){
+window.doUpload = async function(){
   if (!result.gif && !result.wav) {
     setStatus('Convert dulu sebelum upload', false);
     return;
@@ -309,7 +302,7 @@ async function doUpload(){
     log(String(e));
   }
   btn.disabled = false;
-}
+};
 </script>
 </body>
 </html>
