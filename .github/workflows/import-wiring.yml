@@ -1,4 +1,4 @@
-name: Import wiring diagram
+name: Refresh wiring diagram
 on:
   workflow_dispatch:
   push:
@@ -13,18 +13,16 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - name: Download image
+      - name: Download
         run: |
-          mkdir -p docs
-          curl -fsSL -o docs/wiring-0.5.1.jpg https://litter.catbox.moe/569aig.jpg
-          echo fa6d778428273ed251f67ecd50059e43fae3b10c7f4c19c617401f5870fe4661  docs/wiring-0.5.1.jpg | sha256sum -c
-          ls -la docs/wiring-0.5.1.jpg
+          curl -fsSL -o docs/wiring-0.5.1.jpg https://litter.catbox.moe/69vmpj.jpg
+          echo a43c2c78594b259dab18fac9e2fa312a4c236558c9f17ec4db74109f0ded8902  docs/wiring-0.5.1.jpg | sha256sum -c
       - name: Commit
         run: |
           git config user.name rzmong-bot
           git config user.email rz7mong@users.noreply.github.com
           git add docs/wiring-0.5.1.jpg
           git diff --cached --quiet && echo nochange && exit 0
-          git commit -m "docs: wiring diagram firmware 0.5.1"
+          git commit -m "docs: wiring diagram presisi 0.5.1 (titik GABUNG)"
           git pull --rebase origin main || true
           git push origin HEAD:main
