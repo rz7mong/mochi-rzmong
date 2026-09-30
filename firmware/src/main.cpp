@@ -1,4 +1,4 @@
-// Mochi rzmong 0.4.8 — captive DNS + GIF pairs with matching /sfx/<tema>/<stem>.wav; AP rzmong mochi
+// Mochi rzmong 0.4.9 — Chronos full + captive DNS + GIF pairs with matching /sfx/<tema>/<stem>.wav; AP rzmong mochi
 #include <Arduino.h>
 #include <TFT_eSPI.h>
 #include <AnimatedGIF.h>
@@ -20,9 +20,12 @@ static const int W=240,H=240;
 static const uint16_t C_BG=0x1082,C_BAR=0xFD20,C_SEL=0xFE60,C_TEXT=0xEF7D,C_DIM=0x8410;
 static const uint16_t C_RED=0xF985,C_TEAL=0x07F4,C_BLUE=0x3C7F,C_PINK=0xF81F,C_YEL=0xFFE0;
 
-TFT_eSPI tft; AnimatedGIF gif; WebServer server(80); DNSServer dnsServer; ChronosESP32 watch; Preferences prefs;
+TFT_eSPI tft; AnimatedGIF gif; WebServer server(80); DNSServer dnsServer; ChronosESP32 watch("rzmong", CF_ESP32_240x240); Preferences prefs;
 String theme="wajah", playMode="kategori", reactMode="acak", apPass=MOCHI_AP_PASS;
 bool soundOn=true, useSd=false, chronosOn=false, showWm=true;
+bool chronoConn=false, ringerOn=false;
+String notifApp, notifTitle, notifMsg, ringerName;
+uint32_t notifUntil=0;
 int defIdx=0, reactIdx=0, volume=12, rot=0, menuRow=0, menuTop=0;
 String parts[32]; int nparts=0, idx=0; File gifFile; bool sdOk=false, i2sOk=false, sdBusy=false;
 enum Ui { UI_PLAY, UI_MENU }; Ui ui=UI_PLAY;
@@ -37,6 +40,7 @@ static const MenuItem MENU[] = {
   {"W","Merek LCD",C_DIM},{"A","Info Wi-Fi AP",C_BLUE},{"i","Tentang rzmong",C_TEXT},{"<","Tutup",C_DIM}
 };
 static const int NMENU=16, VIS=7;
+#include "chronos_ui.inc"
 
 void loadPrefs(){
   prefs.begin("rzmong",false);
@@ -200,7 +204,7 @@ void drawMenu(){
     tft.drawString(String(MENU[id].icon)+" "+MENU[id].label,34,y+4,2);
   }
   tft.setTextColor(C_DIM,C_BG);
-  char foot[56]; snprintf(foot,56,"%d/%d vol%d %s",menuRow+1,NMENU,volume,useSd&&sdOk?"SD":"flash");
+  char foot[64]; snprintf(foot,64,"%d/%d vol%d %s%s",menuRow+1,NMENU,volume,useSd&&sdOk?"SD":"flash", chronosOn?(chronoConn?" BLE*":" BLE"):"");
   tft.drawString(foot,10,224,1);
 }
 void nextPart(){
@@ -232,7 +236,7 @@ void applyMenu(){
   else if(menuRow==8){if(volume>0)volume--; savePrefs(); showInfo("volume",String(volume).c_str()); playJingleMs(120);}
   else if(menuRow==9){soundOn=!soundOn; savePrefs(); showInfo("suara",soundOn?"ON":"BISU");}
   else if(menuRow==10){rot=(rot+1)&3; tft.setRotation(rot); savePrefs();}
-  else if(menuRow==11){chronosOn=!chronosOn; savePrefs(); showInfo("chronos",chronosOn?"ON":"OFF");}
+  else if(menuRow==11){chronosOn=!chronosOn; savePrefs(); chronosApply(); showInfo("Chronos",chronosOn?(chronoConn?"ON linked":"ON pair app"):"OFF");}
   else if(menuRow==12){showWm=!showWm; savePrefs();}
   else if(menuRow==13){showInfo(MOCHI_AP_NAME, MOCHI_AP_PASS);}
   else if(menuRow==14){bootMark();}
@@ -290,6 +294,10 @@ void handleStatus(){
   d["sfx"]="wav_sd_or_jingle"; d["def"]=defIdx; d["gif_count"]=nparts;
   d["ap_ssid"]=MOCHI_AP_NAME; d["ap_pass"]=MOCHI_AP_PASS; d["sd_busy"]=sdBusy;
   d["chronos"]=chronosOn;
+  d["chronos_conn"]=chronosOn && watch.isConnected();
+  d["chronos_run"]=chronosOn && watch.isRunning();
+  if(chronosOn && watch.isRunning()) d["chronos_mac"]=watch.getAddress();
+  if(chronosOn && chronoConn) d["chronos_time"]=watch.getTimeDate();
   JsonArray themes=d["themes"].to<JsonArray>();
   for(int i=0;i<MOCHI_THEME_COUNT;i++) themes.add(MOCHI_THEMES[i]);
   String s; serializeJson(d,s); server.send(200,"application/json",s);
@@ -313,7 +321,7 @@ void handleSettings(){
   if(d["play_mode"].is<const char*>()) playMode=(const char*)d["play_mode"];
   if(d["react_mode"].is<const char*>()) reactMode=(const char*)d["react_mode"];
   if(d["sound"].is<bool>()) soundOn=d["sound"];
-  if(d["chronos"].is<bool>()) chronosOn=d["chronos"];
+  if(d["chronos"].is<bool>()){ chronosOn=d["chronos"]; chronosApply(); }
   if(d["watermark"].is<bool>()) showWm=d["watermark"];
   if(d["storage"].is<const char*>()) useSd=(String((const char*)d["storage"])=="sd");
   if(d["def"].is<int>()){ defIdx=d["def"]; if(defIdx<0||defIdx>=DEFAULT_GIF_COUNT) defIdx=0; }
@@ -441,11 +449,27 @@ void setup(){
   server.on("/api/upload", HTTP_POST, [](){}, handleUpload);
   server.onNotFound(handleNotFound);
   server.begin();
-  if(chronosOn) watch.begin();
+  chronosSetupCallbacks();
+  if(chronosOn) chronosApply();
 }
 void loop(){
   dnsServer.processNextRequest();
-  server.handleClient(); if(chronosOn) watch.loop();
+  server.handleClient();
+  if(chronosOn) watch.loop();
+  if(chronosOn && ringerOn){
+    drawChronosRinger();
+    bool down=digitalRead(MOCHI_PIN_TOUCH)==HIGH;
+    if(down&&!prevDown) ringerOn=false;
+    prevDown=down; delay(40); return;
+  }
+  if(chronosOn && notifUntil && (int32_t)(millis()-notifUntil)<0){
+    drawChronosNotif();
+    bool down=digitalRead(MOCHI_PIN_TOUCH)==HIGH;
+    if(down&&!prevDown) notifUntil=0;
+    prevDown=down; delay(40); return;
+  } else if(notifUntil && (int32_t)(millis()-notifUntil)>=0){
+    notifUntil=0;
+  }
   bool down=digitalRead(MOCHI_PIN_TOUCH)==HIGH;
   if(ui==UI_MENU){
     if(down&&!prevDown) downAt=millis();
