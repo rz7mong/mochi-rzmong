@@ -1,20 +1,13 @@
-# GIF reaksi untuk flash
+# GIF + SFX reaksi (flash)
 
-Letakkan sepuluh berkas ini di folder ini agar tertanam ke memori ESP32 saat compile:
+Sepuluh ekspresi tertanam saat `python firmware/tools/embed_assets.py`.
 
-```text
-yelling.gif
-distracted_2.gif
-dumb_love.gif
-hadouken_hit.gif
-awkward_laugh.gif
-crying_smile.gif
-keep_it_up.gif
-big_sneeze.gif
-blade.gif
-pinky.gif
-```
+Sumber:
+- `firmware/assets/react/<stem>.gif` (prioritas), atau
+- `firmware/tools/react_b64/<stem>.gif.b64`
 
-Perintah: `python firmware/tools/embed_assets.py`
+SFX (WAV 16-bit):
+- `firmware/assets/sfx/<stem>.wav` atau `firmware/tools/sfx_b64/<stem>.wav.b64`
 
-Jika berkas tidak ada, skrip memakai cadangan yang digambar otomatis plus `firmware/tools/react_b64/yelling.gif.b64`.
+Stem: yelling, distracted_2, dumb_love, hadouken_hit, awkward_laugh,
+crying_smile, keep_it_up, big_sneeze, blade, pinky
