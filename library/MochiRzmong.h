@@ -2,7 +2,7 @@
 #define MOCHI_BRAND   "rzmong"
 #define MOCHI_WATERMARK MOCHI_BRAND
 #define MOCHI_AP_NAME "Mochi-rzmong"
-#define MOCHI_VERSION "0.2.4"
+#define MOCHI_VERSION "0.2.5"
 #define MOCHI_PIN_TOUCH 1
 #define MOCHI_PIN_SD_SCK 4
 #define MOCHI_PIN_SD_MISO 3
@@ -26,5 +26,7 @@ static const MochiReact MOCHI_REACT[] = {
   {"cemberut","anime","pinky"}
 };
 static const int MOCHI_REACT_COUNT = 10;
-static const char *MOCHI_THEMES[] = {"wajah","gundam","mobil","neon","anime","makanan","musik","intro"};
-static const int MOCHI_THEME_COUNT = 8;
+static const char *MOCHI_THEMES[] = {
+  "wajah","gundam","mobil","polisi","musik","neon","anime","makanan","intro"
+};
+static const int MOCHI_THEME_COUNT = 9;
