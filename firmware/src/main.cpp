@@ -1,4 +1,4 @@
-// Mochi rzmong 0.2.3 — pin boot-safe (MISO=3 RST=0 DIN=8)
+// Mochi rzmong 0.2.4 — SFX SD WAV + jingle flash; pin boot-safe
 #include <Arduino.h>
 #include <TFT_eSPI.h>
 #include <AnimatedGIF.h>
@@ -69,18 +69,133 @@ void *gifOpen(const char *name,int32_t *sz){gifFile=SD.open(name); if(!gifFile)r
 void gifClose(void*){if(gifFile)gifFile.close();}
 int32_t gifRead(GIFFILE *p,uint8_t *buf,int32_t len){int n=gifFile.read(buf,len); p->iPos=gifFile.position(); return n;}
 int32_t gifSeek(GIFFILE *p,int32_t pos){gifFile.seek(pos); p->iPos=gifFile.position(); return p->iPos;}
+
 void audioInit(){
-  i2s_config_t cfg={.mode=(i2s_mode_t)(I2S_MODE_MASTER|I2S_MODE_TX),.sample_rate=JINGLE_SR,.bits_per_sample=I2S_BITS_PER_SAMPLE_16BIT,.channel_format=I2S_CHANNEL_FMT_ONLY_LEFT,.communication_format=I2S_COMM_FORMAT_STAND_I2S,.intr_alloc_flags=0,.dma_buf_count=4,.dma_buf_len=256,.use_apll=false,.tx_desc_auto_clear=true,.fixed_mclk=0};
+  i2s_config_t cfg={.mode=(i2s_mode_t)(I2S_MODE_MASTER|I2S_MODE_TX),.sample_rate=JINGLE_SR,.bits_per_sample=I2S_BITS_PER_SAMPLE_16BIT,.channel_format=I2S_CHANNEL_FMT_ONLY_LEFT,.communication_format=I2S_COMM_FORMAT_STAND_I2S,.intr_alloc_flags=0,.dma_buf_count=8,.dma_buf_len=256,.use_apll=false,.tx_desc_auto_clear=true,.fixed_mclk=0};
   if(i2s_driver_install(I2S_NUM_0,&cfg,0,NULL)!=ESP_OK)return;
   i2s_pin_config_t pins={.mck_io_num=I2S_PIN_NO_CHANGE,.bck_io_num=MOCHI_PIN_I2S_BCLK,.ws_io_num=MOCHI_PIN_I2S_LRC,.data_out_num=MOCHI_PIN_I2S_DIN,.data_in_num=I2S_PIN_NO_CHANGE};
   if(i2s_set_pin(I2S_NUM_0,&pins)!=ESP_OK)return; i2sOk=true;
 }
+
 void playJingleMs(int ms){
   if(!soundOn||!i2sOk)return;
+  i2s_set_sample_rates(I2S_NUM_0, JINGLE_SR);
   int bytes=JINGLE_SR*2*ms/1000; if(bytes>JINGLE_PCM_LEN)bytes=JINGLE_PCM_LEN; if(bytes<2)bytes=2;
-  int use=bytes*(volume+1)/22; if(use<2)use=2;
-  size_t wr=0; i2s_write(I2S_NUM_0,JINGLE_PCM,use,&wr,pdMS_TO_TICKS(ms+40));
+  int16_t buf[256];
+  int off=0;
+  while(off<bytes){
+    int n=bytes-off; if(n>512)n=512;
+    int samples=n/2;
+    const int16_t *src=(const int16_t*)(JINGLE_PCM+off);
+    for(int i=0;i<samples;i++){
+      int v=(int)src[i]*(volume+1)/22;
+      if(v>32767)v=32767; if(v<-32768)v=-32768;
+      buf[i]=(int16_t)v;
+    }
+    size_t wr=0;
+    i2s_write(I2S_NUM_0,buf,(size_t)samples*2,&wr,pdMS_TO_TICKS(200));
+    off+=n;
+  }
 }
+
+/* WAV 16-bit PCM mono/stereo from SD → I2S MAX98357. Bukan GPIO langsung. */
+bool playWavFromSd(const char *path){
+  if(!soundOn||!i2sOk||!sdOk) return false;
+  File f=SD.open(path); if(!f) return false;
+  uint8_t hdr[44];
+  if(f.read(hdr,12)<12){f.close(); return false;}
+  if(memcmp(hdr,"RIFF",4)!=0||memcmp(hdr+8,"WAVE",4)!=0){f.close(); return false;}
+  uint16_t audioFormat=1, channels=1, bits=16;
+  uint32_t sampleRate=22050, dataSize=0;
+  bool gotFmt=false, gotData=false;
+  while(f.available()){
+    uint8_t ch[8];
+    if(f.read(ch,8)<8) break;
+    uint32_t sz=ch[4]|(ch[5]<<8)|(ch[6]<<16)|(ch[7]<<24);
+    if(memcmp(ch,"fmt ",4)==0){
+      uint8_t fmt[16];
+      int need=sz>16?16:(int)sz;
+      if(f.read(fmt,need)<need){f.close(); return false;}
+      if(sz>(uint32_t)need) f.seek(f.position()+(sz-need));
+      audioFormat=fmt[0]|(fmt[1]<<8);
+      channels=fmt[2]|(fmt[3]<<8);
+      sampleRate=fmt[4]|(fmt[5]<<8)|(fmt[6]<<16)|(fmt[7]<<24);
+      bits=fmt[14]|(fmt[15]<<8);
+      gotFmt=true;
+    } else if(memcmp(ch,"data",4)==0){
+      dataSize=sz; gotData=true; break;
+    } else {
+      f.seek(f.position()+sz);
+    }
+  }
+  if(!gotFmt||!gotData||audioFormat!=1||bits!=16||channels<1||channels>2){f.close(); return false;}
+  if(sampleRate<8000) sampleRate=8000;
+  if(sampleRate>48000) sampleRate=48000;
+  i2s_set_sample_rates(I2S_NUM_0, sampleRate);
+  const size_t CHUNK=512;
+  uint8_t raw[CHUNK];
+  int16_t out[CHUNK];
+  uint32_t left=dataSize;
+  uint32_t t0=millis();
+  while(left>0 && f.available()){
+    size_t n=left>CHUNK?CHUNK:left;
+    int rd=f.read(raw,n);
+    if(rd<=0) break;
+    int samples=rd/2;
+    int16_t *src=(int16_t*)raw;
+    int outN=0;
+    if(channels==2){
+      for(int i=0;i+1<samples;i+=2){
+        int v=((int)src[i]+(int)src[i+1])/2;
+        v=v*(volume+1)/22;
+        if(v>32767)v=32767; if(v<-32768)v=-32768;
+        out[outN++]=(int16_t)v;
+      }
+    } else {
+      for(int i=0;i<samples;i++){
+        int v=(int)src[i]*(volume+1)/22;
+        if(v>32767)v=32767; if(v<-32768)v=-32768;
+        out[outN++]=(int16_t)v;
+      }
+    }
+    size_t wr=0;
+    if(outN>0) i2s_write(I2S_NUM_0,out,(size_t)outN*2,&wr,pdMS_TO_TICKS(300));
+    left-=(uint32_t)rd;
+    if(millis()-t0>4000) break; /* SFX pendek max ~4s */
+    yield();
+  }
+  f.close();
+  i2s_set_sample_rates(I2S_NUM_0, JINGLE_SR);
+  return true;
+}
+
+/* Cari SFX: /sfx/<theme>/<stem>.wav lalu /sfx/<stem>.wav lalu /sfx/<name>.wav
+ * MP3: ESP32-C3 tidak punya decoder MP3 di firmware ini — prefer WAV.
+ * Jika hanya .mp3 ada, fallback jingle (log Serial). */
+bool playSfxForReact(int r){
+  if(!soundOn||!i2sOk) return false;
+  if(r<0||r>=MOCHI_REACT_COUNT) r=0;
+  const char *themeR=MOCHI_REACT[r].theme;
+  const char *stem=MOCHI_REACT[r].stem;
+  const char *name=MOCHI_REACT[r].name;
+  if(sdOk){
+    char path[96];
+    snprintf(path,sizeof(path),"/sfx/%s/%s.wav",themeR,stem);
+    if(SD.exists(path) && playWavFromSd(path)) return true;
+    snprintf(path,sizeof(path),"/sfx/%s.wav",stem);
+    if(SD.exists(path) && playWavFromSd(path)) return true;
+    snprintf(path,sizeof(path),"/sfx/%s.wav",name);
+    if(SD.exists(path) && playWavFromSd(path)) return true;
+    /* .mp3: belum di-decode di C3 (butuh Helix/multi-core). Sarankan konversi ke WAV. */
+    snprintf(path,sizeof(path),"/sfx/%s/%s.mp3",themeR,stem);
+    if(SD.exists(path)){ Serial.println("SFX mp3: konversi ke WAV 16-bit mono"); }
+    snprintf(path,sizeof(path),"/sfx/%s.mp3",stem);
+    if(SD.exists(path)){ Serial.println("SFX mp3: konversi ke WAV 16-bit mono"); }
+  }
+  playJingleMs(220);
+  return true;
+}
+
 int pickReact(){ return (reactMode=="acak") ? random(MOCHI_REACT_COUNT) : reactIdx; }
 bool playOpen(const uint8_t *mem,int len,const char *path){
   if(mem) return gif.open((uint8_t*)mem,len,GIFDraw);
@@ -89,7 +204,7 @@ bool playOpen(const uint8_t *mem,int len,const char *path){
 }
 void playReactGif(){
   int r=pickReact();
-  playJingleMs(180);
+  playSfxForReact(r);
   String path=String("/gif/")+MOCHI_REACT[r].theme+"/"+MOCHI_REACT[r].stem+".gif";
   bool ok=false;
   if(sdOk && SD.exists(path.c_str())) ok=playOpen(NULL,0,path.c_str());
@@ -148,8 +263,8 @@ void applyMenu(){
   else if(menuRow==4){reactMode=(reactMode=="acak")?"tetap":"acak"; savePrefs(); showInfo("reaksi",reactMode.c_str());}
   else if(menuRow==5){reactIdx=(reactIdx+1)%MOCHI_REACT_COUNT; reactMode="tetap"; savePrefs(); showInfo(MOCHI_REACT[reactIdx].name,MOCHI_REACT[reactIdx].stem);}
   else if(menuRow==6){useSd=!useSd; if(useSd&&sdOk)scanTheme(theme); else useSd=false; savePrefs(); showInfo("sumber",useSd?"SD":"flash");}
-  else if(menuRow==7){if(volume<21)volume++; savePrefs(); showInfo("volume",String(volume).c_str());}
-  else if(menuRow==8){if(volume>0)volume--; savePrefs(); showInfo("volume",String(volume).c_str());}
+  else if(menuRow==7){if(volume<21)volume++; savePrefs(); showInfo("volume",String(volume).c_str()); playJingleMs(120);}
+  else if(menuRow==8){if(volume>0)volume--; savePrefs(); showInfo("volume",String(volume).c_str()); playJingleMs(120);}
   else if(menuRow==9){soundOn=!soundOn; savePrefs(); showInfo("suara",soundOn?"ON":"BISU");}
   else if(menuRow==10){rot=(rot+1)&3; tft.setRotation(rot); savePrefs();}
   else if(menuRow==11){chronosOn=!chronosOn; savePrefs(); showInfo("chronos",chronosOn?"ON":"OFF");}
@@ -189,6 +304,7 @@ void handleStatus(){
   d["mode"]=playMode; d["react_mode"]=reactMode; d["react"]=MOCHI_REACT[reactIdx].name;
   d["react_gif"]=String("/gif/")+MOCHI_REACT[reactIdx].theme+"/"+MOCHI_REACT[reactIdx].stem+".gif";
   d["sound"]=soundOn; d["vol"]=volume; d["storage"]=(useSd&&sdOk)?"sd":"flash"; d["sd"]=sdOk;
+  d["sfx"]="wav_sd_or_jingle";
   String s; serializeJson(d,s); server.send(200,"application/json",s);
 }
 void handleSettings(){
