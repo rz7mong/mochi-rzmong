@@ -2,10 +2,12 @@
 #define MOCHI_BRAND   "rzmong"
 #define MOCHI_WATERMARK MOCHI_BRAND
 #define MOCHI_AP_NAME "rzmong mochi"
+#ifndef MOCHI_AP_PASS  /* override: build_flags = -DMOCHI_AP_PASS=\"sandibaru123\" */
 #define MOCHI_AP_PASS "rzmong123"
-#define MOCHI_VERSION "0.5.1"
-/* v0.5.1: serviceNet during GIF, SPI SUPPORT_TRANSACTIONS, CORS, no ap_pass in JSON,
- * captive same-origin upload, touch: react on 1-tap (not press-down).
+#endif
+#define MOCHI_VERSION "0.5.2"
+/* v0.5.2: GIF RGB565 + canvas, tap window, Chronos preempt, SFX from reused RAM buffer.
+ * AP name/pass unchanged. Override pass via build_flags only.
  */
 #define MOCHI_PIN_TOUCH 1
 #define MOCHI_PIN_SD_SCK 4

@@ -1,0 +1,9 @@
+# PlatformIO / hasil build lokal
+firmware/.pio/
+.pio/
+.vscode/
+firmware/include/defaults_gif.h
+firmware/include/jingle.h
+__pycache__/
+*.pyc
+.DS_Store

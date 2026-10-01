@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.5.2] — 2026-10-01
+
+### Fixed
+- **GIF**: palet RGB565 big-endian, piksel transparan dilewati, posisi dari ukuran kanvas.
+- **Ketukan**: jeda 320 ms tidak memutar ulang GIF/SFX yang sama. Ketuk 1x reaksi, ketuk 2x menu.
+- **Mode acak**: tema acak tidak ditulis ke NVS. Tema kosong tidak mematikan SD.
+- **Menu**: redraw hanya saat berubah. Footer menampilkan snd/bisu.
+- **Chronos**: notifikasi, panggilan, dan navigasi memotong GIF. `playFrame` tidak menahan `watch.loop()`. Panggilan berikutnya tetap tergambar. Nav tidak memicu reaksi palsu.
+- **SFX**: WAV dimuat ke buffer RAM yang dipakai ulang (maks. 48 KB), GIF dan suara berjalan bersama.
+- **Upload**: CORS di handler POST, tolak saat SD sibuk, scan ulang, tema divalidasi.
+- **CI**: Pages di-deploy ulang setelah `Build firmware.bin` sukses (commit GITHUB_TOKEN tidak memicu push).
+
+### Unchanged
+- Nama AP `rzmong mochi` dan sandi `rzmong123`. Aset GIF/SFX tidak diubah.
+
+
 ## [0.5.1] — 2026-09-30
 
 ### Changed

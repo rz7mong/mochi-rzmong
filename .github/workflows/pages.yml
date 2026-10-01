@@ -2,6 +2,11 @@ name: Deploy Pages
 on:
   push:
     branches: [main]
+  # Push dari firmware.yml memakai GITHUB_TOKEN sehingga TIDAK memicu workflow lain.
+  workflow_run:
+    workflows: ["Build firmware.bin"]
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
 permissions:
   contents: read
@@ -12,6 +17,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   deploy:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}

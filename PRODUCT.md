@@ -2,7 +2,7 @@
 
 | Key | Value |
 | --- | --- |
-| **Version** | `0.5.1` |
+| **Version** | `0.5.2` |
 | **Brand** | `rzmong` |
 | **AP SSID** | `rzmong mochi` |
 | **AP password** | `rzmong123` (change in firmware; not exposed in API JSON) |
@@ -15,7 +15,7 @@
 | **Hardware** | ESP32-C3 Super Mini + ST7789 1.3" 240×240 (PCB 23×40 mm) |
 
 ```c
-#define MOCHI_VERSION "0.5.1"
+#define MOCHI_VERSION "0.5.2"
 #define MOCHI_AP_NAME "rzmong mochi"
 #define MOCHI_AP_PASS "rzmong123"
 ```
