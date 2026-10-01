@@ -38,7 +38,7 @@ img.wire{width:100%;border-radius:12px;border:1px solid var(--line);background:#
 <li>LCD <b>1.54"</b> (PCB ~32 mm) <b>tidak</b> muat case ini — jangan pakai tanpa redesign STL.</li>
 <li>Jangan pakai ESP32-WROOM / DevKit besar.</li>
 </ul>
-<p class="warn">Skema lama (TFT RST=GPIO8, SD MISO=GPIO2, I2S DIN=GPIO9) <b>salah untuk firmware ini</b>. Pin di bawah <b>bukan boot-safe</b>.</p>
+<p class="warn">Skema lama (TFT RST=GPIO8, SD MISO=GPIO2, I2S DIN=GPIO9) <b>salah untuk firmware ini</b>. Diagram di bawah sudah pin 0.5.1. Pin ini <b>bukan boot-safe</b>.</p>
 </div>
 
 <div class="card">
@@ -47,7 +47,7 @@ img.wire{width:100%;border-radius:12px;border:1px solid var(--line);background:#
 <tr><th>Bagian</th><th>Spesifikasi</th></tr>
 <tr><td>Otak</td><td>ESP32-C3 Super Mini, flash 4 MB, USB-C native</td></tr>
 <tr><td>Layar</td><td>ST7789 IPS 1.3" 240×240 SPI 8-pin, PCB 23×40 mm</td></tr>
-<tr><td>Baterai</td><td>LiPo 3.7V pipih 400–800 mAh (bukan 18650)</td></tr>
+<tr><td>Baterai</td><td>LiPo 3.7V pipih 400–1000 mAh (diagram tipikal 1000 mAh; cek ketebalan vs case, bukan 18650)</td></tr>
 <tr><td>Charger</td><td><b>TP4056 + proteksi DW01/8205A</b></td></tr>
 <tr><td>Saklar</td><td>On/Off memutus VIN beban</td></tr>
 <tr><td>Sentuh</td><td>TTP223 (HIGH saat sentuh)</td></tr>
@@ -60,7 +60,9 @@ img.wire{width:100%;border-radius:12px;border:1px solid var(--line);background:#
 
 <div class="card">
 <h2>Pin firmware 0.5.1</h2>
-<p>Ikuti tabel ini saat solder. Gambar wiring hanya bantu lihat bentuk barang.</p>
+<p>Ikuti tabel dan diagram ini saat solder. Gambar resmi firmware 0.5.1 — sama dengan <code>MochiRzmong.h</code> + <code>User_Setup_ST7789.h</code>.</p>
+<p><img class="wire" src="wiring-0.5.1.jpg" alt="Wiring diagram Mochi rzmong firmware 0.5.1"/></p>
+<p style="color:#8b95a7;font-size:13px">TFT di foto tidak punya kaki CS: firmware tetap pakai GPIO7. Sambungkan jika modulmu ada CS. GPIO2 dan GPIO9 tetap kosong. Saklar di jalur TP OUT+, elko ~470 µF di VIN–GND MAX. SD di foto adalah shield SPI, diberi 3V3 — bukan reader 5V.</p>
 <table>
 <tr><th>Modul</th><th>Sinyal</th><th>GPIO</th><th>Catatan</th></tr>
 <tr><td>Touch</td><td>OUT</td><td><b>1</b></td><td>TTP223 HIGH saat sentuh</td></tr>

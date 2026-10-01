@@ -24,7 +24,7 @@ Settings page is **pengaturan.html** (`thietlap.html` only redirects).
 
 Pins are **not** “boot-safe”: GPIO8 is a C3 strapping pin (I2S DIN); GPIO20/21 are UART0 (boot log may click the speaker).
 
-Full pins / case STL / troubleshooting: see [README.md](README.md).
+Full pins / case STL / troubleshooting: see [README.md](README.md). Wiring diagram 0.5.1: [docs/wiring-0.5.1.jpg](docs/wiring-0.5.1.jpg).
 
 ## License
 

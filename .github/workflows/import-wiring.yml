@@ -1,28 +1,15 @@
 name: Refresh wiring diagram
 on:
   workflow_dispatch:
-  push:
-    paths:
-      - '.github/workflows/import-wiring.yml'
 permissions:
-  contents: write
+  contents: read
 jobs:
   import:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Download
+      - name: Diagram is committed
         run: |
-          curl -fsSL -o docs/wiring-0.5.1.jpg https://litter.catbox.moe/69vmpj.jpg
-          echo a43c2c78594b259dab18fac9e2fa312a4c236558c9f17ec4db74109f0ded8902  docs/wiring-0.5.1.jpg | sha256sum -c
-      - name: Commit
-        run: |
-          git config user.name rzmong-bot
-          git config user.email rz7mong@users.noreply.github.com
-          git add docs/wiring-0.5.1.jpg
-          git diff --cached --quiet && echo nochange && exit 0
-          git commit -m "docs: wiring diagram presisi 0.5.1 (titik GABUNG)"
-          git pull --rebase origin main || true
-          git push origin HEAD:main
+          test -f docs/wiring-0.5.1.jpg
+          echo "docs/wiring-0.5.1.jpg is the firmware 0.5.1 diagram. Do not reimport the old catbox file."
+          sha256sum docs/wiring-0.5.1.jpg

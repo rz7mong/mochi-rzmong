@@ -3,6 +3,7 @@
 ## [0.5.1] — 2026-09-30
 
 ### Changed
+- **Wiring diagram**: `docs/wiring-0.5.1.jpg` resmi (pin 0.5.1) dipasang di hardware.html. Workflow impor catbox tidak lagi menimpa file ini.
 - **Docs sync**: Pages, PRODUCT, README, HANDOFF, hardware/blueprint, tutorial → **0.5.1**
 - **Blueprint**: pinout mengikuti `MochiRzmong.h` + `User_Setup_ST7789.h` (bukan skema lama RST=8 / MISO=2 / DIN=9)
 - **Model hardware**: ESP32-C3 Super Mini + ST7789 1.3" 240×240 PCB 23×40 mm

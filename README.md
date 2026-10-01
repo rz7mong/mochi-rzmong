@@ -38,6 +38,8 @@ Di perangkat: **GIF + WAV 16-bit saja** (tidak ada pemutar MP4, tidak ada decode
 
 Sumber pin: `firmware/include/MochiRzmong.h` + `User_Setup_ST7789.h`.
 
+Diagram resmi: [docs/wiring-0.5.1.jpg](docs/wiring-0.5.1.jpg) · halaman [hardware](https://rz7mong.github.io/mochi-rzmong/hardware.html).
+
 ```
 ESP32-C3 Super Mini
   Touch OUT → GPIO1
