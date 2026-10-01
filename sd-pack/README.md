@@ -1,6 +1,6 @@
 # 🍡 Paket SD Mochi rzmong
 
-## Download pack penuh
+## 📦 Download pack penuh
 
 **Hanya lewat GitHub Release (stabil):**  
 https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1
@@ -17,10 +17,10 @@ Salin **isi zip** ke **akar kartu microSD (FAT32)**:
 └── sfx/<tema>/*.wav
 ```
 
-## Tema (9)
+## 🎨 Tema (9)
 wajah · gundam · mobil · polisi · musik · neon · anime · makanan · intro
 
-## Reaksi sentuh (10) — juga di flash
+## 👆 Reaksi sentuh (10) — juga di flash
 | Stem | SFX contoh |
 |------|-----------|
 | yelling | /sfx/wajah/yelling.wav |

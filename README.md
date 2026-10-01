@@ -1,4 +1,4 @@
-# Mochi rzmong
+# 🍡 Mochi rzmong
 
 [![Build firmware](https://github.com/rz7mong/mochi-rzmong/actions/workflows/firmware.yml/badge.svg)](https://github.com/rz7mong/mochi-rzmong/actions/workflows/firmware.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -12,14 +12,14 @@ Satu sumber situs/installer: **https://rz7mong.github.io/mochi-rzmong/**
 
 Di perangkat: **GIF + WAV 16-bit saja** (tidak ada pemutar MP4, tidak ada decoder MP3).
 
-## Mulai cepat
+## 🚀 Mulai cepat
 
 1. Chrome / Edge → [Instalasi firmware 0.5.5](https://rz7mong.github.io/mochi-rzmong/) (tahan BOOT, colok USB-C).
 2. Wi-Fi AP default: **`rzmong mochi` / `rzmong123`** — sandi lab; **ganti** `MOCHI_AP_PASS` di firmware lalu flash ulang sebelum dipakai di tempat umum.
 3. Pengaturan (disarankan): **`http://192.168.4.1/`** di AP perangkat.
 4. Pack tema: [Release `assets-v1`](https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1) → ekstrak ke root SD FAT32 (`gif/` + `sfx/`).
 
-## Jam HP
+## 🕐 Jam HP
 
 LCD ini bukan layar sentuh. Jam HP dipilih dari HP.
 
@@ -32,22 +32,22 @@ Layar menampilkan GIF wajah diam (`wajah/default.gif` di SD) dengan tanggal, jam
 
 Ketukan menu hanya dipakai jika ada kawat sentuh di GPIO1. Tanpa kawat itu, abaikan ketukan.
 
-## Tautan
+## 🔗 Tautan
 
 | | |
 | --- | --- |
-| Instalasi | https://rz7mong.github.io/mochi-rzmong/ |
-| Merakit + pin | [docs/hardware.html](https://rz7mong.github.io/mochi-rzmong/hardware.html) |
-| Panduan pakai | [docs/panduan.html](https://rz7mong.github.io/mochi-rzmong/panduan.html) |
-| Studio (convert) | [docs/studio.html](https://rz7mong.github.io/mochi-rzmong/studio.html) |
-| Pengaturan online | [docs/pengaturan.html](https://rz7mong.github.io/mochi-rzmong/pengaturan.html) |
-| Handoff | [HANDOFF.md](HANDOFF.md) · [halaman](https://rz7mong.github.io/mochi-rzmong/handoff.html) |
-| Case STL | [case/](case/) |
-| PCB carrier (opsional) | [pcb/](pcb/README.md) |
-| Konstanta | [PRODUCT.md](PRODUCT.md) |
+| ⚡ Instalasi | https://rz7mong.github.io/mochi-rzmong/ |
+| 🔧 Merakit + pin | [docs/hardware.html](https://rz7mong.github.io/mochi-rzmong/hardware.html) |
+| 📖 Panduan pakai | [docs/panduan.html](https://rz7mong.github.io/mochi-rzmong/panduan.html) |
+| 🎨 Studio (convert) | [docs/studio.html](https://rz7mong.github.io/mochi-rzmong/studio.html) |
+| ⚙️ Pengaturan online | [docs/pengaturan.html](https://rz7mong.github.io/mochi-rzmong/pengaturan.html) |
+| 🤝 Handoff | [HANDOFF.md](HANDOFF.md) · [halaman](https://rz7mong.github.io/mochi-rzmong/handoff.html) |
+| 🧊 Case STL | [case/](case/) |
+| 🟩 PCB carrier (opsional) | [pcb/](pcb/README.md) |
+| 📌 Konstanta | [PRODUCT.md](PRODUCT.md) |
 
 
-## Wiring firmware 0.5.5
+## 🔌 Wiring firmware 0.5.5
 
 Sumber pin: `firmware/include/MochiRzmong.h` + `User_Setup_ST7789.h`.
 
@@ -88,7 +88,7 @@ CS tidak berbagi: TFT **GPIO7** ≠ SD **GPIO5** ≠ sentuh **GPIO1** ≠ DIN **
 
 Blueprint + STL: [hardware.html](https://rz7mong.github.io/mochi-rzmong/hardware.html).
 
-## Troubleshooting singkat
+## 🛠️ Troubleshooting singkat
 
 | Gejala | Cek |
 | --- | --- |
@@ -102,13 +102,13 @@ Blueprint + STL: [hardware.html](https://rz7mong.github.io/mochi-rzmong/hardware
 | Bunyi plok saat boot | UART0 di 20/21 + strapping GPIO8. Jangan tarik DIN ke GND. |
 | Upload dari Pages gagal | Mixed content. Upload lewat `http://192.168.4.1/` |
 
-## Media
+## 🎬 Media
 
 Studio butuh internet (FFmpeg.wasm). Setelah file jadi, sambung AP Mochi lalu unggah di captive (same-origin).
 
 Pasangan: `/gif/<tema>/<stem>.gif` + `/sfx/<tema>/<stem>.wav`
 
-## Build
+## 🏗️ Build
 
 ```bash
 cd firmware
@@ -116,6 +116,6 @@ python tools/embed_assets.py
 pio run -e esp32-c3-super-mini
 ```
 
-## Lisensi
+## 📄 Lisensi
 
 **MIT © rzmong** — lihat [LICENSE](LICENSE) dan [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) (ChronosESP32 / fbiego).

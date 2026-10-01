@@ -4,7 +4,7 @@ Target hardware **2026**: ESP32-C3 Super Mini + LCD ST7789 **1.3" 240×240** mod
 
 > Dokumen lama menyebut "23×40 mm" dan "8-pin" — itu **salah**. Ukuran di bawah dari datasheet modul GMT130.
 
-## File cetak resmi
+## 🧊 File cetak resmi
 
 | File | Fungsi | Ukuran |
 | --- | --- | --- |
@@ -89,7 +89,7 @@ python make_pcb_variant.py         # tulis ulang dua STL _pcb dari STL asli
 python check_designer_v3.py        # cek layout PCB v3 vs case/tatakan/komponen
 ```
 
-## Cetak
+## 🖨️ Cetak
 
 - Material: PLA (PETG jika dekat TP4056 yang hangat)
 - Layer 0.2 mm, dinding 2, infill 15–20%
@@ -97,7 +97,7 @@ python check_designer_v3.py        # cek layout PCB v3 vs case/tatakan/komponen
 - Resin: permukaan kubah sudah dihaluskan; cetak miring dengan support. Tatakan punya bibir pengunci yang masuk ke celah di dasar case (celah ±0.2 mm, 3 tonjolan penahan di bibir kiri).
 - Tatakan GMT130: dinding jendela/rel tipis — layer 0.2 mm atau lebih halus, cek kanal PCB bersih dari stringing.
 
-## Rakit LCD
+## 🔧 Rakit LCD
 
 1. Solder kabel **langsung** ke pad LCD (tanpa pin header), arahkan ke belakang. Sambungan ≤ 2 mm.
 2. BLK → 3V3. Tidak ada CS (GPIO7 dibiarkan kosong).

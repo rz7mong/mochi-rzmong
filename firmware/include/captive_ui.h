@@ -15,8 +15,9 @@ button{width:100%;padding:12px;margin:6px 0;border:0;border-radius:10px;font-wei
 .box{background:#1a1a22;border:1px solid #333;border-radius:12px;padding:12px;margin:10px 0}
 .hint{font-size:.72rem;color:#666;margin:4px 0 8px}a{color:#7ef}
 </style></head><body>
-<h1>Mochi · rzmong</h1>
+<h1>🍡 Mochi · rzmong</h1>
 <p class=hint>v0.5.5 · offline · http://192.168.4.1/</p>
+<p class=hint>😶 wajah · 🤖 gundam · 🚗 mobil · 🚓 polisi · 🎵 musik · 💜 neon · 🌸 anime · 🍜 makanan · ✨ intro</p>
 <div class=box>
 <label>Tema</label><select id=theme></select>
 <label>Sumber</label><select id=storage><option value=sd>SD</option><option value=flash>Flash</option></select>
@@ -26,7 +27,7 @@ button{width:100%;padding:12px;margin:6px 0;border:0;border-radius:10px;font-wei
 <div class=tog><span>SFX</span><input type=checkbox id=sound checked></div>
 </div>
 <div class=box>
-<h2>Chronos (BLE)</h2>
+<h2>📱 Chronos (BLE)</h2>
 <p class=hint>Pair di app Chronos · BLE name <b>rzmong</b></p>
 <div class=tog><span>Chronos BLE</span><input type=checkbox id=chronos></div>
 <div class=tog><span>Jam HP</span><input type=checkbox id=clock></div>
@@ -34,7 +35,7 @@ button{width:100%;padding:12px;margin:6px 0;border:0;border-radius:10px;font-wei
 <div id=chinfo class=hint>—</div>
 </div>
 <div class=box>
-<h2>Upload ke SD</h2>
+<h2>💾 Upload ke SD</h2>
 <p class=hint>Convert di Studio (online) dulu, unduh file, lalu upload di sini (same-origin).</p>
 <label>Jenis</label><select id=utype><option value=gif>GIF</option><option value=wav>WAV</option></select>
 <label>Tema folder</label><select id=utema></select>

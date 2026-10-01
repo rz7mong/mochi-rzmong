@@ -7,7 +7,7 @@ PCB pembawa untuk case [`case_luar_lcd_23_40mm_pcb.stl`](../case/README.md#varia
 - Koordinat = frame STL case (mm): −y = depan/LCD, +y = belakang/USB.
 - Status: layout v3 **lolos cek fit** (FINAL GO, lihat [docs/fit/pcb_v3/REVIEW.md](../docs/fit/pcb_v3/REVIEW.md)) dan cek netlist/DRC ([v3/netlist_check_v3_output.txt](v3/netlist_check_v3_output.txt)). **Belum dibuat / dicetak uji.**
 
-## File
+## 📁 File
 
 | File | Isi |
 | --- | --- |
@@ -32,7 +32,7 @@ python check_v3.py      # net + DRC, harus sama dengan netlist_check_v3_output.t
 python render_v3.py     # tulis ulang SVG/PDF artwork + pratinjau
 ```
 
-## Modul di PCB
+## 🧩 Modul di PCB
 
 | Modul | Catatan |
 | --- | --- |
@@ -58,7 +58,7 @@ python render_v3.py     # tulis ulang SVG/PDF artwork + pratinjau
 - Baut **M2 × 16 dari bawah tatakan**, naik lewat tiang Ø5, masuk ke mur M2 / standoff kuningan yang dilem/disolder di sisi atas PCB. Baut dari atas tidak mungkin (sisi atas ada di dalam case tertutup).
 - Di belakang PCB bertumpu pada pad Ø4 di (0, 30.5) dan ditahan receptacle USB-C di port.
 
-## Urutan rakit
+## 🛠️ Urutan rakit
 
 1. Balik case. **Lem speaker, TTP223 dan saklar.**
 2. **LiPo swing-in**: masukkan lewat bukaan bawah berdiri di ujungnya, putar mendatar, gulingkan ke tepinya, parkir di y −10..−4.5. Tidak bisa masuk lurus (bukaan bawah hanya 40–41.5 mm).

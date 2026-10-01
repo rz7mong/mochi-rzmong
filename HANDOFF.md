@@ -4,7 +4,7 @@
 **Pages:** https://rz7mong.github.io/mochi-rzmong/  
 **Salinan web:** https://rz7mong.github.io/mochi-rzmong/handoff.html
 
-## Device
+## 🍡 Device
 
 ESP32-C3 Super Mini + ST7789 1.3" 240×240 GMT130 (PCB 27.78×39.22 mm, 7 pin tanpa CS, dipasang pin di bawah → rotasi default 2) + touch + microSD opsional + Chronos BLE.
 
@@ -14,7 +14,7 @@ ESP32-C3 Super Mini + ST7789 1.3" 240×240 GMT130 (PCB 27.78×39.22 mm, 7 pin ta
 | Pass | `rzmong123` (lab; ganti `MOCHI_AP_PASS` lalu flash) |
 | UI | `http://192.168.4.1/` |
 
-## Build / flash
+## ⚡ Build / flash
 
 ```bash
 cd firmware
@@ -28,7 +28,7 @@ Tema: https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1
 
 Jangan flash zip prebuilt 0.4.7 jika butuh Chronos-nav / serviceNet / captive upload.
 
-## Pins (bukan boot-safe)
+## 🔌 Pins (bukan boot-safe)
 
 Touch=1 · SD 4/6/3/5 · TFT 4/6/7/10/0 · I2S 21/20/8 · GPIO2/9 kosong.
 
@@ -38,17 +38,17 @@ Lihat `firmware/include/MochiRzmong.h` + `User_Setup_ST7789.h` (`SUPPORT_TRANSAC
 
 Rotasi: `MOCHI_DEFAULT_ROTATION` (default 2). NVS `rot` dari firmware ≤ 0.5.3 digeser +2 sekali (penanda `rotv`); setelan lain tetap.
 
-## SD / API
+## 💾 SD / API
 
 `/gif/<tema>/<stem>.gif` + `/sfx/<tema>/<stem>.wav` · upload ~600000 bytes  
 `GET /api/status` · `GET /api/themes` · `POST /api/settings` · `POST /api/upload`  
 Password **tidak** di JSON.
 
-## Chronos
+## 📱 Chronos
 
 BLE name `rzmong`. Satu radio 2.4 GHz: AP + BLE bisa lag.
 
-## License
+## 📄 License
 
 **MIT © rzmong** · ChronosESP32 (fbiego)
 

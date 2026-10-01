@@ -1,4 +1,4 @@
-# Mochi rzmong
+# 🍡 Mochi rzmong
 
 [![Build firmware](https://github.com/rz7mong/mochi-rzmong/actions/workflows/firmware.yml/badge.svg)](https://github.com/rz7mong/mochi-rzmong/actions/workflows/firmware.yml)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
@@ -11,11 +11,11 @@ Independent open-source project **inspired by** Dasai Mochi — **not affiliated
 
 On device: **GIF + 16-bit WAV only** (no MP4 player, no MP3 decoder).
 
-## Phone clock
+## 🕐 Phone clock
 
 The LCD is not a touchscreen. Enable **Jam HP** from the phone: join `rzmong mochi` / `rzmong123`, open `http://192.168.4.1/`, check Chronos BLE and Jam HP, save, then connect `rzmong` in the Chronos app. Uncheck Jam HP to return to GIFs. Touch menu only works with a wire on GPIO1.
 
-## Quick start
+## 🚀 Quick start
 
 1. Chrome / Edge → [installer 0.5.5](https://rz7mong.github.io/mochi-rzmong/) (hold BOOT, plug USB-C).
 2. Default AP: **`rzmong mochi` / `rzmong123`**. Lab password — change `MOCHI_AP_PASS` and reflash before public use.
@@ -34,6 +34,6 @@ Optional **carrier PCB** variant: a single-sided, hand-etched 1.6 mm FR4 THT boa
 
 Full pins / case STL / troubleshooting: see [README.md](README.md). Wiring diagram 0.5.5: [docs/wiring-0.5.1.jpg](docs/wiring-0.5.1.jpg).
 
-## License
+## 📄 License
 
 **MIT © rzmong** · [LICENSE](LICENSE) · ChronosESP32 by fbiego — [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)
