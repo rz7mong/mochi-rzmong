@@ -29,6 +29,7 @@ button{width:100%;padding:12px;margin:6px 0;border:0;border-radius:10px;font-wei
 <h2>Chronos (BLE)</h2>
 <p class=hint>Pair di app Chronos · BLE name <b>rzmong</b></p>
 <div class=tog><span>Chronos BLE</span><input type=checkbox id=chronos></div>
+<div class=tog><span>Jam HP</span><input type=checkbox id=clock></div>
 <div class=tog><span>Tampil navigasi</span><input type=checkbox id=chronos_nav checked></div>
 <div id=chinfo class=hint>—</div>
 </div>
@@ -55,13 +56,14 @@ if(j.mode)document.getElementById('mode').value=j.mode;if(j.react_mode)document.
 if(typeof j.vol==='number'){document.getElementById('vol').value=j.vol;document.getElementById('vv').textContent=j.vol;}
 if(typeof j.sound==='boolean')document.getElementById('sound').checked=j.sound;
 if(typeof j.chronos==='boolean')document.getElementById('chronos').checked=j.chronos;
+if(typeof j.clock==='boolean')document.getElementById('clock').checked=j.clock;
 if(typeof j.chronos_nav==='boolean')document.getElementById('chronos_nav').checked=j.chronos_nav;
 let ci='BLE '+(j.chronos_run?'ON':'off')+(j.chronos_conn?' linked':'');
 if(j.chronos_mac)ci+='\n'+j.chronos_mac;if(j.nav_active)ci+='\nNav '+(j.nav_title||'');
 document.getElementById('chinfo').textContent=ci;
 document.getElementById('st').textContent='v'+(j.ver||'?')+' · SSID '+(j.ap_ssid||'');
 }catch(e){document.getElementById('st').textContent='Gagal muat';}}
-async function save(){const body={theme:ts.value,storage:document.getElementById('storage').value,play_mode:document.getElementById('mode').value,react_mode:document.getElementById('rmode').value,volume:+document.getElementById('vol').value,sound:document.getElementById('sound').checked,chronos:document.getElementById('chronos').checked,chronos_nav:document.getElementById('chronos_nav').checked};
+async function save(){const body={theme:ts.value,storage:document.getElementById('storage').value,play_mode:document.getElementById('mode').value,react_mode:document.getElementById('rmode').value,volume:+document.getElementById('vol').value,sound:document.getElementById('sound').checked,chronos:document.getElementById('chronos').checked,chronos_nav:document.getElementById('chronos_nav').checked,clock:document.getElementById('clock').checked};
 try{const r=await fetch('/api/settings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
 document.getElementById('st').textContent=r.ok?'Tersimpan':'Gagal';if(r.ok)setTimeout(load,400);}catch(e){document.getElementById('st').textContent='Offline';}}
 async function upload(){
