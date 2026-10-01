@@ -292,6 +292,7 @@ void playReactGif(){
 void brandMark(){if(!showWm)return; tft.setTextColor(C_DIM,TFT_BLACK); tft.drawString(MOCHI_BRAND,168,226,1);}
 static const uint8_t SEG7[10]={0x3F,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x7F,0x6F};
 static int clockDrawn=-1;
+static bool clockGifOn=false;
 static const char *WD[7]={"SUN","MON","TUE","WED","THU","FRI","SAT"};
 static void eye(int cx, int cy, int open){
   tft.fillRect(cx-28, cy-20, 56, 42, TFT_BLACK);
@@ -331,7 +332,7 @@ void drawClock(){
   int sig=linked?(h*3600+m*60+s):-2;
   if(sig==clockDrawn) return;
   clockDrawn=sig;
-  tft.fillScreen(TFT_BLACK);
+  if(!clockGifOn) tft.fillScreen(TFT_BLACK);
   tft.setTextColor(TFT_WHITE,TFT_BLACK);
   if(linked){
     int wd=watch.getDayofWeek(); if(wd<0||wd>6) wd=0;
@@ -351,8 +352,7 @@ void drawClock(){
     tft.drawCentreString("---",170,14,2);
     tft.drawCentreString("--:--",120,48,4);
   }
-  int blink=(s%5==0)?0:(s%5==1)?2:6;
-  eye(78,132,blink); eye(162,132,blink);
+  if(!clockGifOn){ int blink=(s%5==0)?0:(s%5==1)?2:6; eye(78,132,blink); eye(162,132,blink); }
   tft.setTextColor(TFT_WHITE,TFT_BLACK);
   if(linked){
     char nb[8]; snprintf(nb,sizeof(nb),"%d", watch.getPhoneBattery());
@@ -656,7 +656,19 @@ void loop(){
     prevDown=down; delay(30); return;
   }
   chronosPreempt=false;
+  if(!clockOn && clockGifOn){ gif.close(); clockGifOn=false; sdBusy=false; }
   if(clockOn){
+    if(!clockGifOn){
+      const char *path="/gif/wajah/distracted_2.gif";
+      bool ok=false;
+      if(sdOk && !sdBusy && SD.exists(path)){ sdBusy=true; ok=playOpen(NULL,0,path); if(!ok) sdBusy=false; }
+      if(!ok){ for(int i=0;i<DEFAULT_GIF_COUNT;i++){ if(strcmp(DEFAULT_GIFS[i].stem,"distracted_2")==0){ ok=playOpen(DEFAULT_GIFS[i].data,DEFAULT_GIFS[i].len,NULL); break; } } }
+      clockGifOn=ok;
+    }
+    if(clockGifOn){
+      int dly=0;
+      if(!gif.playFrame(false,&dly)){ gif.close(); clockGifOn=false; sdBusy=false; }
+    }
     drawClock();
     bool down=digitalRead(MOCHI_PIN_TOUCH)==HIGH;
     if(down&&!prevDown) downAt=millis();
