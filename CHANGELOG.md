@@ -1,5 +1,21 @@
 # Changelog
 
+## [0.5.4] — 2026-10-01
+
+### Changed
+- **Rotasi layar default 2** (180°): LCD GMT130 kini dipasang **pin di bawah** di tatakan baru. `MOCHI_DEFAULT_ROTATION` di `MochiRzmong.h` (override: `-DMOCHI_DEFAULT_ROTATION=0` untuk tatakan lama / pin di atas).
+- **NVS**: nilai `rot` yang tersimpan oleh firmware ≤ 0.5.3 digeser +2 sekali saat boot pertama (penanda `rotv`). Setelan lain (tema, volume, Chronos, dll.) tidak disentuh. Menu **Rotasi layar** tetap memutar 90° per langkah.
+- `/api/status` menampilkan `rot`.
+
+### Added
+- **Case**: `case/tatakan_GMT130_fit.stl` — tatakan untuk LCD GMT130 27.78×39.22 mm (jendela 23.6×23.6 mm + bevel 1.2 mm, rel samping 28.18 mm + kanal PCB 2.05 mm, lantai 0.6 mm, takik 20 mm untuk kabel solder). Skrip parametrik + cek di `case/scripts/`, pratinjau PNG di `case/`. Belum dicetak uji.
+
+### Fixed
+- **Docs**: ukuran LCD "23×40 mm" dan "8-pin" salah → **GMT130 27.78×39.22 mm, 7 pin tanpa CS** (area aktif 23.40 mm, lubang Ø2 mm 2.5 mm dari tepi). Catatan pemasangan pin di bawah + kabel solder langsung.
+
+### Notes
+- `case/tatakan_lcd_23_40mm.stl` tetap ada sebagai *legacy*. Kulit luar tidak berubah.
+
 ## [0.5.3] — 2026-10-01
 
 ### Added

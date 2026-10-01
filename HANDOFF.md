@@ -1,4 +1,4 @@
-# HANDOFF — Mochi rzmong v0.5.3
+# HANDOFF — Mochi rzmong v0.5.4
 
 **Repo:** https://github.com/rz7mong/mochi-rzmong  
 **Pages:** https://rz7mong.github.io/mochi-rzmong/  
@@ -6,7 +6,7 @@
 
 ## Device
 
-ESP32-C3 Super Mini + ST7789 1.3" 240×240 (PCB 23×40 mm) + touch + microSD opsional + Chronos BLE.
+ESP32-C3 Super Mini + ST7789 1.3" 240×240 GMT130 (PCB 27.78×39.22 mm, 7 pin tanpa CS, dipasang pin di bawah → rotasi default 2) + touch + microSD opsional + Chronos BLE.
 
 | AP | Value |
 |----|--------|
@@ -35,6 +35,8 @@ Touch=1 · SD 4/6/3/5 · TFT 4/6/7/10/0 · I2S 21/20/8 · GPIO2/9 kosong.
 GPIO8 = strapping + I2S DIN. GPIO20/21 = UART0 — log boot bisa “plok” di speaker.
 
 Lihat `firmware/include/MochiRzmong.h` + `User_Setup_ST7789.h` (`SUPPORT_TRANSACTIONS`).
+
+Rotasi: `MOCHI_DEFAULT_ROTATION` (default 2). NVS `rot` dari firmware ≤ 0.5.4 digeser +2 sekali (penanda `rotv`); setelan lain tetap.
 
 ## SD / API
 

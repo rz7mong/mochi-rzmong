@@ -2,7 +2,7 @@
 
 | Key | Value |
 | --- | --- |
-| **Version** | `0.5.3` |
+| **Version** | `0.5.4` |
 | **Brand** | `rzmong` |
 | **AP SSID** | `rzmong mochi` |
 | **AP password** | `rzmong123` (change in firmware; not exposed in API JSON) |
@@ -13,10 +13,11 @@
 | **Jam HP** | phone time over wajah/default.gif, phone battery % |
 | **Theme pack** | Release `assets-v1` |
 | **Media** | GIF 240×240 + WAV 16-bit mono ~22 kHz |
-| **Hardware** | ESP32-C3 Super Mini + ST7789 1.3" 240×240 (PCB 23×40 mm) |
+| **Hardware** | ESP32-C3 Super Mini + ST7789 1.3" 240×240 GMT130 (PCB 27.78×39.22 mm, 7-pin, no CS) |
+| **LCD mount** | `case/tatakan_GMT130_fit.stl`, pins-down → default rotation `2` (`MOCHI_DEFAULT_ROTATION`) |
 
 ```c
-#define MOCHI_VERSION "0.5.3"
+#define MOCHI_VERSION "0.5.4"
 #define MOCHI_AP_NAME "rzmong mochi"
 #define MOCHI_AP_PASS "rzmong123"
 ```
