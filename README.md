@@ -38,6 +38,7 @@ Ketukan menu hanya dipakai jika ada kawat sentuh di GPIO1. Tanpa kawat itu, abai
 | --- | --- |
 | ⚡ Instalasi | https://rz7mong.github.io/mochi-rzmong/ |
 | 🔧 Merakit + pin | [docs/hardware.html](https://rz7mong.github.io/mochi-rzmong/hardware.html) |
+| 🧩 Demo rakit interaktif | [kabel lepas](https://rz7mong.github.io/mochi-rzmong/pemasangan-kabel.html) · [PCB carrier](https://rz7mong.github.io/mochi-rzmong/pemasangan.html) |
 | 📖 Panduan pakai | [docs/panduan.html](https://rz7mong.github.io/mochi-rzmong/panduan.html) |
 | 🎨 Studio (convert) | [docs/studio.html](https://rz7mong.github.io/mochi-rzmong/studio.html) |
 | ⚙️ Pengaturan online | [docs/pengaturan.html](https://rz7mong.github.io/mochi-rzmong/pengaturan.html) |

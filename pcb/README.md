@@ -60,6 +60,8 @@ python render_v3.py     # tulis ulang SVG/PDF artwork + pratinjau
 
 ## 🛠️ Urutan rakit
 
+Demo interaktif langkah demi langkah: [docs/pemasangan.html](https://rz7mong.github.io/mochi-rzmong/pemasangan.html).
+
 1. Balik case. **Lem speaker, TTP223 dan saklar.**
 2. **LiPo swing-in**: masukkan lewat bukaan bawah berdiri di ujungnya, putar mendatar, gulingkan ke tepinya, parkir di y −10..−4.5. Tidak bisa masuk lurus (bukaan bawah hanya 40–41.5 mm).
 3. **Board slide-in**: PCB yang sudah terpasang naik vertikal 8 mm di depan posisi akhir, lalu geser +8 mm ke belakang.
