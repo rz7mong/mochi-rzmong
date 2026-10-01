@@ -5,48 +5,43 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <title>Pengaturan — Mochi rzmong</title>
+<link rel="stylesheet" href="./mochi.css?v=1"/>
 <style>
-:root{--bg:#0e1116;--card:#171b22;--line:#2a3140;--ink:#eef2f7;--muted:#8b95a7;--acc:#ff6b6b;--ok:#50fa7b;--warn:#ffb86c}
-*{box-sizing:border-box}body{margin:0;font-family:ui-sans-serif,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
-header,main,footer{max-width:860px;margin:0 auto;padding:0 22px}header{padding-top:28px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0}
-label{display:block;font-size:12px;color:var(--muted);margin:10px 0 4px}
-input,select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);background:#10141b;color:var(--ink)}
-.tog{display:flex;justify-content:space-between;align-items:center;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin:8px 0}
-button{background:var(--acc);color:#fff;border:0;border-radius:10px;padding:10px 16px;cursor:pointer;margin:4px 4px 4px 0}
-button.sec{background:#2a3140}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{border:1px solid var(--line);border-radius:999px;padding:8px 12px;cursor:pointer;font-size:13px}
-.chip.on{background:var(--acc);border-color:var(--acc);color:#fff}
-.hint{font-size:13px;color:var(--muted);line-height:1.5}
-.warn{font-size:13px;color:var(--warn);line-height:1.5}
-#st{font-size:13px;margin-top:8px;color:var(--ok)}
-.kicker{letter-spacing:.2em;text-transform:uppercase;font-size:11px;color:var(--muted)}
-a{color:#54a0ff} code{background:#10141b;padding:1px 6px;border-radius:6px}
-pre#chinfo{font-size:12px;color:var(--muted);white-space:pre-wrap}
+.chips.pick{justify-content:flex-start;gap:8px}
+.chips.pick .chip{cursor:pointer;padding:7px 14px;font-size:14px;user-select:none}
+.chips.pick .chip:hover{background:var(--pink2)}
+.chips.pick .chip.on{background:var(--pinkd);border-color:var(--pinkd);color:#fff}
+#st{font-size:14px;font-weight:700;margin:8px 0 0;color:var(--ok);min-height:1em}
+#st:empty{display:none}
+pre#chinfo{font-size:12px;color:var(--muted);white-space:pre-wrap;margin:8px 0 0}
+.save{text-align:center;margin:18px 0}
+.save button{min-width:240px}
 </style>
 </head>
 <body>
-<header>
+<header class="hero wrap narrow">
+  <svg class="mochi" viewBox="0 0 120 96" aria-hidden="true"><ellipse cx="60" cy="88" rx="36" ry="5" fill="#f6c6d9" opacity=".6"/><path d="M14 66c0-30 20-52 46-52s46 22 46 52c0 14-12 20-46 20S14 80 14 66z" fill="#fff" stroke="#ffb3cf" stroke-width="3"/><rect x="33" y="34" width="54" height="36" rx="10" fill="#2b2140"/><ellipse cx="49" cy="51" rx="5" ry="6.5" fill="#7ef0c8"/><ellipse cx="71" cy="51" rx="5" ry="6.5" fill="#7ef0c8"/><path d="M53 61q7 6 14 0" stroke="#ff8fb8" stroke-width="3" fill="none" stroke-linecap="round"/><ellipse cx="38" cy="64" rx="5" ry="3" fill="#ffb3cf" opacity=".6"/><ellipse cx="82" cy="64" rx="5" ry="3" fill="#ffb3cf" opacity=".6"/></svg>
   <div class="kicker">pengaturan · rzmong · v0.5.5</div>
-  <h1>⚙️ Pengaturan Mochi</h1>
-  <p class="hint"><b>Jalur utama (disarankan):</b> sambung Wi-Fi <b>rzmong mochi</b> / <b>rzmong123</b>, lalu buka
+  <h1>⚙️ Pengaturan <span>Mochi</span></h1>
+  <p class="sub"><b>Jalur utama (disarankan):</b> sambung Wi-Fi <b>rzmong mochi</b> / <b>rzmong123</b>, lalu buka
   <code>http://192.168.4.1/</code> — UI firmware, offline.</p>
-  <p>LCD bukan layar sentuh. Jam HP dipilih di halaman itu: centang Chronos BLE dan Jam HP, simpan, lalu sambungkan <b>rzmong</b> di aplikasi Chronos.</p>
-  <p class="warn">Halaman Pages (HTTPS) sering memblokir panggilan ke http://192.168.4.1 (mixed content). Prefer UI di perangkat.</p>
-  <p><a href="index.html">Instalasi</a> · <a href="panduan.html">Panduan</a> · <a href="studio.html">Studio</a></p>
 </header>
-<main>
+<nav class="tabs"><div class="wrap narrow">
+  <a href="index.html">🍡 Instalasi</a><a href="panduan.html">📖 Panduan</a><a href="hardware.html">🔧 Merakit</a><a href="pemasangan.html">🟩 Demo rakit</a><a href="studio.html">🎨 Studio</a><a href="pengaturan.html" class="on" aria-current="page">⚙️ Pengaturan</a><a href="https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1">🖼️ Tema</a>
+</div></nav>
+<main class="wrap narrow">
+<div class="info">LCD bukan layar sentuh. Jam HP dipilih di halaman itu: centang Chronos BLE dan Jam HP, simpan, lalu sambungkan <b>rzmong</b> di aplikasi Chronos.</div>
+<div class="note">Halaman Pages (HTTPS) sering memblokir panggilan ke http://192.168.4.1 (mixed content). Prefer UI di perangkat.</div>
 <div class="card">
   <label>Alamat Mochi (API)</label>
   <input id="host" value="http://192.168.4.1"/>
   <p id="st"></p>
-  <button type="button" onclick="ping()">Tes koneksi</button>
-  <button type="button" class="sec" onclick="muat()">Muat dari Mochi</button>
+  <div class="row"><button type="button" class="primary" onclick="ping()">Tes koneksi</button>
+  <button type="button" class="sec" onclick="muat()">Muat dari Mochi</button></div>
 </div>
 <div class="card">
   <h3>Tema default</h3>
-  <div class="chips" id="chips"></div>
+  <div class="chips pick" id="chips"></div>
   <label>Mode putar</label>
   <select id="mode">
     <option value="kategori">Tetap kategori</option>
@@ -86,9 +81,9 @@ pre#chinfo{font-size:12px;color:var(--muted);white-space:pre-wrap}
   <p class="hint">Ketuk di perangkat: notif = 1× tutup · panggilan = tahan 0,6s · navigasi = 2× sembunyi overlay.</p>
   <pre id="chinfo">—</pre>
 </div>
-<p><button type="button" onclick="simpan()">Simpan ke Mochi</button></p>
+<p class="save"><button type="button" class="btn primary big" onclick="simpan()">💾 Simpan ke Mochi</button></p>
 </main>
-<footer style="color:#8b95a7;padding:24px">© rzmong · MIT · v0.5.5 · prefer http://192.168.4.1/</footer>
+<footer>© rzmong · MIT · v0.5.5 · prefer http://192.168.4.1/</footer>
 <script>
 const TEMAS=[{id:'wajah',label:'Wajah'},{id:'gundam',label:'Gundam'},{id:'mobil',label:'Mobil'},{id:'polisi',label:'Polisi'},{id:'musik',label:'Musik'},{id:'neon',label:'Neon'},{id:'anime',label:'Anime'},{id:'makanan',label:'Makanan'},{id:'intro',label:'Intro'}];
 let tema='wajah';

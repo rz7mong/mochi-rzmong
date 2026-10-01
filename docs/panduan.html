@@ -5,47 +5,39 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <title>Panduan pakai — Mochi rzmong</title>
-<style>
-:root{--bg:#0e1116;--card:#171b22;--line:#2a3140;--ink:#eef2f7;--muted:#8b95a7}
-*{box-sizing:border-box}body{margin:0;font-family:ui-sans-serif,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
-header,main,footer{max-width:860px;margin:0 auto;padding:0 22px}header{padding-top:28px}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:12px 0}
-h2{margin:0 0 10px;font-size:18px}
-table{width:100%;border-collapse:collapse;font-size:14px}
-td,th{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top}
-code{background:#10141b;padding:1px 6px;border-radius:6px}
-ul,ol{margin:6px 0 0;padding-left:18px;line-height:1.55;color:#d5dbe6}
-.kicker{letter-spacing:.2em;text-transform:uppercase;font-size:11px;color:var(--muted)}
-a{color:#54a0ff}
-</style></head>
+<link rel="stylesheet" href="./mochi.css?v=1"/></head>
 <body>
-<header>
+<header class="hero wrap narrow">
+  <svg class="mochi" viewBox="0 0 120 96" aria-hidden="true"><ellipse cx="60" cy="88" rx="36" ry="5" fill="#f6c6d9" opacity=".6"/><path d="M14 66c0-30 20-52 46-52s46 22 46 52c0 14-12 20-46 20S14 80 14 66z" fill="#fff" stroke="#ffb3cf" stroke-width="3"/><rect x="33" y="34" width="54" height="36" rx="10" fill="#2b2140"/><ellipse cx="49" cy="51" rx="5" ry="6.5" fill="#7ef0c8"/><ellipse cx="71" cy="51" rx="5" ry="6.5" fill="#7ef0c8"/><path d="M53 61q7 6 14 0" stroke="#ff8fb8" stroke-width="3" fill="none" stroke-linecap="round"/><ellipse cx="38" cy="64" rx="5" ry="3" fill="#ffb3cf" opacity=".6"/><ellipse cx="82" cy="64" rx="5" ry="3" fill="#ffb3cf" opacity=".6"/></svg>
   <div class="kicker">panduan · rzmong · v0.5.5</div>
-  <h1>📖 Cara memakai Mochi</h1>
-  <p><a href="index.html">Instalasi</a> · <a href="pengaturan.html">Pengaturan</a> · <a href="hardware.html">Merakit</a> · <a href="pemasangan.html">Demo rakit</a> · <a href="studio.html">Studio</a></p>
+  <h1>📖 Cara memakai <span>Mochi</span></h1>
+  <p class="sub">Wi-Fi, kontrol sentuh, tema & media, Studio, dan troubleshooting firmware 0.5.5.</p>
 </header>
-<main>
+<nav class="tabs"><div class="wrap narrow">
+  <a href="index.html">🍡 Instalasi</a><a href="panduan.html" class="on" aria-current="page">📖 Panduan</a><a href="hardware.html">🔧 Merakit</a><a href="pemasangan.html">🟩 Demo rakit</a><a href="studio.html">🎨 Studio</a><a href="pengaturan.html">⚙️ Pengaturan</a><a href="https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1">🖼️ Tema</a>
+</div></nav>
+<main class="wrap narrow">
 
 <div class="card">
 <h2>🍡 Model & firmware</h2>
-<table>
+<div class="tbl"><table>
 <tr><th>Firmware</th><td><code>0.5.5</code> — flash dari halaman instalasi</td></tr>
 <tr><th>Hardware</th><td>ESP32-C3 Super Mini + ST7789 1.3" 240×240 GMT130 (PCB 27.78×39.22 mm, 7 pin tanpa CS)</td></tr>
-</table>
+</table></div>
 </div>
 
 <div class="card">
 <h2>📶 Wi-Fi</h2>
-<table>
+<div class="tbl"><table>
 <tr><th>SSID</th><td><code>rzmong mochi</code></td></tr>
 <tr><th>Password</th><td><code>rzmong123</code></td></tr>
-</table>
-<p style="color:#8b95a7;font-size:13px;margin:10px 0 0">Ganti di firmware: <code>MOCHI_AP_NAME</code> / <code>MOCHI_AP_PASS</code> di <code>MochiRzmong.h</code>. Pengaturan offline: <code>http://192.168.4.1/</code>.</p>
+</table></div>
+<p class="hint">Ganti di firmware: <code>MOCHI_AP_NAME</code> / <code>MOCHI_AP_PASS</code> di <code>MochiRzmong.h</code>. Pengaturan offline: <code>http://192.168.4.1/</code>.</p>
 </div>
 
 <div class="card">
 <h2>👆 Kontrol sentuh (0.5.5)</h2>
-<table>
+<div class="tbl"><table>
 <tr><th>Mode</th><th>Gestur</th><th>Aksi</th></tr>
 <tr><td>Putar GIF</td><td>Ketuk 1×</td><td>Reaksi + SFX</td></tr>
 <tr><td>Putar GIF</td><td>Ketuk 2×</td><td>Menu LCD</td></tr>
@@ -53,7 +45,7 @@ a{color:#54a0ff}
 <tr><td>Notifikasi Chronos</td><td>Ketuk 1×</td><td>Tutup notif</td></tr>
 <tr><td>Panggilan Chronos</td><td>Tahan 0,6 dtk</td><td>Aksi panggilan</td></tr>
 <tr><td>Navigasi Chronos</td><td>Ketuk 2×</td><td>Sembunyi overlay</td></tr>
-</table>
+</table></div>
 </div>
 
 <div class="card">
@@ -78,16 +70,16 @@ a{color:#54a0ff}
 
 <div class="card">
 <h2>🛠️ Troubleshooting</h2>
-<table>
+<div class="tbl"><table>
 <tr><td>Wi-Fi tidak muncul</td><td>Flash <b>0.5.5</b>; SSID <code>rzmong mochi</code></td></tr>
 <tr><td>Pengaturan Pages gagal</td><td>Mixed content — buka <code>http://192.168.4.1/</code></td></tr>
 <tr><td>Upload gagal</td><td>SD terpasang, MISO=GPIO3, sambung AP</td></tr>
 <tr><td>Gambar terbalik</td><td>Default 0.5.5 = rotasi 2 (LCD pin di bawah). Menu LCD → <b>Rotasi layar</b> 2× untuk membalik 180°</td></tr>
 <tr><td>GIF terlalu besar</td><td>Studio target ≤599 KB</td></tr>
 <tr><td>Layar / boot aneh</td><td>Jangan pakai pin lama RST=8 / MISO=2 / DIN=9 — lihat <a href="hardware.html">blueprint</a></td></tr>
-</table>
+</table></div>
 </div>
 
 </main>
-<footer style="color:#8b95a7;font-size:12px;padding:20px 22px 40px">© rzmong · MIT · v0.5.5</footer>
+<footer>© rzmong · MIT · v0.5.5</footer>
 </body></html>

@@ -5,17 +5,21 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <title>Studio tema - Mochi rzmong</title>
-<link rel="stylesheet" href="./studio.css?v=7"/>
+<link rel="stylesheet" href="./mochi.css?v=1"/>
+<link rel="stylesheet" href="./studio.css?v=8"/>
 </head>
 <body>
-<header>
+<header class="hero wrap slim">
+  <svg class="mochi" viewBox="0 0 120 96" aria-hidden="true"><ellipse cx="60" cy="88" rx="36" ry="5" fill="#f6c6d9" opacity=".6"/><path d="M14 66c0-30 20-52 46-52s46 22 46 52c0 14-12 20-46 20S14 80 14 66z" fill="#fff" stroke="#ffb3cf" stroke-width="3"/><rect x="33" y="34" width="54" height="36" rx="10" fill="#2b2140"/><ellipse cx="49" cy="51" rx="5" ry="6.5" fill="#7ef0c8"/><ellipse cx="71" cy="51" rx="5" ry="6.5" fill="#7ef0c8"/><path d="M53 61q7 6 14 0" stroke="#ff8fb8" stroke-width="3" fill="none" stroke-linecap="round"/><ellipse cx="38" cy="64" rx="5" ry="3" fill="#ffb3cf" opacity=".6"/><ellipse cx="82" cy="64" rx="5" ry="3" fill="#ffb3cf" opacity=".6"/></svg>
   <div class="kicker">studio · rzmong · v0.5.5</div>
-  <h1>🎨 Studio + Upload</h1>
-  <p class="hint">Target GIF max 599 KB. Tries longer duration first (up to 8s), then lowers quality.</p>
-  <p class="hint warn">Upload: Wi-Fi rzmong mochi / rzmong123 · firmware 0.5.5 + SD</p>
-  <p><a href="index.html">Install</a> · <a href="pengaturan.html">Settings</a> · <a href="panduan.html">Guide</a></p>
+  <h1>🎨 Studio <span>+ Upload</span></h1>
+  <p class="sub">Target GIF max 599 KB. Tries longer duration first (up to 8s), then lowers quality.</p>
+  <div class="chips"><span class="chip">📶 Wi-Fi rzmong mochi / rzmong123</span><span class="chip">⚡ firmware 0.5.5 + SD</span></div>
 </header>
-<main>
+<nav class="tabs"><div class="wrap narrow">
+  <a href="index.html">🍡 Instalasi</a><a href="panduan.html">📖 Panduan</a><a href="hardware.html">🔧 Merakit</a><a href="pemasangan.html">🟩 Demo rakit</a><a href="studio.html" class="on" aria-current="page">🎨 Studio</a><a href="pengaturan.html">⚙️ Pengaturan</a><a href="https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1">🖼️ Tema</a>
+</div></nav>
+<main class="wrap slim">
 <div class="card">
   <label>Mochi address (AP)</label>
   <input id="host" value="http://192.168.4.1"/>
@@ -36,7 +40,7 @@
   <input type="file" id="vid" accept="video/*,image/gif,.gif,.mp4,.webm,.mov"/>
   <label>Sound optional (overrides video audio)</label>
   <input type="file" id="sfx" accept="audio/*,.mp3,.wav,.m4a,.ogg"/>
-  <button id="btnConvert">1. Convert and Preview</button>
+  <button id="btnConvert" class="primary">1. Convert and Preview</button>
   <p id="status" class="hint"></p>
   <div id="log"></div>
   <div id="previewBox" class="preview-box">

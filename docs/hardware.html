@@ -5,30 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate"/>
 <title>🔧 Merakit Mochi — rzmong</title>
+<link rel="stylesheet" href="./mochi.css?v=1"/>
 <style>
-:root{--bg:#0e1116;--card:#171b22;--line:#2a3140;--ink:#eef2f7;--muted:#8b95a7}
-*{box-sizing:border-box}body{margin:0;font-family:ui-sans-serif,system-ui,sans-serif;background:var(--bg);color:var(--ink)}
-header,main,footer{max-width:900px;margin:0 auto;padding:0 22px}
-header{padding-top:28px}h1{margin:6px 0}h2{margin:0 0 10px;font-size:20px}
-a{color:#54a0ff}
-.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:18px;margin:12px 0}
-table{width:100%;border-collapse:collapse;font-size:14px}
-td,th{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top}
-code,pre{background:#10141b;border-radius:8px}
-code{padding:1px 6px}pre{padding:12px;overflow:auto;font-size:12px;line-height:1.45}
-.kicker{letter-spacing:.2em;text-transform:uppercase;font-size:11px;color:var(--muted)}
-ol,ul{color:#d5dbe6;line-height:1.55}
-.warn{color:#ffb86c}
-.ok{color:#50fa7b}
-img.wire{width:100%;border-radius:12px;border:1px solid var(--line);background:#fff}
+pre{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.tbl+.tbl,.tbl+p{margin-top:10px}
 </style></head>
 <body>
-<header>
+<header class="hero wrap narrow">
+  <svg class="mochi" viewBox="0 0 120 96" aria-hidden="true"><ellipse cx="60" cy="88" rx="36" ry="5" fill="#f6c6d9" opacity=".6"/><path d="M14 66c0-30 20-52 46-52s46 22 46 52c0 14-12 20-46 20S14 80 14 66z" fill="#fff" stroke="#ffb3cf" stroke-width="3"/><rect x="33" y="34" width="54" height="36" rx="10" fill="#2b2140"/><ellipse cx="49" cy="51" rx="5" ry="6.5" fill="#7ef0c8"/><ellipse cx="71" cy="51" rx="5" ry="6.5" fill="#7ef0c8"/><path d="M53 61q7 6 14 0" stroke="#ff8fb8" stroke-width="3" fill="none" stroke-linecap="round"/><ellipse cx="38" cy="64" rx="5" ry="3" fill="#ffb3cf" opacity=".6"/><ellipse cx="82" cy="64" rx="5" ry="3" fill="#ffb3cf" opacity=".6"/></svg>
   <div class="kicker">blueprint · rzmong · v0.5.5</div>
-  <h1>🔧 Cara merakit Mochi (model terbaru)</h1>
-  <p><a href="index.html">🍡 Instalasi</a> · <a href="panduan.html">📖 Cara pakai</a> · <a href="pemasangan-kabel.html">🧵 Demo rakit (kabel)</a> · <a href="pemasangan.html">🟩 Demo rakit (PCB)</a> · <a href="https://github.com/rz7mong/mochi-rzmong">🐙 GitHub</a></p>
+  <h1>🔧 Cara merakit <span>Mochi</span> (model terbaru)</h1>
+  <p class="sub">Komponen, pin firmware 0.5.5, power, case 3D, dan urutan rakit — versi kabel lepas dan PCB carrier.</p>
+  <div class="chips"><a class="chip" href="pemasangan-kabel.html" style="text-decoration:none">🧵 Demo rakit (kabel)</a><a class="chip" href="pemasangan.html" style="text-decoration:none">🟩 Demo rakit (PCB)</a><a class="chip" href="https://github.com/rz7mong/mochi-rzmong" style="text-decoration:none">🐙 GitHub</a></div>
 </header>
-<main>
+<nav class="tabs"><div class="wrap narrow">
+  <a href="index.html">🍡 Instalasi</a><a href="panduan.html">📖 Panduan</a><a href="hardware.html" class="on" aria-current="page">🔧 Merakit</a><a href="pemasangan.html">🟩 Demo rakit</a><a href="studio.html">🎨 Studio</a><a href="pengaturan.html">⚙️ Pengaturan</a><a href="https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1">🖼️ Tema</a>
+</div></nav>
+<main class="wrap narrow">
 
 <div class="card">
 <h2>Model yang didukung firmware 0.5.5</h2>
@@ -38,12 +31,12 @@ img.wire{width:100%;border-radius:12px;border:1px solid var(--line);background:#
 <li>LCD <b>1.54"</b> (PCB ~32 mm) <b>tidak</b> muat case ini — jangan pakai tanpa redesign STL.</li>
 <li>Jangan pakai ESP32-WROOM / DevKit besar.</li>
 </ul>
-<p class="warn">Skema lama (TFT RST=GPIO8, SD MISO=GPIO2, I2S DIN=GPIO9) <b>salah untuk firmware ini</b>. Diagram di bawah sudah pin 0.5.5 (pin sama sejak 0.5.1). Pin ini <b>bukan boot-safe</b>.</p>
+<p class="note">Skema lama (TFT RST=GPIO8, SD MISO=GPIO2, I2S DIN=GPIO9) <b>salah untuk firmware ini</b>. Diagram di bawah sudah pin 0.5.5 (pin sama sejak 0.5.1). Pin ini <b>bukan boot-safe</b>.</p>
 </div>
 
 <div class="card">
 <h2>🛒 Komponen</h2>
-<table>
+<div class="tbl"><table>
 <tr><th>Bagian</th><th>Spesifikasi</th></tr>
 <tr><td>Otak</td><td>ESP32-C3 Super Mini, flash 4 MB, USB-C native</td></tr>
 <tr><td>Layar</td><td>ST7789 IPS 1.3" 240×240 GMT130-V1.0, SPI 7 pin tanpa CS. PCB 27.78×39.22 mm, kaca 26.16×29.22 mm (tebal ≤1.5 mm), area aktif 23.40×23.40 mm, lubang Ø2 mm 2.5 mm dari tepi (jarak 22.78×34.22 mm)</td></tr>
@@ -55,10 +48,10 @@ img.wire{width:100%;border-radius:12px;border:1px solid var(--line);background:#
 <tr><td>Kapasitor amp</td><td><b>~470 µF / ≥10 V</b> di VIN MAX98357 ke GND</td></tr>
 <tr><td>SD</td><td>Modul microSD SPI <b>native 3.3V</b> + kartu FAT32 — bukan reader 5V</td></tr>
 <tr><td>Case</td><td>Kulit luar + tatakan GMT130 (jendela 23.6×23.6 mm) — STL resmi di bawah</td></tr>
-</table>
+</table></div>
 <h3 style="margin:16px 0 6px;font-size:16px">Varian PCB carrier (opsional)</h3>
-<p style="color:#8b95a7;font-size:13px">Semua modul di satu <a href="https://github.com/rz7mong/mochi-rzmong/tree/main/pcb">PCB etsa tangan</a> 38.5×36 mm (satu sisi, FR4 1.6 mm, THT). Pin sama. Varian kabel lepas di atas tetap didukung. Part yang <b>berbeda</b>:</p>
-<table>
+<p class="hint">Semua modul di satu <a href="https://github.com/rz7mong/mochi-rzmong/tree/main/pcb">PCB etsa tangan</a> 38.5×36 mm (satu sisi, FR4 1.6 mm, THT). Pin sama. Varian kabel lepas di atas tetap didukung. Part yang <b>berbeda</b>:</p>
+<div class="tbl"><table>
 <tr><th>Bagian</th><th>Varian PCB</th></tr>
 <tr><td>Case</td><td><code>case_luar_lcd_23_40mm_pcb.stl</code> (grille speaker, slot saklar) + <code>tatakan_GMT130_fit_pcb.stl</code> (2 tiang M2)</td></tr>
 <tr><td>Speaker</td><td><b>15×11×3.5 mm</b> persegi, 4–8Ω (bulat 20 mm tidak muat)</td></tr>
@@ -68,15 +61,15 @@ img.wire{width:100%;border-radius:12px;border:1px solid var(--line);background:#
 <tr><td>Saklar</td><td>Saklar geser siku, di luar PCB (kabel), lewat slot baru di dinding belakang</td></tr>
 <tr><td>Baut</td><td>2× M2×16 dari bawah tatakan + mur M2 / standoff di atas PCB</td></tr>
 <tr><td>Kabel</td><td>26 AWG untuk GND gabungan dan SW.B; Kynar 30 AWG untuk jumper JP3/JP4</td></tr>
-</table>
+</table></div>
 </div>
 
 <div class="card">
 <h2>Pin firmware 0.5.5</h2>
 <p>Ikuti tabel dan diagram ini saat solder. Gambar resmi firmware 0.5.5 — sama dengan <code>MochiRzmong.h</code> + <code>User_Setup_ST7789.h</code>.</p>
 <p><img class="wire" src="wiring-0.5.1.jpg" alt="Wiring diagram Mochi rzmong firmware 0.5.5"/></p>
-<p style="color:#8b95a7;font-size:13px">LCD GMT130 (7 pin) tidak punya kaki CS: biarkan GPIO7 kosong, firmware tetap mendefinisikan CS=GPIO7 (tidak mengganggu). Sambungkan hanya jika modulmu ada CS. Kabel LCD disolder langsung ke pad (tanpa pin header). GPIO2 dan GPIO9 tetap kosong. Saklar di jalur TP OUT+, elko ~470 µF di VIN–GND MAX. SD di foto adalah shield SPI, diberi 3V3 — bukan reader 5V.</p>
-<table>
+<p class="hint">LCD GMT130 (7 pin) tidak punya kaki CS: biarkan GPIO7 kosong, firmware tetap mendefinisikan CS=GPIO7 (tidak mengganggu). Sambungkan hanya jika modulmu ada CS. Kabel LCD disolder langsung ke pad (tanpa pin header). GPIO2 dan GPIO9 tetap kosong. Saklar di jalur TP OUT+, elko ~470 µF di VIN–GND MAX. SD di foto adalah shield SPI, diberi 3V3 — bukan reader 5V.</p>
+<div class="tbl"><table>
 <tr><th>Modul</th><th>Sinyal</th><th>GPIO</th><th>Catatan</th></tr>
 <tr><td>Touch</td><td>OUT</td><td><b>1</b></td><td>TTP223 HIGH saat sentuh</td></tr>
 <tr><td rowspan="4">SD</td><td>SCK</td><td><b>4</b></td><td rowspan="4">SPI <b>berbagi</b> SCK/MOSI dengan TFT. Modul harus <b>3.3V native</b>.</td></tr>
@@ -92,7 +85,7 @@ img.wire{width:100%;border-radius:12px;border:1px solid var(--line);background:#
 <tr><td>LRC / WS</td><td><b>20</b></td></tr>
 <tr><td>DIN</td><td><b>8</b></td></tr>
 <tr><td>Strapping</td><td>—</td><td><b>2, 9</b></td><td class="warn"><b>Biarkan tidak terhubung</b></td></tr>
-</table>
+</table></div>
 <pre>
 ESP32-C3 Super Mini (firmware 0.5.5)
                  ┌───────────────────┐
@@ -112,7 +105,7 @@ ESP32-C3 Super Mini (firmware 0.5.5)
 
 <div class="card">
 <h2>⚡ Power</h2>
-<p style="color:#8b95a7;font-size:13px">Beban tetap terpasang saat charging membuat terminasi TP4056 kurang akurat. Ideal: saklar memutus beban saat charge.</p>
+<p class="hint">Beban tetap terpasang saat charging membuat terminasi TP4056 kurang akurat. Ideal: saklar memutus beban saat charge.</p>
 <pre>
 LiPo → TP4056 (+DW01) → Saklar → VIN ESP32 + VIN MAX98357
 ESP32 3V3 → LCD + SD + TTP223
@@ -136,14 +129,14 @@ MAX98357 VIN — kapasitor ~470 µF ke GND, sedekat mungkin ke modul
 <li>Artwork etsa PCB + urutan rakit: <a href="https://github.com/rz7mong/mochi-rzmong/tree/main/pcb">pcb/</a></li>
 </ul>
 <p><img class="wire" src="https://raw.githubusercontent.com/rz7mong/mochi-rzmong/main/case/preview_tatakan_GMT130_assembly_front.png" alt="Pratinjau tatakan GMT130 di dalam case (biru muda = area aktif 23.4 mm)" style="max-width:420px"/></p>
-<p style="color:#8b95a7;font-size:13px">Asumsi: PCB 1.6 mm, kaca ≤1.5 mm, sambungan solder di belakang pin ≤2 mm. Belum dicetak uji — cetak tatakan dulu dan cek pas sebelum merakit. Detail: <a href="https://github.com/rz7mong/mochi-rzmong/tree/main/case">case/README.md</a>.</p>
+<p class="hint">Asumsi: PCB 1.6 mm, kaca ≤1.5 mm, sambungan solder di belakang pin ≤2 mm. Belum dicetak uji — cetak tatakan dulu dan cek pas sebelum merakit. Detail: <a href="https://github.com/rz7mong/mochi-rzmong/tree/main/case">case/README.md</a>.</p>
 <p>Folder: <a href="https://github.com/rz7mong/mochi-rzmong/tree/main/case">github.com/rz7mong/mochi-rzmong/tree/main/case</a></p>
 <p>Cetak PLA, layer 0.2 mm, infill 15–20%.</p>
 </div>
 
 <div class="card">
 <h2>🔊 Speaker & amp</h2>
-<p class="warn">Jangan sambung speaker ke GPIO — hanya lewat MAX98357 OUT+/OUT−. Bunyi “plok” saat boot bisa muncul karena UART0 di GPIO20/21.</p>
+<p class="note">Jangan sambung speaker ke GPIO — hanya lewat MAX98357 OUT+/OUT−. Bunyi “plok” saat boot bisa muncul karena UART0 di GPIO20/21.</p>
 <p>Wajib: kapasitor elektrolit <b>~470 µF, ≥10 V</b> antara VIN MAX98357 dan GND (kaki + ke VIN). Tanpa ini amp mudah ceklek saat bass.</p>
 </div>
 
@@ -171,7 +164,7 @@ MAX98357 VIN — kapasitor ~470 µF ke GND, sedekat mungkin ke modul
 
 <div class="card">
 <h2>⚠️ Troubleshooting rakit</h2>
-<table>
+<div class="tbl"><table>
 <tr><td>Layar putih/hitam</td><td>RST=<b>0</b>, DC=10, SCLK=4, MOSI=6, BLK=3V3 (CS=7 hanya jika modul punya kaki CS)</td></tr>
 <tr><td>Gambar terbalik</td><td>Default 0.5.5 = rotasi 2 (LCD pin di bawah). Menu LCD → <b>Rotasi layar</b> 2× untuk membalik 180°</td></tr>
 <tr><td>SD gagal</td><td>FAT32, modul <b>3.3V native</b>, MISO=<b>3</b>, CS=5; <b>bukan GPIO2</b></td></tr>
@@ -180,9 +173,9 @@ MAX98357 VIN — kapasitor ~470 µF ke GND, sedekat mungkin ke modul
 <tr><td>Plok saat boot</td><td>UART0 di 20/21 + strapping GPIO8 — uji di hardware</td></tr>
 <tr><td>LCD 1.54" longgar</td><td>Salah model — case ini untuk 1.3" GMT130 27.78×39.22 mm</td></tr>
 <tr><td>LCD 1.3" goyang di tatakan</td><td>Masih pakai tatakan lama (23×40 mm). Cetak <b>tatakan_GMT130_fit.stl</b></td></tr>
-</table>
+</table></div>
 </div>
 
 </main>
-<footer style="color:#8b95a7;font-size:12px;padding:16px 22px 40px">MIT © rzmong · v0.5.5 · pin = firmware/include</footer>
+<footer>MIT © rzmong · v0.5.5 · pin = firmware/include</footer>
 </body></html>
