@@ -293,29 +293,34 @@ void brandMark(){if(!showWm)return; tft.setTextColor(C_DIM,TFT_BLACK); tft.drawS
 static const uint8_t SEG7[10]={0x3F,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x7F,0x6F};
 static int clockDrawn=-1;
 static const char *WD[7]={"SUN","MON","TUE","WED","THU","FRI","SAT"};
-static void eye(int cx, int cy, int open, int tilt){
-  tft.fillRect(cx-48, cy-42, 96, 84, TFT_BLACK);
-  if(open<=0){ tft.fillRoundRect(cx-32, cy-2, 64, 6, 3, TFT_WHITE); return; }
-  tft.fillCircle(cx, cy+10, 36, TFT_WHITE);
-  int lift=6+open*4;
-  tft.fillCircle(cx+tilt, cy-lift, 34, TFT_BLACK);
-  tft.fillCircle(cx+tilt/2, cy-lift-8, 26, TFT_BLACK);
-  tft.fillRect(cx-42, cy-44, 84, 14, TFT_BLACK);
+static void eye(int cx, int cy, int open){
+  tft.fillRect(cx-28, cy-20, 56, 42, TFT_BLACK);
+  tft.fillRoundRect(cx-24, cy-8, 48, 20, 8, TFT_WHITE);
+  if(open<=0){
+    tft.fillRoundRect(cx-24, cy-8, 48, 16, 6, TFT_BLACK);
+    tft.drawWideLine(cx-22, cy+2, cx+22, cy+2, 2, TFT_WHITE, TFT_BLACK);
+    return;
+  }
+  int lid=18-open*3; if(lid<0) lid=0;
+  tft.fillCircle(cx, cy+2, 7, 0x4A69);
+  tft.fillCircle(cx, cy+2, 3, TFT_BLACK);
+  tft.fillCircle(cx-2, cy, 1, TFT_WHITE);
+  if(lid>0) tft.fillRoundRect(cx-24, cy-10, 48, lid, 4, TFT_BLACK);
 }
 static void blob(int x,int y,int w,int h){ tft.fillRoundRect(x,y,w,h,h/2,TFT_WHITE); }
 static void ring(int x,int y,int w,int h,int t){
-  tft.fillRoundRect(x,y,w,h,h/2,TFT_WHITE);
-  tft.fillRoundRect(x+t,y+t,w-2*t,h-2*t,(h-2*t)/2,TFT_BLACK);
+  tft.fillRoundRect(x,y,w,h,h/3,TFT_WHITE);
+  tft.fillRoundRect(x+t,y+t,w-2*t,h-2*t,(h-2*t)/3,TFT_BLACK);
 }
 static void digitR(int x,int y,int d){
-  int w=40,h=58,t=10;
+  int w=36,h=46,t=8;
   if(d==0) ring(x,y,w,h,t);
-  else if(d==1) blob(x+w-t-4,y,t,h);
-  else if(d==2){ ring(x,y,w,h/2+2,t); blob(x,y+h-t,w,t); blob(x,y+h/2-4,t,h/2); }
+  else if(d==1) blob(x+w-t-2,y,t,h);
+  else if(d==2){ ring(x,y,w,h/2+2,t); blob(x,y+h-t,w,t); blob(x,y+h/2-2,t,h/2); }
   else if(d==3){ ring(x,y,w,h/2+2,t); ring(x,y+h/2-2,w,h/2+2,t); }
-  else if(d==4){ blob(x,y,t,h/2+4); blob(x,y+h/2-t/2,w,t); blob(x+w-t,y,t,h); }
-  else if(d==5){ blob(x,y,w,t); blob(x,y,t,h/2); ring(x,y+h/2-4,w,h/2+4,t); }
-  else if(d==6){ blob(x,y,t,h); ring(x,y+h/2-4,w,h/2+4,t); blob(x,y,w,t); }
+  else if(d==4){ blob(x,y,t,h/2+2); blob(x,y+h/2-t/2,w,t); blob(x+w-t,y,t,h); }
+  else if(d==5){ blob(x,y,w,t); blob(x,y,t,h/2); ring(x,y+h/2-2,w,h/2+2,t); }
+  else if(d==6){ blob(x,y,t,h); ring(x,y+h/2-2,w,h/2+2,t); blob(x,y,w,t); }
   else if(d==7){ blob(x,y,w,t); blob(x+w-t,y,t,h); }
   else if(d==8){ ring(x,y,w,h/2+2,t); ring(x,y+h/2-2,w,h/2+2,t); }
   else ring(x,y,w,h/2+2,t), blob(x+w-t,y,t,h), blob(x,y+h-t,w,t);
@@ -331,30 +336,30 @@ void drawClock(){
   if(linked){
     int wd=watch.getDayofWeek(); if(wd<0||wd>6) wd=0;
     char top[8]; snprintf(top,sizeof(top),"%02d", watch.getDay());
-    tft.drawCentreString(top,70,12,4);
-    tft.drawCentreString(WD[wd],170,18,2);
-    int x=14, y=42, gap=8;
-    digitR(x,y,h/10); x+=40+gap;
-    digitR(x,y,h%10); x+=40+2;
+    tft.drawCentreString(top,70,8,4);
+    tft.drawCentreString(WD[wd],170,14,2);
+    int x=18, y=36, gap=6;
+    digitR(x,y,h/10); x+=36+gap;
+    digitR(x,y,h%10); x+=36+2;
     uint16_t col=(s&1)?TFT_WHITE:TFT_BLACK;
-    tft.fillCircle(x+5, y+18, 4, col); tft.fillCircle(x+5, y+38, 4, col);
-    x+=16;
-    digitR(x,y,m/10); x+=40+gap;
+    tft.fillCircle(x+4, y+14, 3, col); tft.fillCircle(x+4, y+30, 3, col);
+    x+=14;
+    digitR(x,y,m/10); x+=36+gap;
     digitR(x,y,m%10);
   } else {
-    tft.drawCentreString("--",70,12,4);
-    tft.drawCentreString("---",170,18,2);
-    tft.drawCentreString("--:--",120,56,4);
+    tft.drawCentreString("--",70,8,4);
+    tft.drawCentreString("---",170,14,2);
+    tft.drawCentreString("--:--",120,48,4);
   }
   int blink=(s%5==0)?0:(s%5==1)?2:6;
-  eye(72,156,blink,-8); eye(168,156,blink,8);
+  eye(78,132,blink); eye(162,132,blink);
   tft.setTextColor(TFT_WHITE,TFT_BLACK);
   if(linked){
     char nb[8]; snprintf(nb,sizeof(nb),"%d", watch.getPhoneBattery());
-    tft.drawCentreString(nb,120,204,4);
-  } else tft.drawCentreString("HP",120,204,4);
+    tft.drawCentreString(nb,120,176,4);
+  } else tft.drawCentreString("HP",120,176,4);
   tft.setTextColor(0x4A69,TFT_BLACK);
-  tft.drawCentreString("2x menu",120,226,1);
+  tft.drawCentreString("2x menu",120,214,1);
 }
 void bootMark(){
   tft.fillScreen(C_BG); tft.fillRoundRect(20,80,200,80,16,C_BAR);
