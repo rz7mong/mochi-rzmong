@@ -6,8 +6,8 @@ Target hardware **2026**: ESP32-C3 Super Mini + LCD ST7789 **1.3" 240×240** mod
 
 | File | Fungsi | Ukuran |
 | --- | --- | --- |
-| [case_luar_lcd_23_40mm.stl](./case_luar_lcd_23_40mm.stl) | Kulit luar | 1.4 MB |
-| [tatakan_lcd_23_40mm.stl](./tatakan_lcd_23_40mm.stl) | Dudukan LCD 23×40 mm | 794 KB |
+| [case_luar_lcd_23_40mm.stl](./case_luar_lcd_23_40mm.stl) | Kulit luar | 35.0 MB |
+| [tatakan_lcd_23_40mm.stl](./tatakan_lcd_23_40mm.stl) | Dudukan LCD 23×40 mm | 28.8 MB |
 
 Unduh mentah:
 
@@ -19,6 +19,7 @@ Unduh mentah:
 - Material: PLA (PETG jika dekat TP4056 yang hangat)
 - Layer 0.2 mm, dinding 2, infill 15–20%
 - Support: biasanya tidak perlu jika jendela menghadap plate sesuai desain
+- Resin: permukaan kubah sudah dihaluskan; cetak miring dengan support. Tatakan punya bibir pengunci yang masuk ke celah di dasar case (celah ±0.2 mm, 3 tonjolan penahan di bibir kiri).
 
 ## Isi case yang muat
 
