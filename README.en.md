@@ -11,6 +11,10 @@ Independent open-source project **inspired by** Dasai Mochi — **not affiliated
 
 On device: **GIF + 16-bit WAV only** (no MP4 player, no MP3 decoder).
 
+## Phone clock
+
+Menu **Jam HP** shows phone time from Chronos: date, weekday, blinking eyes every 5 seconds, and phone battery percent. Double-tap returns to the menu.
+
 ## Quick start
 
 1. Chrome / Edge → [installer 0.5.3](https://rz7mong.github.io/mochi-rzmong/) (hold BOOT, plug USB-C).

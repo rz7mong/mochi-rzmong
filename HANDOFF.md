@@ -49,3 +49,6 @@ BLE name `rzmong`. Satu radio 2.4 GHz: AP + BLE bisa lag.
 ## License
 
 **MIT © rzmong** · ChronosESP32 (fbiego)
+
+
+Jam HP: waktu Chronos, mata berkedip, baterai HP. Ketuk 2x menu.

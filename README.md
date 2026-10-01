@@ -19,6 +19,10 @@ Di perangkat: **GIF + WAV 16-bit saja** (tidak ada pemutar MP4, tidak ada decode
 3. Pengaturan (disarankan): **`http://192.168.4.1/`** di AP perangkat.
 4. Pack tema: [Release `assets-v1`](https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1) → ekstrak ke root SD FAT32 (`gif/` + `sfx/`).
 
+## Jam HP
+
+Menu **Jam HP** menampilkan waktu HP lewat Chronos: tanggal, hari, jam, dua mata yang berkedip tiap 5 detik, dan persen baterai HP. Ketuk 2× kembali ke menu. Notifikasi, panggilan, dan navigasi tetap mengalahkan layar jam.
+
 ## Tautan
 
 | | |

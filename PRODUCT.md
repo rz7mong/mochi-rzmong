@@ -10,6 +10,7 @@
 | **Studio** | Convert online, then upload via captive form on AP |
 | **GIF size limit** | max **~600000** bytes upload buffer |
 | **Chronos BLE name** | `rzmong` |
+| **Jam HP** | phone time, blinking eyes, phone battery % |
 | **Theme pack** | Release `assets-v1` |
 | **Media** | GIF 240×240 + WAV 16-bit mono ~22 kHz |
 | **Hardware** | ESP32-C3 Super Mini + ST7789 1.3" 240×240 (PCB 23×40 mm) |

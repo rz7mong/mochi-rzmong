@@ -13,3 +13,6 @@ Salinan web: [handoff.html](handoff.html) · sumber repo: [../HANDOFF.md](https:
 | Hardware | ESP32-C3 Super Mini + ST7789 1.3" 240×240 (23×40 mm) |
 | Media | GIF + WAV 16-bit (bukan MP4/MP3) |
 | License | MIT © rzmong |
+
+
+Jam HP: waktu Chronos, mata berkedip, baterai HP. Ketuk 2x menu.
