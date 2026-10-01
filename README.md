@@ -5,7 +5,7 @@
 
 Desk buddy **ESP32-C3 Super Mini** + LCD **ST7789 1.3" 240×240** (PCB 23×40 mm): wajah **GIF**, reaksi sentuh, **SFX WAV**. Proyek open-source independen — **terinspirasi** Dasai Mochi, **bukan** produk resmi / clone berlisensi.
 
-**Firmware: 0.5.1** · **MIT © rzmong** · English: [README.en.md](README.en.md)
+**Firmware: 0.5.2** · **MIT © rzmong** · English: [README.en.md](README.en.md)
 
 Satu sumber situs/installer: **https://rz7mong.github.io/mochi-rzmong/**  
 (`rz7mong.github.io` tanpa path adalah arsip — jangan flash dari sana.)
@@ -14,7 +14,7 @@ Di perangkat: **GIF + WAV 16-bit saja** (tidak ada pemutar MP4, tidak ada decode
 
 ## Mulai cepat
 
-1. Chrome / Edge → [Instalasi firmware 0.5.1](https://rz7mong.github.io/mochi-rzmong/) (tahan BOOT, colok USB-C).
+1. Chrome / Edge → [Instalasi firmware 0.5.2](https://rz7mong.github.io/mochi-rzmong/) (tahan BOOT, colok USB-C).
 2. Wi-Fi AP default: **`rzmong mochi` / `rzmong123`** — sandi lab; **ganti** `MOCHI_AP_PASS` di firmware lalu flash ulang sebelum dipakai di tempat umum.
 3. Pengaturan (disarankan): **`http://192.168.4.1/`** di AP perangkat.
 4. Pack tema: [Release `assets-v1`](https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1) → ekstrak ke root SD FAT32 (`gif/` + `sfx/`).
@@ -33,7 +33,7 @@ Di perangkat: **GIF + WAV 16-bit saja** (tidak ada pemutar MP4, tidak ada decode
 | Konstanta | [PRODUCT.md](PRODUCT.md) |
 
 
-## Wiring firmware 0.5.1
+## Wiring firmware 0.5.2
 
 Sumber pin: `firmware/include/MochiRzmong.h` + `User_Setup_ST7789.h`.
 
@@ -73,7 +73,7 @@ Blueprint + STL: [hardware.html](https://rz7mong.github.io/mochi-rzmong/hardware
 | Gejala | Cek |
 | --- | --- |
 | Port tidak muncul di Chrome | Pakai **Chrome/Edge** (bukan Safari / in-app). Tahan **BOOT**, colok USB-C, lepas BOOT. Coba kabel data lain. |
-| Wi-Fi tidak ketemu | Flash **0.5.1**. SSID **`rzmong mochi`**, bukan `Mochi-rzmong`. |
+| Wi-Fi tidak ketemu | Flash **0.5.2**. SSID **`rzmong mochi`**, bukan `Mochi-rzmong`. |
 | Sandi ditolak | Default **`rzmong123`**, bukan `rzmong24`. |
 | Layar putih/hitam | RST=**0**, CS=7, DC=10, SCLK=4, MOSI=6, BLK=3V3 |
 | SD gagal | FAT32, modul **3.3V native**, MISO=**3**, CS=5 — bukan GPIO2 |

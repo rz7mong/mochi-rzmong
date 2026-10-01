@@ -548,6 +548,7 @@ void setup(){
 }
 void loop(){
   serviceNet();
+  if(chronosOn && findUntil){ serviceChronosFind(); menuDirty=true; delay(30); return; }
   static bool ringerDrew=false;
   if(!(chronosOn && ringerOn)) ringerDrew=false;
   if(chronosOn && ringerOn){

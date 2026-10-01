@@ -1,3 +1,4 @@
+uint32_t findUntil=0;
 
 // chronos_ui.inc — Chronos full + nav (dirty redraw)
 // Touch: Notif=1x · Ringer=hold 0.6s · Nav=2x hide · Menu/play unchanged
@@ -103,7 +104,7 @@ void onChronosRinger(String caller, bool state){
 void onChronosConfig(Config config, uint32_t a, uint32_t b){
   if(config==CF_FIND){
     playJingleMs(700);
-    for(int i=0;i<3;i++){ tft.fillScreen(C_YEL); delay(120); tft.fillScreen(C_BG); delay(80); }
+    findUntil = millis()+700;
   } else if(config==CF_TIME){
     Serial.printf("[chronos] time %s\n", watch.getTimeDate().c_str());
   } else if(config==CF_NAV_DATA){
@@ -136,4 +137,11 @@ void chronosApply(){
     if(watch.isRunning()) watch.stop();
     Serial.println("[chronos] BLE off");
   }
+}
+
+void serviceChronosFind(){
+  if(!findUntil) return;
+  if((int32_t)(millis()-findUntil)>=0){ findUntil=0; return; }
+  if(((millis()/120)&1)==0) tft.fillScreen(C_YEL);
+  else tft.fillScreen(C_BG);
 }

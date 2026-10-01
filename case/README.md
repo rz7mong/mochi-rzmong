@@ -33,4 +33,4 @@ Unduh mentah:
 
 Tidak muat: PAM8403, ESP32 DevKit besar, LCD 1.54".
 
-Panduan rakit + pin firmware 0.5.1: https://rz7mong.github.io/mochi-rzmong/hardware.html
+Panduan rakit + pin firmware 0.5.2: https://rz7mong.github.io/mochi-rzmong/hardware.html

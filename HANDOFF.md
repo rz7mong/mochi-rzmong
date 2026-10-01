@@ -1,4 +1,4 @@
-# HANDOFF — Mochi rzmong v0.5.1
+# HANDOFF — Mochi rzmong v0.5.2
 
 **Repo:** https://github.com/rz7mong/mochi-rzmong  
 **Pages:** https://rz7mong.github.io/mochi-rzmong/  
