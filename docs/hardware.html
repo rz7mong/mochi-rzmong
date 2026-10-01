@@ -56,6 +56,19 @@ img.wire{width:100%;border-radius:12px;border:1px solid var(--line);background:#
 <tr><td>SD</td><td>Modul microSD SPI <b>native 3.3V</b> + kartu FAT32 — bukan reader 5V</td></tr>
 <tr><td>Case</td><td>Kulit luar + tatakan GMT130 (jendela 23.6×23.6 mm) — STL resmi di bawah</td></tr>
 </table>
+<h3 style="margin:16px 0 6px;font-size:16px">Varian PCB carrier (opsional)</h3>
+<p style="color:#8b95a7;font-size:13px">Semua modul di satu <a href="https://github.com/rz7mong/mochi-rzmong/tree/main/pcb">PCB etsa tangan</a> 38.5×36 mm (satu sisi, FR4 1.6 mm, THT). Pin sama. Varian kabel lepas di atas tetap didukung. Part yang <b>berbeda</b>:</p>
+<table>
+<tr><th>Bagian</th><th>Varian PCB</th></tr>
+<tr><td>Case</td><td><code>case_luar_lcd_23_40mm_pcb.stl</code> (grille speaker, slot saklar) + <code>tatakan_GMT130_fit_pcb.stl</code> (2 tiang M2)</td></tr>
+<tr><td>Speaker</td><td><b>15×11×3.5 mm</b> persegi, 4–8Ω (bulat 20 mm tidak muat)</td></tr>
+<tr><td>Kapasitor amp</td><td><b>470 µF 10 V Ø6.3×11</b>, tegak (Ø8 tidak muat)</td></tr>
+<tr><td>SD</td><td>Modul micro SD <b>3.3 V native</b> kecil <b>±18.5×20 mm</b>, 6 pin (shield Wemos tidak muat; banyak modul mini butuh 5 V — cek dulu)</td></tr>
+<tr><td>Baterai</td><td>LiPo <b>501640</b> (40×16×5 mm), dimasukkan dengan cara diputar</td></tr>
+<tr><td>Saklar</td><td>Saklar geser siku, di luar PCB (kabel), lewat slot baru di dinding belakang</td></tr>
+<tr><td>Baut</td><td>2× M2×16 dari bawah tatakan + mur M2 / standoff di atas PCB</td></tr>
+<tr><td>Kabel</td><td>26 AWG untuk GND gabungan dan SW.B; Kynar 30 AWG untuk jumper JP3/JP4</td></tr>
+</table>
 </div>
 
 <div class="card">
@@ -116,6 +129,12 @@ MAX98357 VIN — kapasitor ~470 µF ke GND, sedekat mungkin ke modul
 <li><a href="https://github.com/rz7mong/mochi-rzmong/raw/main/case/tatakan_GMT130_fit.stl">tatakan_GMT130_fit.stl</a> — <b>dudukan LCD GMT130</b> 27.78×39.22 mm, pin di bawah (25.9 MB) — <b>pakai ini</b></li>
 <li><a href="https://github.com/rz7mong/mochi-rzmong/raw/main/case/tatakan_lcd_23_40mm.stl">tatakan_lcd_23_40mm.stl</a> — <i>legacy</i>, dibuat dengan asumsi ukuran 23×40 mm yang salah; LCD GMT130 longgar (28.8 MB)</li>
 </ul>
+<p><b>Varian PCB carrier</b> (pakai keduanya bersama, jangan dicampur dengan file di atas):</p>
+<ul>
+<li><a href="https://github.com/rz7mong/mochi-rzmong/raw/main/case/case_luar_lcd_23_40mm_pcb.stl">case_luar_lcd_23_40mm_pcb.stl</a> — kulit luar + grille speaker, slot saklar, pad tumpuan (35.1 MB)</li>
+<li><a href="https://github.com/rz7mong/mochi-rzmong/raw/main/case/tatakan_GMT130_fit_pcb.stl">tatakan_GMT130_fit_pcb.stl</a> — tatakan GMT130 + 2 tiang M2 (23.8 MB)</li>
+<li>Artwork etsa PCB + urutan rakit: <a href="https://github.com/rz7mong/mochi-rzmong/tree/main/pcb">pcb/</a></li>
+</ul>
 <p><img class="wire" src="https://raw.githubusercontent.com/rz7mong/mochi-rzmong/main/case/preview_tatakan_GMT130_assembly_front.png" alt="Pratinjau tatakan GMT130 di dalam case (biru muda = area aktif 23.4 mm)" style="max-width:420px"/></p>
 <p style="color:#8b95a7;font-size:13px">Asumsi: PCB 1.6 mm, kaca ≤1.5 mm, sambungan solder di belakang pin ≤2 mm. Belum dicetak uji — cetak tatakan dulu dan cek pas sebelum merakit. Detail: <a href="https://github.com/rz7mong/mochi-rzmong/tree/main/case">case/README.md</a>.</p>
 <p>Folder: <a href="https://github.com/rz7mong/mochi-rzmong/tree/main/case">github.com/rz7mong/mochi-rzmong/tree/main/case</a></p>
@@ -143,6 +162,7 @@ MAX98357 VIN — kapasitor ~470 µF ke GND, sedekat mungkin ke modul
 <li>Solder urutan: GND bersama → 3V3 → SPI layar → SPI SD → sentuh GPIO1 → I2S 21/20/8.</li>
 <li>Speaker ke OUT amp. Kapasitor 470 µF di VIN amp. Jangan pakai GPIO2 atau GPIO9.</li>
 <li>TP4056 berproteksi → saklar → VIN.</li>
+<li><b>Varian PCB carrier:</b> ikuti urutan di <a href="https://github.com/rz7mong/mochi-rzmong/blob/main/pcb/README.md">pcb/README.md</a> (lem speaker/TTP223/saklar → LiPo diputar masuk → PCB naik lalu geser → tatakan dari bawah → 2 baut M2), lalu lanjut ke flash.</li>
 <li>Flash firmware <b>0.5.4</b> dari <a href="index.html">halaman instalasi</a> (Erase NVS aman; SD tidak terhapus).</li>
 <li>Wi-Fi <code>rzmong mochi</code> / <code>rzmong123</code> → <code>http://192.168.4.1/</code>. Ganti sandi AP di firmware sebelum dipakai di tempat umum.</li>
 </ol>

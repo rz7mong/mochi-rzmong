@@ -1,0 +1,121 @@
+{
+ "esp32c3_supermini_on_headers": {
+  "name": "esp32c3_supermini_on_headers",
+  "lo": [
+   -9.0,
+   10.0,
+   -13.6
+  ],
+  "hi": [
+   9.0,
+   34.0,
+   -6.8
+  ],
+  "fixed": true
+ },
+ "switch_rightangle_rear": {
+  "name": "switch_rightangle_rear",
+  "lo": [
+   7.5,
+   30.0,
+   -13.6
+  ],
+  "hi": [
+   16.3,
+   34.0,
+   -9.6
+  ],
+  "fixed": true
+ },
+ "lcd_pad_row_7pin": {
+  "name": "lcd_pad_row_7pin",
+  "lo": [
+   -9.0,
+   -2.5,
+   -13.6
+  ],
+  "hi": [
+   9.0,
+   0.5,
+   -11.6
+  ],
+  "fixed": true
+ },
+ "tp4056_on_floor": {
+  "name": "tp4056_on_floor",
+  "lo": [
+   -8.5,
+   -3.0,
+   -26.73
+  ],
+  "hi": [
+   8.8,
+   25.0,
+   -21.33
+  ],
+  "fixed": true
+ },
+ "cap_470uF_flat": {
+  "name": "cap_470uF_flat",
+  "lo": [
+   -18.0,
+   -2.5,
+   -13.0
+  ],
+  "hi": [
+   -10.0,
+   11.5,
+   -4.5
+  ],
+  "dims": [
+   8.0,
+   14.0,
+   8.5
+  ],
+  "connector": null,
+  "thickness_axis": "z",
+  "score": 1.2750000000000001
+ },
+ "speaker_20mm": {
+  "name": "speaker_20mm",
+  "lo": [
+   -11.0,
+   -10.0,
+   15.0
+  ],
+  "hi": [
+   10.5,
+   10.0,
+   19.3
+  ],
+  "dims": [
+   21.5,
+   20.0,
+   4.3
+  ],
+  "connector": null,
+  "thickness_axis": "z",
+  "score": -19.3
+ },
+ "battery_LiPo501640": {
+  "name": "battery_LiPo501640",
+  "lo": [
+   -21.0,
+   -3.5,
+   -3.5
+  ],
+  "hi": [
+   21.0,
+   2.0,
+   13.0
+  ],
+  "dims": [
+   42.0,
+   5.5,
+   16.5
+  ],
+  "connector": null,
+  "thickness_axis": "y",
+  "score": -0.07
+ }
+}

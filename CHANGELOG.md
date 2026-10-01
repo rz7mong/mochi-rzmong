@@ -9,6 +9,7 @@
 
 ### Added
 - **Case**: `case/tatakan_GMT130_fit.stl` — tatakan untuk LCD GMT130 27.78×39.22 mm (jendela 23.6×23.6 mm + bevel 1.2 mm, rel samping 28.18 mm + kanal PCB 2.05 mm, lantai 0.6 mm, takik 20 mm untuk kabel solder). Skrip parametrik + cek di `case/scripts/`, pratinjau PNG di `case/`. Belum dicetak uji.
+- **PCB carrier (opsional)**: `pcb/` — PCB etsa tangan satu sisi 38.5×36 mm (FR4 1.6 mm, THT) untuk ESP32-C3, modul micro SD 3.3 V ±18.5×20 mm, MAX98357A, elko 470 µF Ø6.3×11; artwork etsa 1:1, sumber layout v3, catatan rakit. Case/tatakan varian `case/*_pcb.stl` (grille speaker, slot saklar, tiang M2), laporan fit `docs/fit/`, skrip `case/scripts/pcb_fit/`. Varian kabel lepas tetap. Belum dibuat/dicetak uji.
 
 ### Fixed
 - **Docs**: ukuran LCD "23×40 mm" dan "8-pin" salah → **GMT130 27.78×39.22 mm, 7 pin tanpa CS** (area aktif 23.40 mm, lubang Ø2 mm 2.5 mm dari tepi). Catatan pemasangan pin di bawah + kabel solder langsung.

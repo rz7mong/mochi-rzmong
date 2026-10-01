@@ -1,0 +1,240 @@
+{
+ "esp32c3_supermini_on_headers": {
+  "name": "esp32c3_supermini_on_headers",
+  "lo": [
+   -9.0,
+   10.0,
+   -13.6
+  ],
+  "hi": [
+   9.0,
+   32.5,
+   -8.1
+  ],
+  "fixed": true
+ },
+ "esp32c3_usbc_receptacle": {
+  "name": "esp32c3_usbc_receptacle",
+  "lo": [
+   -4.5,
+   26.6,
+   -10.1
+  ],
+  "hi": [
+   4.5,
+   34.0,
+   -6.8999999999999995
+  ],
+  "fixed": true
+ },
+ "switch_rightangle_offboard": {
+  "name": "switch_rightangle_offboard",
+  "lo": [
+   7.2,
+   29.0,
+   -7.9
+  ],
+  "hi": [
+   15.8,
+   33.7,
+   -4.2
+  ],
+  "fixed": true
+ },
+ "switch_handle": {
+  "name": "switch_handle",
+  "lo": [
+   10.5,
+   33.7,
+   -6.8
+  ],
+  "hi": [
+   12.5,
+   37.3,
+   -5.3
+  ],
+  "fixed": true
+ },
+ "lcd_pad_row_7pin": {
+  "name": "lcd_pad_row_7pin",
+  "lo": [
+   -9.0,
+   -2.5,
+   -13.6
+  ],
+  "hi": [
+   9.0,
+   0.5,
+   -11.6
+  ],
+  "fixed": true
+ },
+ "m2_nut_L": {
+  "name": "m2_nut_L",
+  "lo": [
+   -16.8,
+   -1.8,
+   -13.6
+  ],
+  "hi": [
+   -12.2,
+   2.8,
+   -12.0
+  ],
+  "fixed": true
+ },
+ "m2_nut_R": {
+  "name": "m2_nut_R",
+  "lo": [
+   12.2,
+   -1.8,
+   -13.6
+  ],
+  "hi": [
+   16.8,
+   2.8,
+   -12.0
+  ],
+  "fixed": true
+ },
+ "tp4056_on_floor": {
+  "name": "tp4056_on_floor",
+  "lo": [
+   -8.5,
+   -3.0,
+   -26.73
+  ],
+  "hi": [
+   8.8,
+   25.0,
+   -21.33
+  ],
+  "fixed": true
+ },
+ "battery_LiPo501640": {
+  "name": "battery_LiPo501640",
+  "lo": [
+   -21.0,
+   -3.5,
+   -10.5
+  ],
+  "hi": [
+   21.0,
+   2.0,
+   6.0
+  ],
+  "dims": [
+   42.0,
+   5.5,
+   16.5
+  ],
+  "connector": null,
+  "thickness_axis": "y",
+  "score": -3.605
+ },
+ "sd_mini6pin_edge": {
+  "name": "sd_mini6pin_edge",
+  "lo": [
+   -19.5,
+   4.0,
+   -13.0
+  ],
+  "hi": [
+   -1.0,
+   9.0,
+   9.5
+  ],
+  "dims": [
+   18.5,
+   5.0,
+   22.5
+  ],
+  "connector": null,
+  "thickness_axis": "y",
+  "score": -17.5
+ },
+ "max98357a_edge": {
+  "name": "max98357a_edge",
+  "lo": [
+   1.0,
+   4.0,
+   -13.0
+  ],
+  "hi": [
+   18.8,
+   8.0,
+   8.9
+  ],
+  "dims": [
+   17.8,
+   4.0,
+   21.9
+  ],
+  "connector": null,
+  "thickness_axis": "y",
+  "score": -16.8
+ },
+ "cap_470uF_upright": {
+  "name": "cap_470uF_upright",
+  "lo": [
+   -18.5,
+   10.0,
+   -13.0
+  ],
+  "hi": [
+   -11.7,
+   16.8,
+   0.5
+  ],
+  "dims": [
+   6.8,
+   6.8,
+   13.5
+  ],
+  "connector": null,
+  "thickness_axis": "z",
+  "score": -0.755
+ },
+ "speaker_15x11": {
+  "name": "speaker_15x11",
+  "lo": [
+   -9.0,
+   -5.0,
+   16.5
+  ],
+  "hi": [
+   6.5,
+   6.5,
+   20.5
+  ],
+  "dims": [
+   15.5,
+   11.5,
+   4.0
+  ],
+  "connector": null,
+  "thickness_axis": "z",
+  "score": -20.5
+ },
+ "ttp223_red_15x11": {
+  "name": "ttp223_red_15x11",
+  "lo": [
+   -8.0,
+   -17.0,
+   15.0
+  ],
+  "hi": [
+   8.5,
+   -6.0,
+   18.0
+  ],
+  "dims": [
+   16.5,
+   11.0,
+   3.0
+  ],
+  "connector": null,
+  "thickness_axis": "z",
+  "score": 1.628142806188329
+ }
+}

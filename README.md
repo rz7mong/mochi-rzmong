@@ -43,6 +43,7 @@ Ketukan menu hanya dipakai jika ada kawat sentuh di GPIO1. Tanpa kawat itu, abai
 | Pengaturan online | [docs/pengaturan.html](https://rz7mong.github.io/mochi-rzmong/pengaturan.html) |
 | Handoff | [HANDOFF.md](HANDOFF.md) · [halaman](https://rz7mong.github.io/mochi-rzmong/handoff.html) |
 | Case STL | [case/](case/) |
+| PCB carrier (opsional) | [pcb/](pcb/README.md) |
 | Konstanta | [PRODUCT.md](PRODUCT.md) |
 
 
@@ -82,6 +83,8 @@ CS tidak berbagi: TFT **GPIO7** ≠ SD **GPIO5** ≠ sentuh **GPIO1** ≠ DIN **
 **Amp:** pasang kapasitor **≈470 µF** (elektrolit, ≥10 V) antara **VIN MAX98357 dan GND**, sedekat mungkin ke modul. Tanpa ini amp mudah “ceklek” / brown-out saat bass.
 
 **SD:** modul harus **native 3.3V** (bukan reader 5V / level-shifter 5V). Kartu FAT32. MISO = GPIO3, bukan GPIO2.
+
+**Varian PCB carrier (opsional):** semua modul di atas bisa dipasang di [PCB etsa tangan 38.5 × 36 mm](pcb/README.md) (satu sisi, THT) dengan case/tatakan `_pcb`. Pin sama dengan tabel di atas. Part khusus varian ini: speaker **15 × 11 × 3.5 mm**, kapasitor **470 µF 10 V Ø6.3 × 11** tegak, modul **micro SD 3.3 V kecil ±18.5 × 20 mm**, LiPo **501640**. Rakitan kabel lepas tetap didukung.
 
 Blueprint + STL: [hardware.html](https://rz7mong.github.io/mochi-rzmong/hardware.html).
 

@@ -30,6 +30,8 @@ Pins are **not** “boot-safe”: GPIO8 is a C3 strapping pin (I2S DIN); GPIO20/
 
 The LCD stand [`case/tatakan_GMT130_fit.stl`](case/README.md) holds the screen **pins-down** with wires soldered directly to the pads (no pin header). Since firmware 0.5.4 the default rotation is **2** (180°) so the image is upright; on the old stand / pins-up, use LCD menu → **Rotasi layar** twice, or build with `-DMOCHI_DEFAULT_ROTATION=0`.
 
+Optional **carrier PCB** variant: a single-sided, hand-etched 1.6 mm FR4 THT board (38.5 × 36 mm) that holds the ESP32-C3 Super Mini, a small 3.3 V micro SD module (~18.5 × 20 mm), the MAX98357A and a 470 µF 10 V Ø6.3 × 11 cap, used with `case/case_luar_lcd_23_40mm_pcb.stl` + `case/tatakan_GMT130_fit_pcb.stl`. It needs a 15 × 11 × 3.5 mm speaker and a 501640 LiPo. Etch artwork, assembly order and notes: [pcb/README.md](pcb/README.md), fit report: [docs/fit/REPORT.md](docs/fit/REPORT.md). The loose-wiring build is still supported.
+
 Full pins / case STL / troubleshooting: see [README.md](README.md). Wiring diagram 0.5.4: [docs/wiring-0.5.1.jpg](docs/wiring-0.5.1.jpg).
 
 ## License
