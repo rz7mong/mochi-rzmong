@@ -290,15 +290,30 @@ void playReactGif(){
   gif.close(); sdBusy=false;
 }
 void brandMark(){if(!showWm)return; tft.setTextColor(C_DIM,TFT_BLACK); tft.drawString(MOCHI_BRAND,168,226,1);}
+static const uint8_t SEG7[10]={0x3F,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x7F,0x6F};
 static int clockDrawn=-1;
 static const char *WD[7]={"SUN","MON","TUE","WED","THU","FRI","SAT"};
-static void eye(int cx, int cy, int open){
-  tft.fillRect(cx-42, cy-36, 84, 72, TFT_BLACK);
-  if(open<=0){ tft.fillRoundRect(cx-34, cy-3, 68, 7, 3, TFT_WHITE); return; }
-  tft.fillCircle(cx, cy+6, 32, TFT_WHITE);
-  int cut=36-open*6; if(cut<0) cut=0;
-  tft.fillRect(cx-36, cy-36, 72, cut, TFT_BLACK);
-  tft.fillCircle(cx, cy-18, 16, TFT_BLACK);
+static void eye(int cx, int cy, int open, int tilt){
+  tft.fillRect(cx-46, cy-40, 92, 78, TFT_BLACK);
+  if(open<=0){
+    tft.fillRoundRect(cx-30, cy-2, 60, 6, 3, TFT_WHITE);
+    return;
+  }
+  tft.fillCircle(cx, cy+8, 34, TFT_WHITE);
+  int cut=40-open*5; if(cut<8) cut=8;
+  tft.fillCircle(cx+tilt, cy-cut, 30, TFT_BLACK);
+  tft.fillRect(cx-40, cy-42, 80, 16, TFT_BLACK);
+}
+static void digit(int x, int y, int d, int w, int h){
+  uint8_t m=SEG7[d%10]; int t=h/8; if(t<4) t=4;
+  auto bar=[&](int bx,int by,int bw,int bh,bool lit){ if(lit) tft.fillRoundRect(bx,by,bw,bh,t/2,TFT_WHITE); };
+  bar(x+t, y, w-2*t, t, m&1);
+  bar(x+w-t, y+t, t, h/2-t, m&2);
+  bar(x+w-t, y+h/2, t, h/2-t, m&4);
+  bar(x+t, y+h-t, w-2*t, t, m&8);
+  bar(x, y+h/2, t, h/2-t, m&16);
+  bar(x, y+t, t, h/2-t, m&32);
+  bar(x+t, y+h/2-t/2, w-2*t, t, m&64);
 }
 void drawClock(){
   bool linked=chronosOn && watch.isRunning() && watch.isConnected();
@@ -310,26 +325,31 @@ void drawClock(){
   tft.setTextColor(TFT_WHITE,TFT_BLACK);
   if(linked){
     int wd=watch.getDayofWeek(); if(wd<0||wd>6) wd=0;
-    char top[16]; snprintf(top,sizeof(top),"%02d", watch.getDay());
-    tft.drawCentreString(top,78,16,4);
-    tft.drawCentreString(WD[wd],162,22,2);
-    char tb[8]; snprintf(tb,sizeof(tb),"%02d:%02d", h, m);
-    tft.drawCentreString(tb,120,52,4);
-    tft.drawCentreString(tb,121,53,4);
+    char top[8]; snprintf(top,sizeof(top),"%02d", watch.getDay());
+    tft.drawCentreString(top,72,14,4);
+    tft.drawCentreString(WD[wd],168,20,2);
+    int dw=34, dh=52, y=46, x=28, gap=6;
+    digit(x, y, h/10, dw, dh); x+=dw+gap;
+    digit(x, y, h%10, dw, dh); x+=dw+2;
+    uint16_t col=(s&1)?TFT_WHITE:TFT_BLACK;
+    tft.fillCircle(x+4, y+16, 3, col); tft.fillCircle(x+4, y+34, 3, col);
+    x+=14;
+    digit(x, y, m/10, dw, dh); x+=dw+gap;
+    digit(x, y, m%10, dw, dh);
   } else {
-    tft.drawCentreString("--",78,16,4);
-    tft.drawCentreString("---",162,22,2);
-    tft.drawCentreString("--:--",120,52,4);
+    tft.drawCentreString("--",72,14,4);
+    tft.drawCentreString("---",168,20,2);
+    tft.drawCentreString("--:--",120,58,4);
   }
   int blink=(s%5==0)?0:(s%5==1)?2:6;
-  eye(78,148,blink); eye(162,148,blink);
+  eye(74,150,blink,-10); eye(166,150,blink,10);
   tft.setTextColor(TFT_WHITE,TFT_BLACK);
   if(linked){
     char nb[8]; snprintf(nb,sizeof(nb),"%d", watch.getPhoneBattery());
-    tft.drawCentreString(nb,120,196,4);
-  } else tft.drawCentreString("HP",120,196,4);
+    tft.drawCentreString(nb,120,198,4);
+  } else tft.drawCentreString("HP",120,198,4);
   tft.setTextColor(0x4A69,TFT_BLACK);
-  tft.drawCentreString("2x menu",120,222,1);
+  tft.drawCentreString("2x menu",120,224,1);
 }
 void bootMark(){
   tft.fillScreen(C_BG); tft.fillRoundRect(20,80,200,80,16,C_BAR);
