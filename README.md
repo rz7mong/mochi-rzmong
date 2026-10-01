@@ -32,7 +32,6 @@ Di perangkat: **GIF + WAV 16-bit saja** (tidak ada pemutar MP4, tidak ada decode
 | Case STL | [case/](case/) |
 | Konstanta | [PRODUCT.md](PRODUCT.md) |
 
-`thietlap.html` hanya redirect ke `pengaturan.html`.
 
 ## Wiring firmware 0.5.1
 
