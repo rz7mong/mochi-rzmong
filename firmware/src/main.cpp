@@ -293,7 +293,7 @@ void brandMark(){if(!showWm)return; tft.setTextColor(C_DIM,TFT_BLACK); tft.drawS
 static int clockDrawn=-1;
 static const uint8_t SEG7[10]={0x3F,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x7F,0x6F};
 static void seg7(int x, int y, int d, int w, int h, uint16_t on, uint16_t off){
-  uint8_t m=SEG7[d%10]; int t=h/10; if(t<3) t=3;
+  uint8_t m=SEG7[d%10]; int t=h/12; if(t<3) t=3;
   auto bar=[&](int bx,int by,int bw,int bh,bool lit){ tft.fillRoundRect(bx,by,bw,bh,t/2,lit?on:off); };
   bar(x+t, y, w-2*t, t, m&1);
   bar(x+w-t, y+t, t, h/2-t, m&2);
@@ -309,37 +309,40 @@ void drawClock(){
   int sig=linked?(h*3600+m*60+s):-2;
   if(sig==clockDrawn) return;
   clockDrawn=sig;
-  const uint16_t CY=0x07FF, OFF=0x1082, DK=0x4A69;
-  tft.fillScreen(TFT_BLACK);
-  tft.drawRoundRect(6,6,228,228,18,0x0210);
-  tft.drawRoundRect(8,8,224,224,16,CY);
-  tft.setTextColor(CY,TFT_BLACK);
-  tft.drawCentreString("RZMONG",120,22,2);
-  int dw=42, dh=78, gap=8, y=58;
-  int total=dw*4+gap*3+10;
-  int x=(240-total)/2;
+  const uint16_t BG=0x0841, CY=0x07FF, OFF=0x1082, CARD=0x1082;
+  tft.fillScreen(BG);
+  tft.fillRoundRect(8,8,168,28,10,CARD);
+  tft.setTextColor(linked?CY:0xF985,CARD);
+  tft.drawCentreString(linked?"HP  TERHUBUNG":"MENUNGGU HP",92,14,2);
+  tft.fillRoundRect(184,8,48,28,10,linked?0x0328:0x4000);
+  tft.setTextColor(linked?CY:0xF985,linked?0x0328:0x4000);
+  char sb[4]; snprintf(sb,sizeof(sb), linked?"%02d":"--", s);
+  tft.drawCentreString(sb,208,14,2);
+  int dw=40, dh=86, gap=6, y=50, x=16;
   if(linked){
     seg7(x, y, h/10, dw, dh, CY, OFF); x+=dw+gap;
-    seg7(x, y, h%10, dw, dh, CY, OFF); x+=dw+6;
-    uint16_t col=(s%2)?CY:OFF;
-    tft.fillCircle(x+2, y+28, 3, col); tft.fillCircle(x+2, y+50, 3, col);
-    x+=10;
+    seg7(x, y, h%10, dw, dh, CY, OFF); x+=dw+4;
+    uint16_t col=(s&1)?CY:OFF;
+    tft.fillCircle(x+3, y+30, 3, col); tft.fillCircle(x+3, y+54, 3, col);
+    x+=12;
     seg7(x, y, m/10, dw, dh, CY, OFF); x+=dw+gap;
     seg7(x, y, m%10, dw, dh, CY, OFF);
   } else {
-    for(int i=0;i<4;i++){ seg7(x, y, 0, dw, dh, OFF, OFF); x+=dw+((i==1)?16:gap); }
-    tft.setTextColor(OFF,TFT_BLACK);
-    tft.drawCentreString("--:--",120,82,4);
+    tft.setTextColor(OFF,BG);
+    tft.drawCentreString("--:--",108,78,4);
   }
-  char sb[8]; snprintf(sb,sizeof(sb), linked?"%02d":"--", s);
-  tft.setTextColor(0xF81F,TFT_BLACK);
-  tft.drawCentreString(sb,120,148,4);
-  tft.setTextColor(DK,TFT_BLACK);
-  if(!chronosOn) tft.drawCentreString("NYALAKAN CHRONOS",120,184,2);
-  else if(!linked) tft.drawCentreString("MENUNGGU HP",120,184,2);
-  else { String td=watch.getTimeDate(); if(td.length()>20) td=td.substring(0,20); tft.drawCentreString(td,120,184,2); }
-  tft.setTextColor(0x3186,TFT_BLACK);
-  tft.drawCentreString("KETUK 2X MENU",120,208,1);
+  tft.fillRoundRect(206,48,18,90,6,0x1082);
+  int fill=linked?(s*86)/59:0;
+  if(fill>0) tft.fillRoundRect(208,134-fill,14,fill,4,0xF81F);
+  tft.fillRoundRect(12,156,216,52,12,CARD);
+  tft.setTextColor(CY,CARD);
+  if(linked){
+    String td=watch.getTimeDate(); if(td.length()>22) td=td.substring(0,22);
+    tft.drawCentreString(td,120,164,2);
+  } else tft.drawCentreString("waktu dari Chronos",120,164,2);
+  tft.setTextColor(0x4A69,CARD);
+  tft.drawCentreString("ketuk 2x  menu",120,186,1);
+  tft.fillRect(70,218,100,3,CY);
 }
 void bootMark(){
   tft.fillScreen(C_BG); tft.fillRoundRect(20,80,200,80,16,C_BAR);
