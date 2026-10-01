@@ -13,7 +13,7 @@ On device: **GIF + 16-bit WAV only** (no MP4 player, no MP3 decoder).
 
 ## Phone clock
 
-Menu **Jam HP** shows phone time from Chronos: date, weekday, blinking eyes every 5 seconds, and phone battery percent. Double-tap returns to the menu.
+Menu **Jam HP** shows phone time over the idle face GIF (`wajah/default.gif` on SD). Date, time, and phone battery stay visible. Double-tap returns to the menu.
 
 ## Quick start
 

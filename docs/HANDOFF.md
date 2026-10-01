@@ -15,4 +15,4 @@ Salinan web: [handoff.html](handoff.html) · sumber repo: [../HANDOFF.md](https:
 | License | MIT © rzmong |
 
 
-Jam HP: waktu Chronos, mata berkedip, baterai HP. Ketuk 2x menu.
+Jam HP: waktu HP di atas GIF wajah diam, baterai HP. Ketuk 2x menu.

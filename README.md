@@ -21,7 +21,7 @@ Di perangkat: **GIF + WAV 16-bit saja** (tidak ada pemutar MP4, tidak ada decode
 
 ## Jam HP
 
-Menu **Jam HP** menampilkan waktu HP lewat Chronos: tanggal, hari, jam, dua mata yang berkedip tiap 5 detik, dan persen baterai HP. Ketuk 2× kembali ke menu. Notifikasi, panggilan, dan navigasi tetap mengalahkan layar jam.
+Menu **Jam HP** menampilkan waktu HP di atas GIF wajah diam (`wajah/default.gif` di SD). Tanggal, jam, dan baterai HP tetap terlihat. Ketuk 2× kembali ke menu. Notifikasi, panggilan, dan navigasi tetap mengalahkan layar jam.
 
 ## Tautan
 

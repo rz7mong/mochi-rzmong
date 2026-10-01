@@ -1,4 +1,4 @@
-// Mochi rzmong 0.5.2 — palet/kanvas GIF, ketukan tanpa putar ulang, Chronos memotong GIF, SFX dari RAM
+// Mochi rzmong 0.5.3 — palet/kanvas GIF, ketukan tanpa putar ulang, Chronos memotong GIF, SFX dari RAM
 // Nama AP dan sandi tetap MOCHI_AP_NAME / MOCHI_AP_PASS. Aset GIF tidak diubah.
 #include <Arduino.h>
 #include <TFT_eSPI.h>
@@ -330,7 +330,7 @@ void drawClock(){
   bool linked=chronosOn && watch.isRunning() && watch.isConnected();
   int h=linked?watch.getHourC():0, m=linked?watch.getMinute():0, s=linked?watch.getSecond():0;
   int sig=linked?(h*3600+m*60+s):-2;
-  if(sig==clockDrawn) return;
+  if(sig==clockDrawn && !clockGifOn) return;
   clockDrawn=sig;
   if(!clockGifOn) tft.fillScreen(TFT_BLACK);
   tft.setTextColor(TFT_WHITE,TFT_BLACK);
@@ -658,6 +658,8 @@ void loop(){
   chronosPreempt=false;
   if(!clockOn && clockGifOn){ gif.close(); clockGifOn=false; sdBusy=false; }
   if(clockOn){
+    serviceNet();
+    if(chronosNeedsScreen()){ if(clockGifOn){ gif.close(); clockGifOn=false; sdBusy=false; } delay(1); return; }
     if(!clockGifOn){
       const char *path="/gif/wajah/default.gif";
       bool ok=false;
@@ -665,9 +667,9 @@ void loop(){
       if(!ok){ for(int i=0;i<DEFAULT_GIF_COUNT;i++){ if(strcmp(DEFAULT_GIFS[i].stem,"default")==0){ ok=playOpen(DEFAULT_GIFS[i].data,DEFAULT_GIFS[i].len,NULL); break; } } }
       clockGifOn=ok;
     }
+    int dly=30;
     if(clockGifOn){
-      int dly=0;
-      if(!gif.playFrame(false,&dly)){ gif.close(); clockGifOn=false; sdBusy=false; }
+      if(!gif.playFrame(false,&dly)){ gif.close(); clockGifOn=false; sdBusy=false; dly=30; }
     }
     drawClock();
     bool down=digitalRead(MOCHI_PIN_TOUCH)==HIGH;
@@ -677,7 +679,7 @@ void loop(){
       if(held>=900){ soundOn=!soundOn; savePrefs(); }
       else { taps++; lastTap=millis(); }
     }
-    prevDown=down; finishTaps(); delay(30); return;
+    prevDown=down; finishTaps(); delay(dly<10?10:(dly>80?80:dly)); return;
   }
   bool down=digitalRead(MOCHI_PIN_TOUCH)==HIGH;
   if(ui==UI_MENU){
