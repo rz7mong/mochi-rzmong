@@ -291,11 +291,17 @@ void playReactGif(){
 }
 void brandMark(){if(!showWm)return; tft.setTextColor(C_DIM,TFT_BLACK); tft.drawString(MOCHI_BRAND,168,226,1);}
 static int clockDrawn=-1;
-static void clockHand(int deg, int len, uint16_t col, float w){
-  float r=deg*0.0174533f;
-  int x=120+(int)(sinf(r)*len);
-  int y=118-(int)(cosf(r)*len);
-  tft.drawWideLine(120,118,x,y,w,col,TFT_BLACK);
+static const uint8_t SEG7[10]={0x3F,0x06,0x5B,0x4F,0x66,0x6D,0x7D,0x07,0x7F,0x6F};
+static void seg7(int x, int y, int d, int w, int h, uint16_t on, uint16_t off){
+  uint8_t m=SEG7[d%10]; int t=h/10; if(t<3) t=3;
+  auto bar=[&](int bx,int by,int bw,int bh,bool lit){ tft.fillRoundRect(bx,by,bw,bh,t/2,lit?on:off); };
+  bar(x+t, y, w-2*t, t, m&1);
+  bar(x+w-t, y+t, t, h/2-t, m&2);
+  bar(x+w-t, y+h/2, t, h/2-t, m&4);
+  bar(x+t, y+h-t, w-2*t, t, m&8);
+  bar(x, y+h/2, t, h/2-t, m&16);
+  bar(x, y+t, t, h/2-t, m&32);
+  bar(x+t, y+h/2-t/2, w-2*t, t, m&64);
 }
 void drawClock(){
   bool linked=chronosOn && watch.isRunning() && watch.isConnected();
@@ -303,39 +309,37 @@ void drawClock(){
   int sig=linked?(h*3600+m*60+s):-2;
   if(sig==clockDrawn) return;
   clockDrawn=sig;
-  const uint16_t CY=0x07FF, MG=0xF81F, DK=0x18E3;
+  const uint16_t CY=0x07FF, OFF=0x1082, DK=0x4A69;
   tft.fillScreen(TFT_BLACK);
-  tft.drawSmoothCircle(120,118,108,DK,TFT_BLACK);
-  tft.drawSmoothCircle(120,118,100,CY,TFT_BLACK);
-  tft.drawSmoothCircle(120,118,78,0x0210,TFT_BLACK);
-  for(int i=0;i<60;i++){
-    float r=i*6*0.0174533f;
-    int o=(i%5==0)?92:96, inn=(i%5==0)?84:90;
-    tft.drawWideLine(120+(int)(sinf(r)*inn),118-(int)(cosf(r)*inn),120+(int)(sinf(r)*o),118-(int)(cosf(r)*o), i%5==0?2.2f:1.0f, i%5==0?CY:0x4A69, TFT_BLACK);
-  }
-  if(linked){
-    int secArc=s*6; if(secArc<1) secArc=1;
-    int a0=180, a1=180+secArc;
-    if(a1<=360) tft.drawArc(120,118,104,99,a0,a1,MG,TFT_BLACK,false);
-    else { tft.drawArc(120,118,104,99,a0,360,MG,TFT_BLACK,false); tft.drawArc(120,118,104,99,0,a1-360,MG,TFT_BLACK,false); }
-    clockHand((h%12)*30+m/2, 46, CY, 3.2f);
-    clockHand(m*6+s/10, 64, 0xC618, 2.2f);
-    clockHand(s*6, 70, MG, 1.2f);
-    tft.fillSmoothCircle(120,118,4,CY,TFT_BLACK);
-    tft.fillCircle(120,118,2,TFT_BLACK);
-  }
-  char tb[8]; snprintf(tb,sizeof(tb), linked?"%02d:%02d":"--:--", h, m);
+  tft.drawRoundRect(6,6,228,228,18,0x0210);
+  tft.drawRoundRect(8,8,224,224,16,CY);
   tft.setTextColor(CY,TFT_BLACK);
-  tft.drawCentreString(tb,120,150,4);
-  tft.setTextColor(0x4A69,TFT_BLACK);
-  if(!chronosOn) tft.drawCentreString("CHRONOS OFF",120,178,1);
-  else if(!linked) tft.drawCentreString("MENUNGGU HP",120,178,1);
-  else {
-    String td=watch.getTimeDate(); if(td.length()>18) td=td.substring(0,18);
-    tft.drawCentreString(td,120,178,1);
+  tft.drawCentreString("RZMONG",120,22,2);
+  int dw=42, dh=78, gap=8, y=58;
+  int total=dw*4+gap*3+10;
+  int x=(240-total)/2;
+  if(linked){
+    seg7(x, y, h/10, dw, dh, CY, OFF); x+=dw+gap;
+    seg7(x, y, h%10, dw, dh, CY, OFF); x+=dw+6;
+    uint16_t col=(s%2)?CY:OFF;
+    tft.fillCircle(x+2, y+28, 3, col); tft.fillCircle(x+2, y+50, 3, col);
+    x+=10;
+    seg7(x, y, m/10, dw, dh, CY, OFF); x+=dw+gap;
+    seg7(x, y, m%10, dw, dh, CY, OFF);
+  } else {
+    for(int i=0;i<4;i++){ seg7(x, y, 0, dw, dh, OFF, OFF); x+=dw+((i==1)?16:gap); }
+    tft.setTextColor(OFF,TFT_BLACK);
+    tft.drawCentreString("--:--",120,82,4);
   }
+  char sb[8]; snprintf(sb,sizeof(sb), linked?"%02d":"--", s);
+  tft.setTextColor(0xF81F,TFT_BLACK);
+  tft.drawCentreString(sb,120,148,4);
   tft.setTextColor(DK,TFT_BLACK);
-  tft.drawCentreString("2x MENU",120,214,1);
+  if(!chronosOn) tft.drawCentreString("NYALAKAN CHRONOS",120,184,2);
+  else if(!linked) tft.drawCentreString("MENUNGGU HP",120,184,2);
+  else { String td=watch.getTimeDate(); if(td.length()>20) td=td.substring(0,20); tft.drawCentreString(td,120,184,2); }
+  tft.setTextColor(0x3186,TFT_BLACK);
+  tft.drawCentreString("KETUK 2X MENU",120,208,1);
 }
 void bootMark(){
   tft.fillScreen(C_BG); tft.fillRoundRect(20,80,200,80,16,C_BAR);
