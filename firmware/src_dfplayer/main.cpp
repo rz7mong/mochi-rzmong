@@ -39,9 +39,10 @@ static const MenuItem MENU[] = {
   {"M","Mode putar",C_YEL},{"R","Reaksi acak/tetap",C_BLUE},{"F","Model reaksi",C_PINK},
   {"S","Sumber SD/Flash",C_BLUE},{"+","Volume +",C_TEAL},{"-","Volume -",C_TEAL},
   {"x","Bisu / bunyi",C_RED},{"O","Rotasi layar",C_YEL},{"C","Chronos",C_TEAL},
-  {"J","Jam HP",C_TEAL},{"W","Merek LCD",C_DIM},{"A","Info Wi-Fi AP",C_BLUE},{"i","Tentang rzmong",C_TEXT},{"<","Tutup",C_DIM}
+  {"J","Jam HP",C_TEAL},{"W","Merek LCD",C_DIM},{"A","Info Wi-Fi AP",C_BLUE},{"i","Tentang rzmong",C_TEXT},
+  {"P","Musik putar/jeda",C_TEAL},{"N","Lagu berikut",C_TEAL},{"B","Lagu sebelumnya",C_TEAL},{"<","Tutup",C_DIM}
 };
-static const int NMENU=17, VIS=7;
+static const int NMENU=20, VIS=7;
 #include "chronos_ui.inc"
 
 static bool validTheme(const String &t){ for(int i=0;i<MOCHI_THEME_COUNT;i++) if(t==MOCHI_THEMES[i]) return true; return false; }
@@ -317,13 +318,14 @@ void applyMenu(){
     int i=0; for(;i<MOCHI_THEME_COUNT;i++) if(theme==MOCHI_THEMES[i]) break;
     theme=MOCHI_THEMES[(i+1)%MOCHI_THEME_COUNT];
     if(sdOk){ useSd=true; scanTheme(theme); idx=0; } savePrefs();
+    if(soundOn) mochiDfPlayTheme(theme.c_str());
     if(sdOk && nparts>0) showInfo(theme.c_str(), (String(nparts)+" GIF").c_str());
     else if(sdOk) showInfo(theme.c_str(),"kosong di SD"); else showInfo(theme.c_str(),"default (no SD)");
   }
-  else if(menuRow==2){defIdx=(defIdx+1)%DEFAULT_GIF_COUNT; savePrefs(); showInfo("ekspresi",DEFAULT_GIFS[defIdx].stem);}
+  else if(menuRow==2){defIdx=(defIdx+1)%DEFAULT_GIF_COUNT; savePrefs(); if(soundOn){ mochiDfSetVolume(volume,true); mochiDfPlayFace(defIdx); } showInfo("ekspresi",DEFAULT_GIFS[defIdx].stem);}
   else if(menuRow==3){playMode=(playMode=="kategori")?"acak":(playMode=="acak"?"acak_tema":"kategori"); savePrefs(); showInfo("mode",playMode.c_str());}
   else if(menuRow==4){reactMode=(reactMode=="acak")?"tetap":"acak"; savePrefs(); showInfo("reaksi",reactMode.c_str());}
-  else if(menuRow==5){reactIdx=(reactIdx+1)%MOCHI_REACT_COUNT; reactMode="tetap"; savePrefs(); showInfo(MOCHI_REACT[reactIdx].name,MOCHI_REACT[reactIdx].stem);}
+  else if(menuRow==5){reactIdx=(reactIdx+1)%MOCHI_REACT_COUNT; reactMode="tetap"; savePrefs(); if(soundOn) playSfxForReact(reactIdx); showInfo(MOCHI_REACT[reactIdx].name,MOCHI_REACT[reactIdx].stem);}
   else if(menuRow==6){
     if(!sdOk){ useSd=false; savePrefs(); showInfo("sumber","SD tidak ada"); }
     else { useSd=!useSd; if(useSd){ scanTheme(theme); idx=0; } savePrefs(); showInfo("sumber", useSd?(nparts?"SD":"SD kosong"):"flash"); }
@@ -337,6 +339,9 @@ void applyMenu(){
   else if(menuRow==13){showWm=!showWm; savePrefs();}
   else if(menuRow==14){showInfo(MOCHI_AP_NAME, MOCHI_AP_PASS);}
   else if(menuRow==15){bootMark();}
+  else if(menuRow==16){ if(soundOn){ mochiDfSetVolume(volume,true); mochiDfMusicToggle(); } showInfo("musik", mochiDfMusicPlaying()?"putar":"jeda"); }
+  else if(menuRow==17){ if(soundOn){ mochiDfSetVolume(volume,true); mochiDfMusicNext(); } showInfo("musik","berikut"); }
+  else if(menuRow==18){ if(soundOn){ mochiDfSetVolume(volume,true); mochiDfMusicPrev(); } showInfo("musik","sebelum"); }
   else ui=UI_PLAY;
 }
 void finishTaps(){
@@ -353,8 +358,8 @@ bool playCurrent(){
   if(nparts<=0) idx=0; else if(idx<0||idx>=nparts) idx=0;
   bool ok;
   bool fromSd=useSd&&sdOk&&nparts>0;
-  if(fromSd && soundOn) playSfxForGifPath(parts[idx].c_str());
-  else if(!fromSd && soundOn){
+  if(fromSd && soundOn && !mochiDfMusicPlaying()) playSfxForGifPath(parts[idx].c_str());
+  else if(!fromSd && soundOn && !mochiDfMusicPlaying()){
     // wajah/default (slot 0) diselang tiap klip: bunyinya hanya sekali sesudah boot, supaya tidak bip berulang
     static bool defaultSfxDone=false;
     if(defIdx!=0) playBuiltinSfx(defIdx);
@@ -398,7 +403,7 @@ void handleStatus(){
   d["react_idx"]=reactIdx;
   d["react_gif"]=String("/gif/")+MOCHI_REACT[reactIdx].theme+"/"+MOCHI_REACT[reactIdx].stem+".gif";
   d["sound"]=soundOn; d["vol"]=volume; d["rot"]=rot; d["storage"]=(useSd&&sdOk)?"sd":"flash"; d["sd"]=sdOk;
-  d["sfx"]="dfplayer_mp3"; d["def"]=defIdx; d["gif_count"]=nparts;
+  d["sfx"]="dfplayer_mp3"; d["music"]=mochiDfMusicPlaying(); d["def"]=defIdx; d["gif_count"]=nparts;
   d["ap_ssid"]=MOCHI_AP_NAME; d["sd_busy"]=sdBusy;
   d["chronos"]=chronosOn;
   d["chronos_conn"]=chronosOn && watch.isRunning() && watch.isConnected();
@@ -431,6 +436,22 @@ void handleThemes(){
   }
   String s; serializeJson(d,s); sendCorsHeaders(); server.send(200,"application/json",s);
 }
+
+void handleMusic(){
+  if(!server.hasArg("plain")){ server.send(400,"application/json","{\"ok\":false}"); return; }
+  JsonDocument d; if(deserializeJson(d, server.arg("plain"))){ server.send(400,"application/json","{\"ok\":false}"); return; }
+  const char *act = d["action"] | "";
+  mochiDfSetVolume(volume, soundOn);
+  bool ok=false;
+  if(!strcmp(act,"play")) ok=mochiDfMusicStart();
+  else if(!strcmp(act,"next")) ok=mochiDfMusicNext();
+  else if(!strcmp(act,"prev")) ok=mochiDfMusicPrev();
+  else if(!strcmp(act,"toggle")){ mochiDfMusicToggle(); ok=true; }
+  else if(!strcmp(act,"stop")){ mochiDfMusicStop(); ok=true; }
+  JsonDocument o; o["ok"]=ok; o["music"]=mochiDfMusicPlaying();
+  String body; serializeJson(o, body); sendCorsHeaders(); server.send(200,"application/json", body);
+}
+
 void handleSettings(){
   JsonDocument d; if(deserializeJson(d,server.arg("plain"))){ server.send(400,"text/plain","bad"); return; }
   if(d["theme"].is<const char*>()){ String t=(const char*)d["theme"]; if(validTheme(t)) theme=t; }
@@ -545,6 +566,8 @@ void setup(){
   server.on("/api/status",handleStatus);
   server.on("/api/themes",handleThemes);
   server.on("/api/settings",HTTP_POST,handleSettings);
+  server.on("/api/music", HTTP_POST, handleMusic);
+  server.on("/api/music", HTTP_OPTIONS, handleOptions);
   server.on("/api/upload", HTTP_POST, handleUploadDone, handleUpload);
   server.on("/api/status", HTTP_OPTIONS, handleOptions);
   server.on("/api/themes", HTTP_OPTIONS, handleOptions);
@@ -565,7 +588,7 @@ void loop(){
     stopSfx();
     bool down=digitalRead(MOCHI_PIN_TOUCH)==HIGH;
     if(down&&!prevDown) downAt=millis();
-    if(!down&&prevDown && millis()-downAt>=600){ ringerOn=false; ringerDrew=false; }
+    if(!down&&prevDown && millis()-downAt>=600){ ringerOn=false; ringerDrew=false; mochiDfPlayRinger(false); }
     prevDown=down; delay(30); return;
   }
   if(chronosOn && notifUntil && (int32_t)(millis()-notifUntil)<0){
