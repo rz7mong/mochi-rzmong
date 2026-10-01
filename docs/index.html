@@ -15,17 +15,17 @@ esp-web-install-button [slot=activate]{min-width:260px}
 <body>
 <header class="hero wrap narrow">
   <svg class="mochi" viewBox="0 0 120 96" aria-hidden="true"><ellipse cx="60" cy="88" rx="36" ry="5" fill="#f6c6d9" opacity=".6"/><path d="M14 66c0-30 20-52 46-52s46 22 46 52c0 14-12 20-46 20S14 80 14 66z" fill="#fff" stroke="#ffb3cf" stroke-width="3"/><rect x="33" y="34" width="54" height="36" rx="10" fill="#2b2140"/><ellipse cx="49" cy="51" rx="5" ry="6.5" fill="#7ef0c8"/><ellipse cx="71" cy="51" rx="5" ry="6.5" fill="#7ef0c8"/><path d="M53 61q7 6 14 0" stroke="#ff8fb8" stroke-width="3" fill="none" stroke-linecap="round"/><ellipse cx="38" cy="64" rx="5" ry="3" fill="#ffb3cf" opacity=".6"/><ellipse cx="82" cy="64" rx="5" ry="3" fill="#ffb3cf" opacity=".6"/></svg>
-  <div class="kicker">instalasi · rzmong · v0.5.5</div>
+  <div class="kicker">instalasi · rzmong · v0.5.6</div>
   <h1>🍡 Mochi <span>rzmong</span></h1>
   <p class="sub">Firmware teman meja ESP32-C3 + LCD ST7789 1.3". Flash langsung dari browser, lalu atur dari HP.</p>
-  <div class="chips"><span class="chip">🧠 ESP32-C3 Super Mini</span><span class="chip">📺 ST7789 GMT130</span><span class="chip">⚡ firmware 0.5.5</span></div>
+  <div class="chips"><span class="chip">🧠 ESP32-C3 Super Mini</span><span class="chip">📺 ST7789 GMT130</span><span class="chip">⚡ firmware 0.5.6</span></div>
 </header>
 <nav class="tabs"><div class="wrap narrow">
   <a href="index.html" class="on" aria-current="page">🍡 Instalasi</a><a href="panduan.html">📖 Panduan</a><a href="hardware.html">🔧 Merakit</a><a href="pemasangan.html">🟩 Demo rakit</a><a href="studio.html">🎨 Studio</a><a href="pengaturan.html">⚙️ Pengaturan</a><a href="https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1">🖼️ Tema</a>
 </div></nav>
 <main class="wrap narrow">
 <section class="card" id="flash">
-  <h2>⚡ Instalasi ESP32 — firmware 0.5.5</h2>
+  <h2>⚡ Instalasi ESP32 — firmware 0.5.6</h2>
   <div class="flash-grid">
   <div class="step"><div class="num">1</div><div><b>Chrome atau Edge</b> (bukan Safari / in-app).</div></div>
   <div class="step"><div class="num">2</div><div>Tahan <b>BOOT</b>, colok USB-C, lepas BOOT.</div></div>
@@ -35,7 +35,7 @@ esp-web-install-button [slot=activate]{min-width:260px}
   <p class="note">Erase menghapus NVS (tema, volume, Chronos). Kartu SD tidak dihapus. Hardware: C3 Super Mini + LCD 1.3" GMT130 27.78×39.22 mm (pin di bawah) — lihat <a href="hardware.html">blueprint</a>.</p>
   <div class="install">
   <esp-web-install-button manifest="./firmware/manifest.json">
-    <button slot="activate" class="btn primary big">Install firmware 0.5.5</button>
+    <button slot="activate" class="btn primary big">Install firmware 0.5.6</button>
   </esp-web-install-button>
   </div>
 </section>
@@ -45,11 +45,12 @@ esp-web-install-button [slot=activate]{min-width:260px}
     <li><b>Pengaturan (disarankan):</b> sambung AP → <code>http://192.168.4.1/</code> (tanpa internet, tanpa mixed content).</li>
     <li><b>Studio:</b> butuh internet + AP Mochi untuk upload ke SD — <a href="studio.html">studio.html</a>.</li>
     <li>Alternatif online: <a href="pengaturan.html">pengaturan.html</a> (dari https ke http AP sering diblokir browser).</li>
-    <li>LCD: ketuk 2× → menu. Ketuk 1× → reaksi.</li>
+    <li>LCD: ketuk 2× → menu. Ketuk 1× → reaksi (11 reaksi warna, ada suaranya).</li>
+    <li><b>Tanpa SD</b> sudah jalan: 30 GIF+WAV bawaan di flash (wajah default senyum + kedip, wajah/musik warna, mobil, gundam). Pack SD: <a href="https://github.com/rz7mong/mochi-rzmong/releases/download/assets-v1/mochi-themes.zip">mochi-themes.zip</a>.</li>
     <li><b>Jam HP:</b> LCD tidak sentuh. Sambung Wi-Fi perangkat, buka http://192.168.4.1/, centang Chronos BLE dan Jam HP, simpan. Lalu sambungkan rzmong di aplikasi Chronos.</li>
   </ol>
 </section>
 </main>
-<footer>© rzmong · MIT · v0.5.5</footer>
+<footer>© rzmong · MIT · v0.5.6</footer>
 </body>
 </html>

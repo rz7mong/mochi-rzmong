@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.5.6] — 2026-10-02
+
+### Changed
+- **GIF bawaan di flash diganti** dengan set warna baru: 30 slot GIF+WAV (`firmware/assets/builtin/`, urutan di `firmware/assets/meta.json`), total 1.041.648 B (GIF 782.448 + PCM 259.200). App ≈2,25 MB dari 3 MB.
+  - `wajah/default`: wajah putih senyum + kedip dari video (loop 7,2 dtk, 120 ms/frame) — wajah Jam HP dan diselang di antara klip lain saat idle.
+  - Wajah/musik warna: raspberry, squint, love_hearts_kiss, angry_2, smirk, sleepy, yawn_tired, rainbow, pong.
+  - Mobil (14): revs, headlights baru + accel, gtr_rain, road_rage, rotation, speed_2, speed_3, tsurikawa, turbo, car, lb, lb_intro, lb_star.
+  - Gundam (6): hadouken_miss, hadouken_hit, blade, mecha_doc, titan, equip (gundam besar tetap dari SD).
+- **Reaksi sentuh** (11): tickle, kedip, cinta, marah, ketawa, ngantuk, nguap, pelangi, pong, ngebut, hadouken. `MOCHI_REACT_COUNT` dihitung otomatis.
+- **Suara bawaan**: tiap slot punya WAV (8 kHz 16-bit mono) yang diputar langsung dari flash (tanpa salin ke heap). Urutan reaksi: WAV SD → WAV bawaan → jingle. Putar idle dari flash juga bersuara; `default.wav` hanya sekali setelah boot.
+- **Jam HP** mengikuti delay frame GIF (sebelumnya dijepit 10–80 ms).
+- Pack `assets-v1` diperbarui: versi warna 8 fps (wajah/sleepy, smirk, raspberry, squint, angry_2, musik/pong, rainbow, mobil/revs, headlights), wajah/default baru, wajah/love_hearts_kiss + yawn_tired (+ WAV). 86 GIF + 87 WAV. `themes.json` disamakan (library/, sd-pack/, pack).
+
+### Fixed
+- `embed_assets.py` tidak lagi diam-diam membuat gambar pengganti 3 frame; GIF yang hilang menggagalkan build. Bug jam-hp/default (GIF default bawaan ternyata pengganti) selesai.
+
+### Removed
+- `firmware/tools/react_b64/`, `firmware/tools/sfx_b64/` (placeholder).
+
 ## [0.5.5] — 2026-10-01
 
 ### Fixed

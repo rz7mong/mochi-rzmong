@@ -1,4 +1,4 @@
-// Mochi rzmong 0.5.5 — jam HP pakai GIF default tertanam; SPI bersama di-init sebelum TFT; upload boleh menyela SD
+// Mochi rzmong 0.5.6 — 30 GIF+WAV bawaan di flash (wajah default baru dari video), suara bawaan dari flash, jam HP ikut delay GIF
 // Nama AP dan sandi tetap MOCHI_AP_NAME / MOCHI_AP_PASS. Aset GIF tidak diubah.
 #include <Arduino.h>
 #include <TFT_eSPI.h>
@@ -138,12 +138,22 @@ void audioInit(){
 // WAV dimuat sekali ke buffer yang dipakai ulang (maks 48 KB) supaya heap C3 tidak terpecah.
 static int16_t *sfxBuf=nullptr; static size_t sfxCap=0, sfxSamples=0, sfxPos=0; static bool sfxRun=false;
 static const size_t SFX_MAX=48*1024;
+static const int16_t *sfxSrc=nullptr;   // sfxBuf (SD WAV) atau PCM PROGMEM (built-in), tanpa salin ke heap
 void stopSfx(){ sfxRun=false; sfxPos=sfxSamples; }
+static bool playBuiltinSfx(int i){
+  if(!soundOn||!i2sOk||i<0||i>=DEFAULT_GIF_COUNT||!DEFAULT_GIFS[i].pcm||DEFAULT_GIFS[i].pcmSamples<1) return false;
+  stopSfx(); sfxSrc=DEFAULT_GIFS[i].pcm; sfxSamples=DEFAULT_GIFS[i].pcmSamples; sfxPos=0; sfxRun=true;
+  i2s_set_sample_rates(I2S_NUM_0, DEFAULT_GIFS[i].pcmRate); return true;
+}
+static int findBuiltin(const char *theme,const char *stem){
+  for(int i=0;i<DEFAULT_GIF_COUNT;i++) if(strcmp(DEFAULT_GIFS[i].stem,stem)==0 && (!theme||strcmp(DEFAULT_GIFS[i].theme,theme)==0)) return i;
+  return -1;
+}
 void serviceSfx(){
-  if(!sfxRun||!i2sOk||!soundOn||!sfxBuf) return;
+  if(!sfxRun||!i2sOk||!soundOn||!sfxSrc) return;
   if(sfxPos>=sfxSamples){ sfxRun=false; return; }
   int16_t buf[128]; size_t n=sfxSamples-sfxPos; if(n>128) n=128;
-  for(size_t i=0;i<n;i++){ int v=(int)sfxBuf[sfxPos+i]*(volume+1)/22; if(v>32767)v=32767; if(v<-32768)v=-32768; buf[i]=(int16_t)v; }
+  for(size_t i=0;i<n;i++){ int v=(int)sfxSrc[sfxPos+i]*(volume+1)/22; if(v>32767)v=32767; if(v<-32768)v=-32768; buf[i]=(int16_t)v; }
   size_t wr=0; i2s_write(I2S_NUM_0,buf,n*2,&wr,0);
   if(wr>=2) sfxPos+=wr/2;
 }
@@ -157,7 +167,7 @@ static bool ensureSfx(size_t samples){
 static bool takeSfx(const int16_t *pcm, size_t samples, uint32_t rate){
   stopSfx();
   if(!ensureSfx(samples)) return false;
-  memcpy(sfxBuf,pcm,samples*2); sfxSamples=samples; sfxPos=0; sfxRun=true;
+  memcpy(sfxBuf,pcm,samples*2); sfxSrc=sfxBuf; sfxSamples=samples; sfxPos=0; sfxRun=true;
   if(i2sOk) i2s_set_sample_rates(I2S_NUM_0, rate?rate:JINGLE_SR);
   return true;
 }
@@ -204,7 +214,7 @@ static bool preloadWav(const char *path){
   }
   f.close(); sdBusy=false;
   if(!filled) return false;
-  sfxSamples=filled; sfxPos=0; sfxRun=true;
+  sfxSrc=sfxBuf; sfxSamples=filled; sfxPos=0; sfxRun=true;
   if(i2sOk) i2s_set_sample_rates(I2S_NUM_0, sampleRate);
   return true;
 }
@@ -222,6 +232,7 @@ bool playSfxForReact(int r){
     snprintf(path,sizeof(path),"/sfx/%s.wav",name);
     if(SD.exists(path) && preloadWav(path)) return true;
   }
+  int bi=findBuiltin(themeR,stem); if(playBuiltinSfx(bi)) return true;
   startJingleMs(220); return true;
 }
 bool playSfxForGifPath(const char *gifPath){
@@ -290,7 +301,7 @@ void playReactGif(){
   String path=String("/gif/")+MOCHI_REACT[r].theme+"/"+MOCHI_REACT[r].stem+".gif";
   bool ok=false;
   if(sdOk && !sdBusy && SD.exists(path.c_str())){ sdBusy=true; ok=playOpen(NULL,0,path.c_str()); if(!ok) sdBusy=false; }
-  if(!ok){ for(int i=0;i<DEFAULT_GIF_COUNT;i++){ if(strcmp(DEFAULT_GIFS[i].stem,MOCHI_REACT[r].stem)==0){ ok=playOpen(DEFAULT_GIFS[i].data,DEFAULT_GIFS[i].len,NULL); break; } } }
+  if(!ok){ int bi=findBuiltin(MOCHI_REACT[r].theme,MOCHI_REACT[r].stem); if(bi>=0) ok=playOpen(DEFAULT_GIFS[bi].data,DEFAULT_GIFS[bi].len,NULL); }
   if(!ok){ sdBusy=false; return; }
   tft.fillScreen(TFT_BLACK); playFrames(1600);
   gif.close(); sdBusy=false;
@@ -393,7 +404,8 @@ void nextPart(){
     } else if(nparts==0) scanTheme(theme);
     if(nparts>0){ idx=(playMode=="acak"||playMode=="acak_tema")?random(nparts):(idx+1)%nparts; return; }
   }
-  defIdx=(defIdx+1)%DEFAULT_GIF_COUNT;   // tidak savePrefs, tidak menimpa theme, tidak mematikan useSd
+  static int rotI=0;   // wajah default (slot 0) diselang tiap klip lain
+  if(DEFAULT_GIF_COUNT>1 && defIdx==0){ rotI=rotI%(DEFAULT_GIF_COUNT-1)+1; defIdx=rotI; } else defIdx=0;   // tidak savePrefs, tidak menimpa theme, tidak mematikan useSd
 }
 void showInfo(const char *a,const char *b){
   tft.fillScreen(C_BG); tft.fillRoundRect(16,70,208,100,14,C_SEL);
@@ -442,6 +454,12 @@ bool playCurrent(){
   bool ok;
   bool fromSd=useSd&&sdOk&&nparts>0;
   if(fromSd && soundOn) playSfxForGifPath(parts[idx].c_str());
+  else if(!fromSd && soundOn){
+    // wajah/default (slot 0) diselang tiap klip: bunyinya hanya sekali sesudah boot, supaya tidak bip berulang
+    static bool defaultSfxDone=false;
+    if(defIdx!=0) playBuiltinSfx(defIdx);
+    else if(!defaultSfxDone){ playBuiltinSfx(0); defaultSfxDone=true; }
+  }
   if(chronosNeedsScreen()){ chronosPreempt=true; return true; }
   if(fromSd){ sdBusy=true; ok=playOpen(NULL,0,parts[idx].c_str()); }
   else ok=playOpen(DEFAULT_GIFS[defIdx].data,DEFAULT_GIFS[defIdx].len,NULL);
@@ -681,13 +699,14 @@ void loop(){
       const char *path="/gif/wajah/default.gif";
       bool ok=false;
       if(sdOk && !sdBusy && SD.exists(path)){ sdBusy=true; ok=playOpen(NULL,0,path); if(!ok) sdBusy=false; }
-      if(!ok){ for(int i=0;i<DEFAULT_GIF_COUNT;i++){ if(strcmp(DEFAULT_GIFS[i].stem,"default")==0){ ok=playOpen(DEFAULT_GIFS[i].data,DEFAULT_GIFS[i].len,NULL); break; } } }
+      if(!ok){ int bi=findBuiltin("wajah","default"); if(bi>=0) ok=playOpen(DEFAULT_GIFS[bi].data,DEFAULT_GIFS[bi].len,NULL); }
       if(!ok && DEFAULT_GIF_COUNT>0) ok=playOpen(DEFAULT_GIFS[0].data,DEFAULT_GIFS[0].len,NULL);
       clockGifOn=ok;
     }
-    int dly=30;
-    if(clockGifOn){
+    static uint32_t clockNext=0; int dly=30;
+    if(clockGifOn && (int32_t)(millis()-clockNext)>=0){
       if(!gif.playFrame(false,&dly)){ gif.close(); clockGifOn=false; sdBusy=false; dly=30; }
+      clockNext=millis()+(dly<10?10:dly);
     }
     drawClock();
     bool down=digitalRead(MOCHI_PIN_TOUCH)==HIGH;
@@ -697,7 +716,7 @@ void loop(){
       if(held>=900){ soundOn=!soundOn; savePrefs(); }
       else { taps++; lastTap=millis(); }
     }
-    prevDown=down; finishTaps(); delay(dly<10?10:(dly>80?80:dly)); return;
+    prevDown=down; finishTaps(); delay(10); return;
   }
   bool down=digitalRead(MOCHI_PIN_TOUCH)==HIGH;
   if(ui==UI_MENU){

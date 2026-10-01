@@ -1,7 +1,5 @@
-# React GIF (10) — di-embed flash
+# React GIF — pindah ke `firmware/assets/builtin/`
 
-yelling, distracted_2, dumb_love, hadouken_hit, awkward_laugh,
-crying_smile, keep_it_up, big_sneeze, blade, pinky
-
-Sumber: mochi-themes.zip (folder gif/ + sfx/)
-Format SFX: WAV 16-bit PCM.
+Sejak 0.5.6 semua GIF+WAV bawaan (30 slot, termasuk 11 reaksi sentuh) ada di
+`firmware/assets/builtin/gif/<tema>/<stem>.gif` + `firmware/assets/builtin/sfx/<tema>/<stem>.wav`.
+Daftar dan urutan: `firmware/assets/meta.json` (`builtins`, `reacts`). Reaksi: `MOCHI_REACT` di `include/MochiRzmong.h`.

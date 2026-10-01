@@ -16,7 +16,7 @@ button{width:100%;padding:12px;margin:6px 0;border:0;border-radius:10px;font-wei
 .hint{font-size:.72rem;color:#666;margin:4px 0 8px}a{color:#7ef}
 </style></head><body>
 <h1>🍡 Mochi · rzmong</h1>
-<p class=hint>v0.5.5 · offline · http://192.168.4.1/</p>
+<p class=hint>v0.5.6 · offline · http://192.168.4.1/</p>
 <p class=hint>😶 wajah · 🤖 gundam · 🚗 mobil · 🚓 polisi · 🎵 musik · 💜 neon · 🌸 anime · 🍜 makanan · ✨ intro</p>
 <div class=box>
 <label>Tema</label><select id=theme></select>
@@ -39,7 +39,7 @@ button{width:100%;padding:12px;margin:6px 0;border:0;border-radius:10px;font-wei
 <p class=hint>Convert di Studio (online) dulu, unduh file, lalu upload di sini (same-origin).</p>
 <label>Jenis</label><select id=utype><option value=gif>GIF</option><option value=wav>WAV</option></select>
 <label>Tema folder</label><select id=utema></select>
-<label>Stem (tanpa ekstensi)</label><input type=text id=ustem placeholder=yelling>
+<label>Stem (tanpa ekstensi)</label><input type=text id=ustem placeholder=raspberry>
 <label>File</label><input type=file id=ufile accept=".gif,.wav,image/gif,audio/wav">
 <button class=u type=button onclick=upload()>Upload</button>
 </div>

@@ -9,9 +9,9 @@
 <body>
 <header class="hero wrap narrow">
   <svg class="mochi" viewBox="0 0 120 96" aria-hidden="true"><ellipse cx="60" cy="88" rx="36" ry="5" fill="#f6c6d9" opacity=".6"/><path d="M14 66c0-30 20-52 46-52s46 22 46 52c0 14-12 20-46 20S14 80 14 66z" fill="#fff" stroke="#ffb3cf" stroke-width="3"/><rect x="33" y="34" width="54" height="36" rx="10" fill="#2b2140"/><ellipse cx="49" cy="51" rx="5" ry="6.5" fill="#7ef0c8"/><ellipse cx="71" cy="51" rx="5" ry="6.5" fill="#7ef0c8"/><path d="M53 61q7 6 14 0" stroke="#ff8fb8" stroke-width="3" fill="none" stroke-linecap="round"/><ellipse cx="38" cy="64" rx="5" ry="3" fill="#ffb3cf" opacity=".6"/><ellipse cx="82" cy="64" rx="5" ry="3" fill="#ffb3cf" opacity=".6"/></svg>
-  <div class="kicker">panduan · rzmong · v0.5.5</div>
+  <div class="kicker">panduan · rzmong · v0.5.6</div>
   <h1>📖 Cara memakai <span>Mochi</span></h1>
-  <p class="sub">Wi-Fi, kontrol sentuh, tema & media, Studio, dan troubleshooting firmware 0.5.5.</p>
+  <p class="sub">Wi-Fi, kontrol sentuh, tema & media, Studio, dan troubleshooting firmware 0.5.6.</p>
 </header>
 <nav class="tabs"><div class="wrap narrow">
   <a href="index.html">🍡 Instalasi</a><a href="panduan.html" class="on" aria-current="page">📖 Panduan</a><a href="hardware.html">🔧 Merakit</a><a href="pemasangan.html">🟩 Demo rakit</a><a href="studio.html">🎨 Studio</a><a href="pengaturan.html">⚙️ Pengaturan</a><a href="https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1">🖼️ Tema</a>
@@ -21,7 +21,7 @@
 <div class="card">
 <h2>🍡 Model & firmware</h2>
 <div class="tbl"><table>
-<tr><th>Firmware</th><td><code>0.5.5</code> — flash dari halaman instalasi</td></tr>
+<tr><th>Firmware</th><td><code>0.5.6</code> — flash dari halaman instalasi</td></tr>
 <tr><th>Hardware</th><td>ESP32-C3 Super Mini + ST7789 1.3" 240×240 GMT130 (PCB 27.78×39.22 mm, 7 pin tanpa CS)</td></tr>
 </table></div>
 </div>
@@ -36,10 +36,10 @@
 </div>
 
 <div class="card">
-<h2>👆 Kontrol sentuh (0.5.5)</h2>
+<h2>👆 Kontrol sentuh (0.5.6)</h2>
 <div class="tbl"><table>
 <tr><th>Mode</th><th>Gestur</th><th>Aksi</th></tr>
-<tr><td>Putar GIF</td><td>Ketuk 1×</td><td>Reaksi + SFX</td></tr>
+<tr><td>Putar GIF</td><td>Ketuk 1×</td><td>Reaksi + SFX (11 reaksi: tickle, kedip, cinta, marah, ketawa, ngantuk, nguap, pelangi, pong, ngebut, hadouken)</td></tr>
 <tr><td>Putar GIF</td><td>Ketuk 2×</td><td>Menu LCD</td></tr>
 <tr><td>Jam HP</td><td>HP: Wi-Fi rzmong mochi, buka http://192.168.4.1/, centang Chronos BLE dan Jam HP, simpan</td><td>Waktu HP di atas GIF wajah diam. LCD tidak sentuh. Ketuk hanya jika ada kawat di GPIO1</td></tr>
 <tr><td>Notifikasi Chronos</td><td>Ketuk 1×</td><td>Tutup notif</td></tr>
@@ -53,7 +53,8 @@
 <ul>
 <li><b>Web offline</b> — sambung AP → <code>http://192.168.4.1/</code>.</li>
 <li><b>Studio</b> — <a href="studio.html">studio.html</a> convert GIF+WAV (max ~599 KB), upload ke SD.</li>
-<li>Pack: <a href="https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1">Release assets-v1</a>.</li>
+<li>Pack: <a href="https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1">Release assets-v1</a> — unduh langsung <a href="https://github.com/rz7mong/mochi-rzmong/releases/download/assets-v1/mochi-themes.zip">mochi-themes.zip</a> (86 GIF + 87 WAV, versi warna 8 fps).</li>
+<li>Tanpa SD: firmware 0.5.6 membawa <b>30 GIF+WAV bawaan</b> di flash — wajah default baru (senyum + kedip), wajah warna, musik, mobil, sebagian gundam.</li>
 <li>Di perangkat: GIF 240×240 + WAV 16-bit saja (bukan MP4/MP3).</li>
 </ul>
 </div>
@@ -71,15 +72,15 @@
 <div class="card">
 <h2>🛠️ Troubleshooting</h2>
 <div class="tbl"><table>
-<tr><td>Wi-Fi tidak muncul</td><td>Flash <b>0.5.5</b>; SSID <code>rzmong mochi</code></td></tr>
+<tr><td>Wi-Fi tidak muncul</td><td>Flash <b>0.5.6</b>; SSID <code>rzmong mochi</code></td></tr>
 <tr><td>Pengaturan Pages gagal</td><td>Mixed content — buka <code>http://192.168.4.1/</code></td></tr>
 <tr><td>Upload gagal</td><td>SD terpasang, MISO=GPIO3, sambung AP</td></tr>
-<tr><td>Gambar terbalik</td><td>Default 0.5.5 = rotasi 2 (LCD pin di bawah). Menu LCD → <b>Rotasi layar</b> 2× untuk membalik 180°</td></tr>
+<tr><td>Gambar terbalik</td><td>Default 0.5.6 = rotasi 2 (LCD pin di bawah). Menu LCD → <b>Rotasi layar</b> 2× untuk membalik 180°</td></tr>
 <tr><td>GIF terlalu besar</td><td>Studio target ≤599 KB</td></tr>
 <tr><td>Layar / boot aneh</td><td>Jangan pakai pin lama RST=8 / MISO=2 / DIN=9 — lihat <a href="hardware.html">blueprint</a></td></tr>
 </table></div>
 </div>
 
 </main>
-<footer>© rzmong · MIT · v0.5.5</footer>
+<footer>© rzmong · MIT · v0.5.6</footer>
 </body></html>

@@ -119,4 +119,4 @@ Tidak muat: PAM8403, ESP32 DevKit besar, LCD 1.54".
 
 Varian PCB carrier punya batas lebih ketat (speaker 15 × 11 × 3.5, kapasitor Ø6.3 × 11, modul SD ±18.5 × 20, LiPo 501640) — lihat [Varian PCB carrier](#varian-pcb-carrier).
 
-Panduan rakit + pin firmware 0.5.5: https://rz7mong.github.io/mochi-rzmong/hardware.html
+Panduan rakit + pin firmware 0.5.6: https://rz7mong.github.io/mochi-rzmong/hardware.html

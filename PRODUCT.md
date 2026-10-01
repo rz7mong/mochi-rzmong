@@ -2,7 +2,7 @@
 
 | Key | Value |
 | --- | --- |
-| **Version** | `0.5.5` |
+| **Version** | `0.5.6` |
 | **Brand** | `rzmong` |
 | **AP SSID** | `rzmong mochi` |
 | **AP password** | `rzmong123` (change in firmware; not exposed in API JSON) |
@@ -10,14 +10,15 @@
 | **Studio** | Convert online, then upload via captive form on AP |
 | **GIF size limit** | max **~600000** bytes upload buffer |
 | **Chronos BLE name** | `rzmong` |
-| **Jam HP** | phone time over wajah/default.gif, phone battery % |
-| **Theme pack** | Release `assets-v1` |
+| **Jam HP** | phone time over wajah/default.gif (SD, else built-in smile+blink face), phone battery % |
+| **Built-ins** | 30 GIF+WAV slots in flash (`firmware/assets/builtin/`, list in `firmware/assets/meta.json`), WAV 8 kHz 16-bit mono; 11 tap reactions |
+| **Theme pack** | Release `assets-v1` → [mochi-themes.zip](https://github.com/rz7mong/mochi-rzmong/releases/download/assets-v1/mochi-themes.zip) (86 GIF + 87 WAV) |
 | **Media** | GIF 240×240 + WAV 16-bit mono ~22 kHz |
 | **Hardware** | ESP32-C3 Super Mini + ST7789 1.3" 240×240 GMT130 (PCB 27.78×39.22 mm, 7-pin, no CS) |
 | **LCD mount** | `case/tatakan_GMT130_fit.stl`, pins-down → default rotation `2` (`MOCHI_DEFAULT_ROTATION`) |
 
 ```c
-#define MOCHI_VERSION "0.5.5"
+#define MOCHI_VERSION "0.5.6"
 #define MOCHI_AP_NAME "rzmong mochi"
 #define MOCHI_AP_PASS "rzmong123"
 ```

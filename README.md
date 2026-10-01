@@ -5,7 +5,7 @@
 
 Desk buddy **ESP32-C3 Super Mini** + LCD **ST7789 1.3" 240×240** (modul GMT130, PCB 27.78×39.22 mm, 7 pin tanpa CS): wajah **GIF**, reaksi sentuh, **SFX WAV**. Proyek open-source independen — **terinspirasi** Dasai Mochi, **bukan** produk resmi / clone berlisensi.
 
-**Firmware: 0.5.5** · **MIT © rzmong** · English: [README.en.md](README.en.md)
+**Firmware: 0.5.6** · **MIT © rzmong** · English: [README.en.md](README.en.md)
 
 Satu sumber situs/installer: **https://rz7mong.github.io/mochi-rzmong/**  
 (`rz7mong.github.io` tanpa path adalah arsip — jangan flash dari sana.)
@@ -14,10 +14,10 @@ Di perangkat: **GIF + WAV 16-bit saja** (tidak ada pemutar MP4, tidak ada decode
 
 ## 🚀 Mulai cepat
 
-1. Chrome / Edge → [Instalasi firmware 0.5.5](https://rz7mong.github.io/mochi-rzmong/) (tahan BOOT, colok USB-C).
+1. Chrome / Edge → [Instalasi firmware 0.5.6](https://rz7mong.github.io/mochi-rzmong/) (tahan BOOT, colok USB-C).
 2. Wi-Fi AP default: **`rzmong mochi` / `rzmong123`** — sandi lab; **ganti** `MOCHI_AP_PASS` di firmware lalu flash ulang sebelum dipakai di tempat umum.
 3. Pengaturan (disarankan): **`http://192.168.4.1/`** di AP perangkat.
-4. Pack tema: [Release `assets-v1`](https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1) → ekstrak ke root SD FAT32 (`gif/` + `sfx/`).
+4. Pack tema: [mochi-themes.zip](https://github.com/rz7mong/mochi-rzmong/releases/download/assets-v1/mochi-themes.zip) (Release [`assets-v1`](https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1)) → ekstrak ke root SD FAT32 (`gif/` + `sfx/`). Tanpa SD pun, 30 GIF+WAV bawaan di flash langsung jalan.
 
 ## 🕐 Jam HP
 
@@ -28,7 +28,7 @@ LCD ini bukan layar sentuh. Jam HP dipilih dari HP.
 3. Centang **Chronos BLE** dan **Jam HP**, lalu simpan.
 4. Di aplikasi Chronos, sambungkan perangkat bernama `rzmong`.
 
-Layar menampilkan GIF wajah diam (`wajah/default.gif` di SD) dengan tanggal, jam, dan baterai HP di atasnya. Hilangkan centang Jam HP untuk kembali ke GIF. Notifikasi, panggilan, dan navigasi tetap menutup jam sementara.
+Layar menampilkan GIF wajah default (senyum + kedip; `wajah/default.gif` di SD, atau versi bawaan di flash) dengan tanggal, jam, dan baterai HP di atasnya. Hilangkan centang Jam HP untuk kembali ke GIF. Notifikasi, panggilan, dan navigasi tetap menutup jam sementara.
 
 Ketukan menu hanya dipakai jika ada kawat sentuh di GPIO1. Tanpa kawat itu, abaikan ketukan.
 
@@ -48,7 +48,7 @@ Ketukan menu hanya dipakai jika ada kawat sentuh di GPIO1. Tanpa kawat itu, abai
 | 📌 Konstanta | [PRODUCT.md](PRODUCT.md) |
 
 
-## 🔌 Wiring firmware 0.5.5
+## 🔌 Wiring firmware 0.5.6
 
 Sumber pin: `firmware/include/MochiRzmong.h` + `User_Setup_ST7789.h`.
 
@@ -94,14 +94,25 @@ Blueprint + STL: [hardware.html](https://rz7mong.github.io/mochi-rzmong/hardware
 | Gejala | Cek |
 | --- | --- |
 | Port tidak muncul di Chrome | Pakai **Chrome/Edge** (bukan Safari / in-app). Tahan **BOOT**, colok USB-C, lepas BOOT. Coba kabel data lain. |
-| Wi-Fi tidak ketemu | Flash **0.5.5**. SSID **`rzmong mochi`**, bukan `Mochi-rzmong`. |
+| Wi-Fi tidak ketemu | Flash **0.5.6**. SSID **`rzmong mochi`**, bukan `Mochi-rzmong`. |
 | Sandi ditolak | Default **`rzmong123`**, bukan `rzmong24`. |
 | Layar putih/hitam | RST=**0**, DC=10, SCLK=4, MOSI=6, BLK=3V3 (CS=7 hanya jika modul punya kaki CS) |
-| Gambar terbalik | Firmware 0.5.5 default rotasi 2 untuk LCD pin di bawah. Menu LCD → **Rotasi layar** 2× untuk membalik 180°. |
+| Gambar terbalik | Firmware 0.5.6 default rotasi 2 untuk LCD pin di bawah. Menu LCD → **Rotasi layar** 2× untuk membalik 180°. |
 | SD gagal | FAT32, modul **3.3V native**, MISO=**3**, CS=5 — bukan GPIO2 |
 | Amp berisik / mati saat bass | Kapasitor ≈470 µF di VIN amp |
 | Bunyi plok saat boot | UART0 di 20/21 + strapping GPIO8. Jangan tarik DIN ke GND. |
 | Upload dari Pages gagal | Mixed content. Upload lewat `http://192.168.4.1/` |
+
+## 🎞️ GIF + WAV bawaan (0.5.6)
+
+Tanpa kartu SD, firmware memutar **30 slot GIF+WAV di flash** (1,04 MB di partisi app; WAV 8 kHz 16-bit mono):
+
+- **wajah/default** — wajah putih senyum + kedip (dari video), dipakai juga untuk Jam HP dan diselang di antara klip lain.
+- **Wajah/musik warna (reaksi sentuh)**: raspberry (tickle), squint (kedip), love_hearts_kiss (cinta), angry_2 (marah), smirk (ketawa), sleepy (ngantuk), yawn_tired (nguap), rainbow (pelangi), pong (pong).
+- **Mobil (14)**: revs (ngebut), headlights, accel, gtr_rain, road_rage, rotation, speed_2, speed_3, tsurikawa, turbo, car, lb, lb_intro, lb_star.
+- **Gundam (6)**: hadouken_miss, hadouken_hit (reaksi hadouken), blade, mecha_doc, titan, equip. Gundam besar (kokpit, pilot, helm…) hanya dari SD.
+
+File SD dengan tema+stem sama tetap didahulukan (reaksi sentuh selalu cek SD dulu). Daftar & urutan: `firmware/assets/meta.json`, file: `firmware/assets/builtin/`.
 
 ## 🎬 Media
 

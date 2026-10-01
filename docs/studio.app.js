@@ -1,7 +1,7 @@
 
 const ffmpeg = new FFmpegWASM.FFmpeg();
 let loaded = false;
-let result = { gif: null, wav: null, tema: "wajah", stem: "yelling" };
+let result = { gif: null, wav: null, tema: "wajah", stem: "raspberry" };
 
 function log(m) {
   const el = document.getElementById("log");

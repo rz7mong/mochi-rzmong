@@ -5,8 +5,8 @@
 #ifndef MOCHI_AP_PASS  /* override: build_flags = -DMOCHI_AP_PASS=\"sandibaru123\" */
 #define MOCHI_AP_PASS "rzmong123"
 #endif
-#define MOCHI_VERSION "0.5.5"
-/* v0.5.5: same constants as firmware/include/MochiRzmong.h
+#define MOCHI_VERSION "0.5.6"
+/* v0.5.6: same constants as firmware/include/MochiRzmong.h (11 tap reacts, built-ins listed in firmware/assets/meta.json)
  */
 #ifndef MOCHI_DEFAULT_ROTATION  /* 2 = LCD pin di bawah (tatakan GMT130). Tatakan lama / pin di atas: build_flags = -DMOCHI_DEFAULT_ROTATION=0 */
 #define MOCHI_DEFAULT_ROTATION 2
@@ -23,18 +23,19 @@
 struct MochiPart { const char *theme; const char *stem; };
 struct MochiReact { const char *name; const char *theme; const char *stem; };
 static const MochiReact MOCHI_REACT[] = {
-  {"tickle","wajah","yelling"},
-  {"kedip","wajah","distracted_2"},
-  {"cinta","wajah","dumb_love"},
-  {"marah","gundam","hadouken_hit"},
-  {"ketawa","wajah","awkward_laugh"},
-  {"nangis","wajah","crying_smile"},
-  {"ngantuk","intro","keep_it_up"},
-  {"kaget","wajah","big_sneeze"},
-  {"kedip-satu","gundam","blade"},
-  {"cemberut","anime","pinky"}
+  {"tickle","wajah","raspberry"},
+  {"kedip","wajah","squint"},
+  {"cinta","wajah","love_hearts_kiss"},
+  {"marah","wajah","angry_2"},
+  {"ketawa","wajah","smirk"},
+  {"ngantuk","wajah","sleepy"},
+  {"nguap","wajah","yawn_tired"},
+  {"pelangi","musik","rainbow"},
+  {"pong","musik","pong"},
+  {"ngebut","mobil","revs"},
+  {"hadouken","gundam","hadouken_hit"}
 };
-static const int MOCHI_REACT_COUNT = 10;
+static const int MOCHI_REACT_COUNT = sizeof(MOCHI_REACT)/sizeof(MOCHI_REACT[0]);
 static const char *MOCHI_THEMES[] = {
   "wajah","gundam","mobil","polisi","musik","neon","anime","makanan","intro"
 };

@@ -1,17 +1,184 @@
 {
-  "brand": "rzmong",
-  "version": "0.5.4",
-  "sample_rate": 8000,
-  "reacts": [
-    ["GIF_YELLING", "wajah", "yelling"],
-    ["GIF_DISTRACTED", "wajah", "distracted_2"],
-    ["GIF_LOVE", "wajah", "dumb_love"],
-    ["GIF_HADOUKEN", "gundam", "hadouken_hit"],
-    ["GIF_LAUGH", "wajah", "awkward_laugh"],
-    ["GIF_CRY", "wajah", "crying_smile"],
-    ["GIF_KEEP", "intro", "keep_it_up"],
-    ["GIF_SNEEZE", "wajah", "big_sneeze"],
-    ["GIF_BLADE", "gundam", "blade"],
-    ["GIF_PINKY", "anime", "pinky"]
+ "brand": "rzmong",
+ "version": "0.5.6",
+ "sample_rate": 8000,
+ "reacts": [
+  [
+   "tickle",
+   "wajah",
+   "raspberry"
+  ],
+  [
+   "kedip",
+   "wajah",
+   "squint"
+  ],
+  [
+   "cinta",
+   "wajah",
+   "love_hearts_kiss"
+  ],
+  [
+   "marah",
+   "wajah",
+   "angry_2"
+  ],
+  [
+   "ketawa",
+   "wajah",
+   "smirk"
+  ],
+  [
+   "ngantuk",
+   "wajah",
+   "sleepy"
+  ],
+  [
+   "nguap",
+   "wajah",
+   "yawn_tired"
+  ],
+  [
+   "pelangi",
+   "musik",
+   "rainbow"
+  ],
+  [
+   "pong",
+   "musik",
+   "pong"
+  ],
+  [
+   "ngebut",
+   "mobil",
+   "revs"
+  ],
+  [
+   "hadouken",
+   "gundam",
+   "hadouken_hit"
   ]
+ ],
+ "builtins": [
+  [
+   "wajah",
+   "default"
+  ],
+  [
+   "wajah",
+   "raspberry"
+  ],
+  [
+   "wajah",
+   "squint"
+  ],
+  [
+   "wajah",
+   "love_hearts_kiss"
+  ],
+  [
+   "wajah",
+   "angry_2"
+  ],
+  [
+   "wajah",
+   "smirk"
+  ],
+  [
+   "wajah",
+   "sleepy"
+  ],
+  [
+   "wajah",
+   "yawn_tired"
+  ],
+  [
+   "musik",
+   "rainbow"
+  ],
+  [
+   "musik",
+   "pong"
+  ],
+  [
+   "mobil",
+   "revs"
+  ],
+  [
+   "mobil",
+   "headlights"
+  ],
+  [
+   "mobil",
+   "accel"
+  ],
+  [
+   "mobil",
+   "gtr_rain"
+  ],
+  [
+   "mobil",
+   "road_rage"
+  ],
+  [
+   "mobil",
+   "rotation"
+  ],
+  [
+   "mobil",
+   "speed_2"
+  ],
+  [
+   "mobil",
+   "speed_3"
+  ],
+  [
+   "mobil",
+   "tsurikawa"
+  ],
+  [
+   "mobil",
+   "turbo"
+  ],
+  [
+   "mobil",
+   "car"
+  ],
+  [
+   "mobil",
+   "lb"
+  ],
+  [
+   "mobil",
+   "lb_intro"
+  ],
+  [
+   "mobil",
+   "lb_star"
+  ],
+  [
+   "gundam",
+   "hadouken_miss"
+  ],
+  [
+   "gundam",
+   "hadouken_hit"
+  ],
+  [
+   "gundam",
+   "blade"
+  ],
+  [
+   "gundam",
+   "mecha_doc"
+  ],
+  [
+   "gundam",
+   "titan"
+  ],
+  [
+   "gundam",
+   "equip"
+  ]
+ ]
 }

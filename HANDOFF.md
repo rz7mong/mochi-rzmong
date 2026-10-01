@@ -1,4 +1,4 @@
-# HANDOFF — Mochi rzmong v0.5.5
+# HANDOFF — Mochi rzmong v0.5.6
 
 **Repo:** https://github.com/rz7mong/mochi-rzmong  
 **Pages:** https://rz7mong.github.io/mochi-rzmong/  
@@ -24,7 +24,9 @@ pio run -e esp32-c3-super-mini -t upload
 ```
 
 Installer: https://rz7mong.github.io/mochi-rzmong/  
-Tema: https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1
+Tema: https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1 · zip: https://github.com/rz7mong/mochi-rzmong/releases/download/assets-v1/mochi-themes.zip
+
+Bawaan flash (0.5.6): 30 GIF+WAV di `firmware/assets/builtin/`, urutan di `firmware/assets/meta.json` (`builtins`, slot 0 = wajah/default). `embed_assets.py` gagal keras jika GIF hilang (tidak ada lagi gambar pengganti). App ≈2,25 MB dari 3 MB.
 
 Jangan flash zip prebuilt 0.4.7 jika butuh Chronos-nav / serviceNet / captive upload.
 

@@ -5,8 +5,10 @@
 #ifndef MOCHI_AP_PASS  /* override: build_flags = -DMOCHI_AP_PASS=\"sandibaru123\" */
 #define MOCHI_AP_PASS "rzmong123"
 #endif
-#define MOCHI_VERSION "0.5.5"
-/* v0.5.5: embedded wajah/default.gif for Jam HP; shared SPI init before TFT; upload preempts SD playback.
+#define MOCHI_VERSION "0.5.6"
+/* v0.5.6: 30 built-in GIF+WAV slots in flash (new happy-blink wajah/default from video, colourful wajah/musik/mobil + gundam),
+ *         built-in WAV played from flash, 11 tap reacts, clock honours GIF frame delay, default between idle clips.
+ * v0.5.5: embedded wajah/default.gif for Jam HP; shared SPI init before TFT; upload preempts SD playback.
  * v0.5.4: default rotation 2 (180 deg) for the GMT130 LCD mounted pins-down in case/tatakan_GMT130_fit.stl.
  * AP name/pass unchanged. Override pass via build_flags only.
  */
@@ -25,18 +27,19 @@
 struct MochiPart { const char *theme; const char *stem; };
 struct MochiReact { const char *name; const char *theme; const char *stem; };
 static const MochiReact MOCHI_REACT[] = {
-  {"tickle","wajah","yelling"},
-  {"kedip","wajah","distracted_2"},
-  {"cinta","wajah","dumb_love"},
-  {"marah","gundam","hadouken_hit"},
-  {"ketawa","wajah","awkward_laugh"},
-  {"nangis","wajah","crying_smile"},
-  {"ngantuk","intro","keep_it_up"},
-  {"kaget","wajah","big_sneeze"},
-  {"kedip-satu","gundam","blade"},
-  {"cemberut","anime","pinky"}
+  {"tickle","wajah","raspberry"},
+  {"kedip","wajah","squint"},
+  {"cinta","wajah","love_hearts_kiss"},
+  {"marah","wajah","angry_2"},
+  {"ketawa","wajah","smirk"},
+  {"ngantuk","wajah","sleepy"},
+  {"nguap","wajah","yawn_tired"},
+  {"pelangi","musik","rainbow"},
+  {"pong","musik","pong"},
+  {"ngebut","mobil","revs"},
+  {"hadouken","gundam","hadouken_hit"}
 };
-static const int MOCHI_REACT_COUNT = 10;
+static const int MOCHI_REACT_COUNT = sizeof(MOCHI_REACT)/sizeof(MOCHI_REACT[0]);
 static const char *MOCHI_THEMES[] = {
   "wajah","gundam","mobil","polisi","musik","neon","anime","makanan","intro"
 };
