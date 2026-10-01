@@ -43,6 +43,7 @@ Ketukan menu hanya dipakai jika ada kawat sentuh di GPIO1. Tanpa kawat itu, abai
 | Pengaturan online | [docs/pengaturan.html](https://rz7mong.github.io/mochi-rzmong/pengaturan.html) |
 | Handoff | [HANDOFF.md](HANDOFF.md) · [halaman](https://rz7mong.github.io/mochi-rzmong/handoff.html) |
 | Case STL | [case/](case/) |
+| PCB etsa manual | [pcb/](pcb/) |
 | Konstanta | [PRODUCT.md](PRODUCT.md) |
 
 

@@ -1,0 +1,48 @@
+Mochi carrier v3 check  (outline v2 38.5 x 36 mm, case frame)
+Copper islands: 17
+  [OK ] no shorts
+
+Net check (copper + jumpers JP1..JP4):
+  [OK ] VIN : C1.+, J3.VIN, JP1.A, JP1.B, SW.B, U1.5V
+  [OK ] GND : C1.-, J1.GND, J2.GND, J3.GND, JP2.A, JP2.B, TTP.GND, U1.GND
+  [OK ] 3V3 : J1.BLK, J1.VCC, J2.VCC, U1.3V3
+  [OK ] G4  : J1.SCL, J2.SCK, JP4.A, U1.IO4
+  [OK ] G6  : J1.SDA, J2.MOSI, U1.IO6
+  [OK ] G0  : J1.RES, JP3.A, U1.IO0
+  [OK ] G10 : J1.DC, U1.IO10
+  [OK ] G3  : J2.MISO, U1.IO3
+  [OK ] G5  : J2.CS, U1.IO5
+  [OK ] G21 : J3.BCLK, U1.IO21
+  [OK ] G20 : J3.LRC, U1.IO20
+  [OK ] G8  : J3.DIN, U1.IO8
+  [OK ] G1  : TTP.OUT, U1.IO1
+  [OK ] IO2, IO9 NC (header pin cut, no pad); IO7 also cut (unused)
+
+DRC (clearance >= 0.8 mm, edge >= 0.5 mm):
+  min clearance between different nets: 0.80 mm; violations: 0
+  min copper-to-board-edge: 0.50 mm
+  exempt 2.54-pitch header pad pairs (0.14 mm gap, standard): 21
+  NOTE: GND segment 1.0 mm wide (power rule 1.5) (2.33, 14.5) -> (2.33, 12.28)
+  NOTE: GND segment 1.0 mm wide (power rule 1.5) (2.33, 12.28) -> (4.88, -0.7)
+  NOTE: 3V3 segment 1.0 mm wide (power rule 1.5) (4.63, 14.5) -> (4.63, 12.53)
+  NOTE: 3V3 segment 1.0 mm wide (power rule 1.5) (4.63, 12.53) -> (9.96, -0.7)
+  NOTE: 3V3 segment 1.0 mm wide (power rule 1.5) (7.419999999999999, -0.7) -> (9.96, -0.7)
+  NOTE: VIN segment 1.0 mm wide (power rule 1.5) (-17.6, 9.1) -> (-17.94, 4.9)
+
+Case constraints:
+  [OK ] no pads/joints in strip x -2.5..2.5, y 22..33.5 (traces only, flat copper)
+  NOTE: pad J3.GND centre 4.49 mm from M2 hole (-14.5,0.5) (< 4.5 keepout)
+  [OK ] traces >= 3.74 mm from hole centre (-14.5,0.5); pour kept 3.0 mm away
+  NOTE: pad J2.SCK centre 4.43 mm from M2 hole (14.5,0.5) (< 4.5 keepout)
+  [OK ] traces >= 3.93 mm from hole centre (14.5,0.5); pour kept 3.0 mm away
+  rear-tab joints (y>25, incl. U1.3V3): trim to <=1.0 mm below board: U1.IO5, U1.IO6, U1.5V, U1.GND, U1.3V3, JP1.A, JP2.A
+
+Jumper wire geometry:
+  [OK ] JP1 (VIN, top, 28 mm): ESP header plastic >= 0.53 mm, front module band 7.0 mm, cap body 0.10 mm
+  NOTE: JP1 wire only 0.10 mm from C1 body -> fit JP1 BEFORE C1
+  [OK ] JP2 (GND, top, 22 mm): ESP header plastic >= 0.77 mm, front module band 6.9 mm, cap body 0.51 mm
+  [OK ] JP3 (G0, BOTTOM, 22 mm): solder fillets (pad+0.4) >= 0.24 mm, M2 posts (D5) 6.5 mm, no top-side crossing of SD/MAX
+  [OK ] JP4 (G4, BOTTOM, 26 mm): solder fillets (pad+0.4) >= 0.17 mm, M2 posts (D5) 8.2 mm, no top-side crossing of SD/MAX
+  GND pour area: 134 mm^2 in 3 piece(s)
+
+RESULT: PASS (9 notes)
