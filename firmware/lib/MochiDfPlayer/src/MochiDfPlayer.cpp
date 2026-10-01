@@ -1,8 +1,16 @@
 #include "MochiDfPlayer.h"
-
-#if defined(MOCHI_AUDIO_DFPLAYER)
 #include <DFRobotDFPlayerMini.h>
 #include <HardwareSerial.h>
+#include "MochiRzmong.h"
+
+/* Sama dengan firmware MAX98357, kecuali jalur suara.
+ * GPIO20/21 di sana I2S. Di sini UART DFPlayer. Jangan pasang MAX98357.
+ * RX modul <- GPIO20 lewat 1k. TX modul -> GPIO21. VCC modul = 5V.
+ */
+static const int DF_RX = 21;
+static const int DF_TX = 20;
+static const int DF_FOLDER_REACT = 1;
+static const int DF_FOLDER_FACE = 2;
 
 static HardwareSerial dfSerial(1);
 static DFRobotDFPlayerMini dfPlayer;
@@ -18,54 +26,57 @@ static void dfGap() {
 static int dfVol(int vol21) {
   if (vol21 < 0) vol21 = 0;
   if (vol21 > 21) vol21 = 21;
-  return (vol21 * MOCHI_DF_VOLUME_MAX) / 21;
+  return (vol21 * 30) / 21;
 }
 
-void dfAudioInit() {
-  dfSerial.begin(9600, SERIAL_8N1, MOCHI_PIN_DF_RX, MOCHI_PIN_DF_TX);
+bool mochiDfInit() {
+  dfSerial.begin(9600, SERIAL_8N1, DF_RX, DF_TX);
   delay(200);
   dfOk = dfPlayer.begin(dfSerial, false, false);
   if (!dfOk) {
-    Serial.println("DFPlayer tidak jawab. Cek 5V, GND, TX/RX, SD mp3.");
-    return;
+    Serial.println("DFPlayer tidak jawab");
+    return false;
   }
   dfPlayer.setTimeOut(500);
   dfPlayer.EQ(DFPLAYER_EQ_NORMAL);
   dfPlayer.outputDevice(DFPLAYER_DEVICE_SD);
   dfPlayer.volume(dfVol(12));
   Serial.println("DFPlayer siap");
+  return true;
 }
 
-void dfStop() {
+void mochiDfStop() {
   if (!dfOk) return;
   dfGap();
   dfPlayer.stop();
 }
 
-void dfSetVolume(int vol21, bool on) {
+void mochiDfService() {}
+
+void mochiDfSetVolume(int vol21, bool on) {
   if (!dfOk) return;
   dfGap();
   dfPlayer.volume(on ? dfVol(vol21) : 0);
   if (!on) dfPlayer.pause();
 }
 
-bool dfPlayReact(int reactIndex) {
+bool mochiDfPlayReact(int reactIndex) {
   if (!dfOk) return false;
   if (reactIndex < 0 || reactIndex >= MOCHI_REACT_COUNT) reactIndex = 0;
   dfGap();
-  dfPlayer.playFolder(MOCHI_DF_FOLDER_REACT, reactIndex + 1);
+  dfPlayer.playFolder(DF_FOLDER_REACT, reactIndex + 1);
   return true;
 }
 
-bool dfPlayFace(int faceIndex) {
+bool mochiDfPlayFace(int faceIndex) {
   if (!dfOk) return false;
   if (faceIndex < 0) faceIndex = 0;
   dfGap();
-  dfPlayer.playFolder(MOCHI_DF_FOLDER_FACE, faceIndex + 1);
+  dfPlayer.playFolder(DF_FOLDER_FACE, faceIndex + 1);
   return true;
 }
 
-bool dfPlayGif(const char *gifPath) {
+bool mochiDfPlayGif(const char *gifPath) {
   if (!dfOk || !gifPath) return false;
   const char *slash = strrchr(gifPath, '/');
   const char *base = slash ? slash + 1 : gifPath;
@@ -76,15 +87,7 @@ bool dfPlayGif(const char *gifPath) {
   if (dot) *dot = 0;
   for (int i = 0; i < MOCHI_REACT_COUNT; i++) {
     if (strcmp(stem, MOCHI_REACT[i].stem) == 0 || strcmp(stem, MOCHI_REACT[i].name) == 0)
-      return dfPlayReact(i);
+      return mochiDfPlayReact(i);
   }
-  return dfPlayFace(0);
+  return mochiDfPlayFace(0);
 }
-#else
-void dfAudioInit() {}
-void dfStop() {}
-void dfSetVolume(int, bool) {}
-bool dfPlayReact(int) { return false; }
-bool dfPlayFace(int) { return false; }
-bool dfPlayGif(const char *) { return false; }
-#endif
