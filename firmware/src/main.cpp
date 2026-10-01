@@ -1,4 +1,4 @@
-// Mochi rzmong 0.5.4 — rotasi default 2 (LCD GMT130 pin di bawah); 0.5.3: palet/kanvas GIF, ketukan tanpa putar ulang, Chronos memotong GIF, SFX dari RAM
+// Mochi rzmong 0.5.5 — jam HP pakai GIF default tertanam; SPI bersama di-init sebelum TFT; upload boleh menyela SD
 // Nama AP dan sandi tetap MOCHI_AP_NAME / MOCHI_AP_PASS. Aset GIF tidak diubah.
 #include <Arduino.h>
 #include <TFT_eSPI.h>
@@ -412,7 +412,10 @@ void applyMenu(){
   else if(menuRow==3){playMode=(playMode=="kategori")?"acak":(playMode=="acak"?"acak_tema":"kategori"); savePrefs(); showInfo("mode",playMode.c_str());}
   else if(menuRow==4){reactMode=(reactMode=="acak")?"tetap":"acak"; savePrefs(); showInfo("reaksi",reactMode.c_str());}
   else if(menuRow==5){reactIdx=(reactIdx+1)%MOCHI_REACT_COUNT; reactMode="tetap"; savePrefs(); showInfo(MOCHI_REACT[reactIdx].name,MOCHI_REACT[reactIdx].stem);}
-  else if(menuRow==6){useSd=!useSd; if(useSd&&sdOk)scanTheme(theme); else useSd=false; savePrefs(); showInfo("sumber",useSd?"SD":"flash");}
+  else if(menuRow==6){
+    if(!sdOk){ useSd=false; savePrefs(); showInfo("sumber","SD tidak ada"); }
+    else { useSd=!useSd; if(useSd){ scanTheme(theme); idx=0; } savePrefs(); showInfo("sumber", useSd?(nparts?"SD":"SD kosong"):"flash"); }
+  }
   else if(menuRow==7){if(volume<21)volume++; savePrefs(); showInfo("volume",String(volume).c_str()); startJingleMs(120);}
   else if(menuRow==8){if(volume>0)volume--; savePrefs(); showInfo("volume",String(volume).c_str()); startJingleMs(120);}
   else if(menuRow==9){soundOn=!soundOn; savePrefs(); showInfo("suara",soundOn?"ON":"BISU");}
@@ -532,6 +535,12 @@ void handleSettings(){
   String s; serializeJson(out,s); sendCorsHeaders(); server.send(200,"application/json",s);
 }
 
+static void releaseSdPlayback(){
+  if(gifFile) gifFile.close();
+  gif.close();
+  sdBusy=false;
+  clockGifOn=false;
+}
 static File upFile;
 static String upPath;
 static bool upOk=false;
@@ -546,7 +555,7 @@ void handleUpload() {
   if(upload.status==UPLOAD_FILE_START){
     upOk=false; upWritten=0; upPath=""; upHttp=400; upJson="{\"error\":\"upload_failed\"}";
     if(!sdOk){ upJson="{\"error\":\"sd_not_ready\"}"; return; }
-    if(sdBusy){ upJson="{\"error\":\"sd_busy\"}"; upHttp=503; return; }
+    if(sdBusy) releaseSdPlayback();
     sdBusy=true; upOwnsBusy=true;
     String tema=server.arg("tema"); String stem=server.arg("stem"); String type=server.arg("type");
     tema.trim(); stem.trim(); type.trim(); type.toLowerCase();
@@ -598,9 +607,11 @@ void setup(){
   pinMode(MOCHI_PIN_SD_CS,OUTPUT); digitalWrite(MOCHI_PIN_SD_CS,HIGH);
   Serial.begin(115200); pinMode(MOCHI_PIN_TOUCH,INPUT_PULLDOWN); loadPrefs();
   gif.begin(GIF_PALETTE_RGB565_BE);
-  tft.init(); tft.setRotation(rot); bootMark();
+  // Satu FSPI: klaim MISO SD dulu, TFT menyusul. CS SD tetap HIGH supaya modul tidak nimbrung.
   SPI.begin(MOCHI_PIN_SD_SCK,MOCHI_PIN_SD_MISO,MOCHI_PIN_SD_MOSI,MOCHI_PIN_SD_CS);
-  sdOk=SD.begin(MOCHI_PIN_SD_CS,SPI); if(sdOk) scanTheme(theme);
+  tft.init(); tft.setRotation(rot); bootMark();
+  sdOk=SD.begin(MOCHI_PIN_SD_CS,SPI,4000000); if(sdOk) scanTheme(theme);
+  tft.setRotation(rot);
   if(useSd&&(!sdOk||nparts==0)) useSd=false;
   audioInit();
   apPass=MOCHI_AP_PASS;
@@ -671,6 +682,7 @@ void loop(){
       bool ok=false;
       if(sdOk && !sdBusy && SD.exists(path)){ sdBusy=true; ok=playOpen(NULL,0,path); if(!ok) sdBusy=false; }
       if(!ok){ for(int i=0;i<DEFAULT_GIF_COUNT;i++){ if(strcmp(DEFAULT_GIFS[i].stem,"default")==0){ ok=playOpen(DEFAULT_GIFS[i].data,DEFAULT_GIFS[i].len,NULL); break; } } }
+      if(!ok && DEFAULT_GIF_COUNT>0) ok=playOpen(DEFAULT_GIFS[0].data,DEFAULT_GIFS[0].len,NULL);
       clockGifOn=ok;
     }
     int dly=30;

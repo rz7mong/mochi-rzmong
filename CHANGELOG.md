@@ -1,5 +1,19 @@
 # Changelog
 
+## [0.5.5] — 2026-10-01
+
+### Fixed
+- **Jam HP**: wajah diam memakai GIF tertanam `wajah/default` (sebelumnya hanya mencari stem yang tidak ada). SD `/gif/wajah/default.gif` tetap didahulukan.
+- **SPI**: bus bersama TFT+SD di-init sebelum `tft.init()`; CS SD ditahan HIGH; rotasi diterapkan ulang setelah `SD.begin`.
+- **Upload**: permintaan upload menutup pemutar GIF yang sedang memegang SD, bukan ditolak `sd_busy` selama animasi.
+- **Menu sumber**: SD kosong tidak dipaksa kembali ke flash; hanya SD yang tidak terpasang yang mengunci ke flash.
+- **Portal captive**: label versi mengikuti `MOCHI_VERSION` (sebelumnya tertinggal di 0.5.1).
+- **HANDOFF**: migrasi rotasi NVS hanya untuk firmware ≤ 0.5.3, bukan ≤ 0.5.4.
+
+### Notes
+- GPIO8 (I2S DIN, pin strapping) dan GPIO20/21 (UART0 + I2S) tidak diubah — itu kabel yang sudah disolder. Bunyi plok saat boot tetap mungkin.
+
+
 ## [0.5.4] — 2026-10-01
 
 ### Changed

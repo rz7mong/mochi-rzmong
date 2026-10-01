@@ -5,8 +5,8 @@
 #ifndef MOCHI_AP_PASS  /* override: build_flags = -DMOCHI_AP_PASS=\"sandibaru123\" */
 #define MOCHI_AP_PASS "rzmong123"
 #endif
-#define MOCHI_VERSION "0.5.4"
-/* v0.5.4: same constants as firmware/include/MochiRzmong.h
+#define MOCHI_VERSION "0.5.5"
+/* v0.5.5: same constants as firmware/include/MochiRzmong.h
  */
 #ifndef MOCHI_DEFAULT_ROTATION  /* 2 = LCD pin di bawah (tatakan GMT130). Tatakan lama / pin di atas: build_flags = -DMOCHI_DEFAULT_ROTATION=0 */
 #define MOCHI_DEFAULT_ROTATION 2

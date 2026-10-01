@@ -24,21 +24,21 @@ img.wire{width:100%;border-radius:12px;border:1px solid var(--line);background:#
 </style></head>
 <body>
 <header>
-  <div class="kicker">blueprint · rzmong · v0.5.4</div>
+  <div class="kicker">blueprint · rzmong · v0.5.5</div>
   <h1>🔧 Cara merakit Mochi (model terbaru)</h1>
   <p><a href="index.html">🍡 Instalasi</a> · <a href="panduan.html">📖 Cara pakai</a> · <a href="https://github.com/rz7mong/mochi-rzmong">🐙 GitHub</a></p>
 </header>
 <main>
 
 <div class="card">
-<h2>Model yang didukung firmware 0.5.4</h2>
+<h2>Model yang didukung firmware 0.5.5</h2>
 <p><b>ESP32-C3 Super Mini</b> + LCD <b>ST7789 1.3" 240×240</b> modul <b>GMT130-V1.0</b> (PCB <b>27.78×39.22 mm</b>, SPI <b>7 pin</b>: GND VCC SCL SDA RES DC BLK — <b>tanpa CS</b>).</p>
 <ul>
 <li>DIY <b>terinspirasi Dasai Mochi</b> — bukan produk resmi / clone berlisensi.</li>
 <li>LCD <b>1.54"</b> (PCB ~32 mm) <b>tidak</b> muat case ini — jangan pakai tanpa redesign STL.</li>
 <li>Jangan pakai ESP32-WROOM / DevKit besar.</li>
 </ul>
-<p class="warn">Skema lama (TFT RST=GPIO8, SD MISO=GPIO2, I2S DIN=GPIO9) <b>salah untuk firmware ini</b>. Diagram di bawah sudah pin 0.5.4. Pin ini <b>bukan boot-safe</b>.</p>
+<p class="warn">Skema lama (TFT RST=GPIO8, SD MISO=GPIO2, I2S DIN=GPIO9) <b>salah untuk firmware ini</b>. Diagram di bawah sudah pin 0.5.5 (pin sama sejak 0.5.1). Pin ini <b>bukan boot-safe</b>.</p>
 </div>
 
 <div class="card">
@@ -72,9 +72,9 @@ img.wire{width:100%;border-radius:12px;border:1px solid var(--line);background:#
 </div>
 
 <div class="card">
-<h2>Pin firmware 0.5.4</h2>
-<p>Ikuti tabel dan diagram ini saat solder. Gambar resmi firmware 0.5.4 — sama dengan <code>MochiRzmong.h</code> + <code>User_Setup_ST7789.h</code>.</p>
-<p><img class="wire" src="wiring-0.5.1.jpg" alt="Wiring diagram Mochi rzmong firmware 0.5.4"/></p>
+<h2>Pin firmware 0.5.5</h2>
+<p>Ikuti tabel dan diagram ini saat solder. Gambar resmi firmware 0.5.5 — sama dengan <code>MochiRzmong.h</code> + <code>User_Setup_ST7789.h</code>.</p>
+<p><img class="wire" src="wiring-0.5.1.jpg" alt="Wiring diagram Mochi rzmong firmware 0.5.5"/></p>
 <p style="color:#8b95a7;font-size:13px">LCD GMT130 (7 pin) tidak punya kaki CS: biarkan GPIO7 kosong, firmware tetap mendefinisikan CS=GPIO7 (tidak mengganggu). Sambungkan hanya jika modulmu ada CS. Kabel LCD disolder langsung ke pad (tanpa pin header). GPIO2 dan GPIO9 tetap kosong. Saklar di jalur TP OUT+, elko ~470 µF di VIN–GND MAX. SD di foto adalah shield SPI, diberi 3V3 — bukan reader 5V.</p>
 <table>
 <tr><th>Modul</th><th>Sinyal</th><th>GPIO</th><th>Catatan</th></tr>
@@ -94,7 +94,7 @@ img.wire{width:100%;border-radius:12px;border:1px solid var(--line);background:#
 <tr><td>Strapping</td><td>—</td><td><b>2, 9</b></td><td class="warn"><b>Biarkan tidak terhubung</b></td></tr>
 </table>
 <pre>
-ESP32-C3 Super Mini (firmware 0.5.4)
+ESP32-C3 Super Mini (firmware 0.5.5)
                  ┌───────────────────┐
            3V3 ─│ 3V3            GND  │─ GND bersama
      TFT MOSI ─│ GPIO6          GPIO4 │─ TFT SCLK + SD SCK
@@ -158,12 +158,12 @@ MAX98357 VIN — kapasitor ~470 µF ke GND, sedekat mungkin ke modul
 <ol>
 <li>Cetak kulit luar + <b>tatakan_GMT130_fit.stl</b> (STL di atas).</li>
 <li>Solder kabel langsung ke pad LCD (tanpa pin header), keluar ke belakang, sambungan ≤2 mm. BLK ke 3V3, CS tidak ada.</li>
-<li>Masukkan LCD ke tatakan dari atas, <b>pin di bawah</b> (tepi pin di lantai tatakan), kaca menghadap jendela. Firmware 0.5.4 default rotasi 2 → gambar tegak.</li>
+<li>Masukkan LCD ke tatakan dari atas, <b>pin di bawah</b> (tepi pin di lantai tatakan), kaca menghadap jendela. Firmware 0.5.5 default rotasi 2 → gambar tegak.</li>
 <li>Solder urutan: GND bersama → 3V3 → SPI layar → SPI SD → sentuh GPIO1 → I2S 21/20/8.</li>
 <li>Speaker ke OUT amp. Kapasitor 470 µF di VIN amp. Jangan pakai GPIO2 atau GPIO9.</li>
 <li>TP4056 berproteksi → saklar → VIN.</li>
 <li><b>Varian PCB carrier:</b> ikuti urutan di <a href="https://github.com/rz7mong/mochi-rzmong/blob/main/pcb/README.md">pcb/README.md</a> (lem speaker/TTP223/saklar → LiPo diputar masuk → PCB naik lalu geser → tatakan dari bawah → 2 baut M2), lalu lanjut ke flash.</li>
-<li>Flash firmware <b>0.5.4</b> dari <a href="index.html">halaman instalasi</a> (Erase NVS aman; SD tidak terhapus).</li>
+<li>Flash firmware <b>0.5.5</b> dari <a href="index.html">halaman instalasi</a> (Erase NVS aman; SD tidak terhapus).</li>
 <li>Wi-Fi <code>rzmong mochi</code> / <code>rzmong123</code> → <code>http://192.168.4.1/</code>. Ganti sandi AP di firmware sebelum dipakai di tempat umum.</li>
 </ol>
 </div>
@@ -172,7 +172,7 @@ MAX98357 VIN — kapasitor ~470 µF ke GND, sedekat mungkin ke modul
 <h2>⚠️ Troubleshooting rakit</h2>
 <table>
 <tr><td>Layar putih/hitam</td><td>RST=<b>0</b>, DC=10, SCLK=4, MOSI=6, BLK=3V3 (CS=7 hanya jika modul punya kaki CS)</td></tr>
-<tr><td>Gambar terbalik</td><td>Default 0.5.4 = rotasi 2 (LCD pin di bawah). Menu LCD → <b>Rotasi layar</b> 2× untuk membalik 180°</td></tr>
+<tr><td>Gambar terbalik</td><td>Default 0.5.5 = rotasi 2 (LCD pin di bawah). Menu LCD → <b>Rotasi layar</b> 2× untuk membalik 180°</td></tr>
 <tr><td>SD gagal</td><td>FAT32, modul <b>3.3V native</b>, MISO=<b>3</b>, CS=5; <b>bukan GPIO2</b></td></tr>
 <tr><td>Tidak boot / aneh</td><td>GPIO2 atau GPIO9 tersolder — cabut</td></tr>
 <tr><td>Tidak ada suara</td><td>DIN=<b>8</b>, speaker ke OUT amp, cek 470 µF</td></tr>
@@ -183,5 +183,5 @@ MAX98357 VIN — kapasitor ~470 µF ke GND, sedekat mungkin ke modul
 </div>
 
 </main>
-<footer style="color:#8b95a7;font-size:12px;padding:16px 22px 40px">MIT © rzmong · v0.5.4 · pin = firmware/include</footer>
+<footer style="color:#8b95a7;font-size:12px;padding:16px 22px 40px">MIT © rzmong · v0.5.5 · pin = firmware/include</footer>
 </body></html>

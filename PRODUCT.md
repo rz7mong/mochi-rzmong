@@ -2,7 +2,7 @@
 
 | Key | Value |
 | --- | --- |
-| **Version** | `0.5.4` |
+| **Version** | `0.5.5` |
 | **Brand** | `rzmong` |
 | **AP SSID** | `rzmong mochi` |
 | **AP password** | `rzmong123` (change in firmware; not exposed in API JSON) |
@@ -17,7 +17,7 @@
 | **LCD mount** | `case/tatakan_GMT130_fit.stl`, pins-down → default rotation `2` (`MOCHI_DEFAULT_ROTATION`) |
 
 ```c
-#define MOCHI_VERSION "0.5.4"
+#define MOCHI_VERSION "0.5.5"
 #define MOCHI_AP_NAME "rzmong mochi"
 #define MOCHI_AP_PASS "rzmong123"
 ```

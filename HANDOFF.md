@@ -1,4 +1,4 @@
-# HANDOFF — Mochi rzmong v0.5.4
+# HANDOFF — Mochi rzmong v0.5.5
 
 **Repo:** https://github.com/rz7mong/mochi-rzmong  
 **Pages:** https://rz7mong.github.io/mochi-rzmong/  
@@ -36,7 +36,7 @@ GPIO8 = strapping + I2S DIN. GPIO20/21 = UART0 — log boot bisa “plok” di s
 
 Lihat `firmware/include/MochiRzmong.h` + `User_Setup_ST7789.h` (`SUPPORT_TRANSACTIONS`).
 
-Rotasi: `MOCHI_DEFAULT_ROTATION` (default 2). NVS `rot` dari firmware ≤ 0.5.4 digeser +2 sekali (penanda `rotv`); setelan lain tetap.
+Rotasi: `MOCHI_DEFAULT_ROTATION` (default 2). NVS `rot` dari firmware ≤ 0.5.3 digeser +2 sekali (penanda `rotv`); setelan lain tetap.
 
 ## SD / API
 

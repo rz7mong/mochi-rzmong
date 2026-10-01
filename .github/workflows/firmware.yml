@@ -30,6 +30,9 @@ jobs:
           if [ -f README.md ]; then
             grep -q "$VER" README.md || echo "warn: README.md may not mention $VER (allowed if PRODUCT-only)"
           fi
+          grep -q "v$VER" firmware/include/captive_ui.h || { echo "captive_ui.h missing v$VER"; exit 1; }
+          grep -q "MOCHI_VERSION \"$VER\"" library/MochiRzmong.h || { echo "library header missing $VER"; exit 1; }
+          grep -q "$VER" docs/index.html || { echo "docs/index.html missing $VER"; exit 1; }
       - name: Install tools
         run: pip install -U platformio pillow esptool
       - name: Embed default GIF + jingle

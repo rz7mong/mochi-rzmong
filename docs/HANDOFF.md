@@ -1,10 +1,10 @@
-# Handoff — Mochi rzmong v0.5.4
+# Handoff — Mochi rzmong v0.5.5
 
 Salinan web: [handoff.html](handoff.html) · sumber repo: [../HANDOFF.md](https://github.com/rz7mong/mochi-rzmong/blob/main/HANDOFF.md)
 
 | Key | Value |
 | --- | --- |
-| Version | **0.5.4** |
+| Version | **0.5.5** |
 | AP | `rzmong mochi` / `rzmong123` (lab; ganti di firmware) |
 | Settings | `http://192.168.4.1/` |
 | Settings (Pages) | [pengaturan.html](pengaturan.html) |

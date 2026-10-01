@@ -70,6 +70,7 @@ def keep(d,i,n):
 def sneeze(d,i,n): face(d,i,mouth=8+i*10, eye=-i*2)
 def blade(d,i,n): d.polygon([(120,40),(180,200),(60,200)], fill=4)
 def pinky(d,i,n): d.ellipse((50,40,190,200), fill=7)
+def idle(d,i,n): face(d,i,mouth=10, eye=(0 if i==0 else 1))
 
 assets = [
     ("GIF_YELLING","wajah","yelling", lambda: gif_frames(yelling)),
@@ -82,6 +83,7 @@ assets = [
     ("GIF_SNEEZE","wajah","big_sneeze", lambda: gif_frames(sneeze)),
     ("GIF_BLADE","gundam","blade", lambda: gif_frames(blade)),
     ("GIF_PINKY","anime","pinky", lambda: gif_frames(pinky)),
+    ("GIF_DEFAULT","wajah","default", lambda: gif_frames(idle, n=2, duration=400)),
 ]
 g=["#pragma once","#include <Arduino.h>"]
 for name,theme,stem,fb in assets:

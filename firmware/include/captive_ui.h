@@ -16,7 +16,7 @@ button{width:100%;padding:12px;margin:6px 0;border:0;border-radius:10px;font-wei
 .hint{font-size:.72rem;color:#666;margin:4px 0 8px}a{color:#7ef}
 </style></head><body>
 <h1>Mochi · rzmong</h1>
-<p class=hint>v0.5.1 · offline · http://192.168.4.1/</p>
+<p class=hint>v0.5.5 · offline · http://192.168.4.1/</p>
 <div class=box>
 <label>Tema</label><select id=theme></select>
 <label>Sumber</label><select id=storage><option value=sd>SD</option><option value=flash>Flash</option></select>

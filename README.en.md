@@ -7,7 +7,7 @@ Palm-sized **ESP32-C3 Super Mini** desk buddy + **ST7789 1.3" 240×240** (GMT130
 
 Independent open-source project **inspired by** Dasai Mochi — **not affiliated**, not a licensed clone.
 
-**Firmware 0.5.4** · **MIT © rzmong** · Bahasa Indonesia: [README.md](README.md)
+**Firmware 0.5.5** · **MIT © rzmong** · Bahasa Indonesia: [README.md](README.md)
 
 On device: **GIF + 16-bit WAV only** (no MP4 player, no MP3 decoder).
 
@@ -17,7 +17,7 @@ The LCD is not a touchscreen. Enable **Jam HP** from the phone: join `rzmong moc
 
 ## Quick start
 
-1. Chrome / Edge → [installer 0.5.4](https://rz7mong.github.io/mochi-rzmong/) (hold BOOT, plug USB-C).
+1. Chrome / Edge → [installer 0.5.5](https://rz7mong.github.io/mochi-rzmong/) (hold BOOT, plug USB-C).
 2. Default AP: **`rzmong mochi` / `rzmong123`**. Lab password — change `MOCHI_AP_PASS` and reflash before public use.
 3. Settings: **`http://192.168.4.1/`** on the device AP.
 4. Themes: [Release `assets-v1`](https://github.com/rz7mong/mochi-rzmong/releases/tag/assets-v1) → FAT32 SD root (`gif/` + `sfx/`).
@@ -32,7 +32,7 @@ The LCD stand [`case/tatakan_GMT130_fit.stl`](case/README.md) holds the screen *
 
 Optional **carrier PCB** variant: a single-sided, hand-etched 1.6 mm FR4 THT board (38.5 × 36 mm) that holds the ESP32-C3 Super Mini, a small 3.3 V micro SD module (~18.5 × 20 mm), the MAX98357A and a 470 µF 10 V Ø6.3 × 11 cap, used with `case/case_luar_lcd_23_40mm_pcb.stl` + `case/tatakan_GMT130_fit_pcb.stl`. It needs a 15 × 11 × 3.5 mm speaker and a 501640 LiPo. Etch artwork, assembly order and notes: [pcb/README.md](pcb/README.md), fit report: [docs/fit/REPORT.md](docs/fit/REPORT.md). The loose-wiring build is still supported.
 
-Full pins / case STL / troubleshooting: see [README.md](README.md). Wiring diagram 0.5.4: [docs/wiring-0.5.1.jpg](docs/wiring-0.5.1.jpg).
+Full pins / case STL / troubleshooting: see [README.md](README.md). Wiring diagram 0.5.5: [docs/wiring-0.5.1.jpg](docs/wiring-0.5.1.jpg).
 
 ## License
 
