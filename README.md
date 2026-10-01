@@ -21,7 +21,16 @@ Di perangkat: **GIF + WAV 16-bit saja** (tidak ada pemutar MP4, tidak ada decode
 
 ## Jam HP
 
-Menu **Jam HP** menampilkan waktu HP di atas GIF wajah diam (`wajah/default.gif` di SD). Tanggal, jam, dan baterai HP tetap terlihat. Ketuk 2× kembali ke menu. Notifikasi, panggilan, dan navigasi tetap mengalahkan layar jam.
+LCD ini bukan layar sentuh. Jam HP dipilih dari HP.
+
+1. Sambungkan Wi-Fi `rzmong mochi`, sandi `rzmong123`.
+2. Buka `http://192.168.4.1/`.
+3. Centang **Chronos BLE** dan **Jam HP**, lalu simpan.
+4. Di aplikasi Chronos, sambungkan perangkat bernama `rzmong`.
+
+Layar menampilkan GIF wajah diam (`wajah/default.gif` di SD) dengan tanggal, jam, dan baterai HP di atasnya. Hilangkan centang Jam HP untuk kembali ke GIF. Notifikasi, panggilan, dan navigasi tetap menutup jam sementara.
+
+Ketukan menu hanya dipakai jika ada kawat sentuh di GPIO1. Tanpa kawat itu, abaikan ketukan.
 
 ## Tautan
 

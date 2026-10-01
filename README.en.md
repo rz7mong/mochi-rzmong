@@ -13,7 +13,7 @@ On device: **GIF + 16-bit WAV only** (no MP4 player, no MP3 decoder).
 
 ## Phone clock
 
-Menu **Jam HP** shows phone time over the idle face GIF (`wajah/default.gif` on SD). Date, time, and phone battery stay visible. Double-tap returns to the menu.
+The LCD is not a touchscreen. Enable **Jam HP** from the phone: join `rzmong mochi` / `rzmong123`, open `http://192.168.4.1/`, check Chronos BLE and Jam HP, save, then connect `rzmong` in the Chronos app. Uncheck Jam HP to return to GIFs. Touch menu only works with a wire on GPIO1.
 
 ## Quick start
 

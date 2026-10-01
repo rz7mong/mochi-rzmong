@@ -15,4 +15,4 @@ Salinan web: [handoff.html](handoff.html) · sumber repo: [../HANDOFF.md](https:
 | License | MIT © rzmong |
 
 
-Jam HP: waktu HP di atas GIF wajah diam, baterai HP. Ketuk 2x menu.
+Jam HP: dipilih dari HP di http://192.168.4.1/ (centang Chronos BLE dan Jam HP). LCD tidak sentuh. GPIO1 hanya jika ada kawat sentuh.

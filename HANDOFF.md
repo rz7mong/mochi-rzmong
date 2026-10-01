@@ -51,4 +51,4 @@ BLE name `rzmong`. Satu radio 2.4 GHz: AP + BLE bisa lag.
 **MIT © rzmong** · ChronosESP32 (fbiego)
 
 
-Jam HP: waktu HP di atas GIF wajah diam, baterai HP. Ketuk 2x menu.
+Jam HP: dipilih dari HP di http://192.168.4.1/ (centang Chronos BLE dan Jam HP). LCD tidak sentuh. GPIO1 hanya jika ada kawat sentuh.
