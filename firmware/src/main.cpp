@@ -23,7 +23,7 @@ static const uint16_t C_RED=0xF985,C_TEAL=0x07F4,C_BLUE=0x3C7F,C_PINK=0xF81F,C_Y
 
 TFT_eSPI tft; AnimatedGIF gif; WebServer server(80); DNSServer dnsServer; ChronosESP32 watch("rzmong", CF_ESP32_240x240); Preferences prefs;
 String theme="wajah", playMode="kategori", reactMode="acak", apPass=MOCHI_AP_PASS;
-bool soundOn=true, useSd=false, chronosOn=false, showWm=true;
+bool soundOn=true, useSd=false, chronosOn=false, showWm=true, clockOn=false;
 bool chronoConn=false, ringerOn=false, chronosNav=true;
 String notifApp, notifTitle, notifMsg, ringerName;
 uint32_t notifUntil=0;
@@ -39,9 +39,9 @@ static const MenuItem MENU[] = {
   {"M","Mode putar",C_YEL},{"R","Reaksi acak/tetap",C_BLUE},{"F","Model reaksi",C_PINK},
   {"S","Sumber SD/Flash",C_BLUE},{"+","Volume +",C_TEAL},{"-","Volume -",C_TEAL},
   {"x","Bisu / bunyi",C_RED},{"O","Rotasi layar",C_YEL},{"C","Chronos",C_TEAL},
-  {"W","Merek LCD",C_DIM},{"A","Info Wi-Fi AP",C_BLUE},{"i","Tentang rzmong",C_TEXT},{"<","Tutup",C_DIM}
+  {"J","Jam HP",C_TEAL},{"W","Merek LCD",C_DIM},{"A","Info Wi-Fi AP",C_BLUE},{"i","Tentang rzmong",C_TEXT},{"<","Tutup",C_DIM}
 };
-static const int NMENU=16, VIS=7;
+static const int NMENU=17, VIS=7;
 #include "chronos_ui.inc"
 
 static bool validTheme(const String &t){ for(int i=0;i<MOCHI_THEME_COUNT;i++) if(t==MOCHI_THEMES[i]) return true; return false; }
@@ -63,7 +63,7 @@ void loadPrefs(){
   prefs.begin("rzmong",false);
   theme=prefs.getString("theme","wajah"); playMode=prefs.getString("mode","kategori");
   reactMode=prefs.getString("rmode","acak"); soundOn=prefs.getBool("sound",true);
-  useSd=prefs.getBool("usesd",false); chronosOn=prefs.getBool("chrono",false); chronosNav=prefs.getBool("chrono_nav",true); showWm=prefs.getBool("wm",true);
+  useSd=prefs.getBool("usesd",false); chronosOn=prefs.getBool("chrono",false); chronosNav=prefs.getBool("chrono_nav",true); showWm=prefs.getBool("wm",true); clockOn=prefs.getBool("clock",false);
   defIdx=prefs.getInt("def",0); reactIdx=prefs.getInt("react",0); volume=prefs.getInt("vol",12); rot=prefs.getInt("rot",0);
   if(defIdx<0||defIdx>=DEFAULT_GIF_COUNT)defIdx=0;
   if(reactIdx<0||reactIdx>=MOCHI_REACT_COUNT)reactIdx=0;
@@ -74,7 +74,7 @@ void loadPrefs(){
 }
 void savePrefs(){
   prefs.putString("theme",theme); prefs.putString("mode",playMode); prefs.putString("rmode",reactMode);
-  prefs.putBool("sound",soundOn); prefs.putBool("usesd",useSd); prefs.putBool("chrono",chronosOn); prefs.putBool("chrono_nav",chronosNav); prefs.putBool("wm",showWm);
+  prefs.putBool("sound",soundOn); prefs.putBool("usesd",useSd); prefs.putBool("chrono",chronosOn); prefs.putBool("chrono_nav",chronosNav); prefs.putBool("wm",showWm); prefs.putBool("clock",clockOn);
   prefs.putInt("def",defIdx); prefs.putInt("react",reactIdx); prefs.putInt("vol",volume); prefs.putInt("rot",rot);
 }
 static bool isGifName(const String &n){
@@ -290,6 +290,28 @@ void playReactGif(){
   gif.close(); sdBusy=false;
 }
 void brandMark(){if(!showWm)return; tft.setTextColor(C_DIM,TFT_BLACK); tft.drawString(MOCHI_BRAND,168,226,1);}
+static int clockDrawn=-1;
+void drawClock(){
+  bool linked=chronosOn && watch.isRunning() && watch.isConnected();
+  int h=linked?watch.getHourC():0, m=linked?watch.getMinute():0, s=linked?watch.getSecond():-1;
+  int sig=linked?(h*3600+m*60+s):-2;
+  if(sig==clockDrawn) return;
+  clockDrawn=sig;
+  tft.fillScreen(C_BG);
+  tft.fillRect(0,0,240,28,C_TEAL);
+  tft.setTextColor(TFT_BLACK,C_TEAL);
+  tft.drawCentreString("Jam HP",120,6,2);
+  char tb[8]; snprintf(tb,sizeof(tb), linked?"%02d:%02d":"--:--", h, m);
+  tft.setTextColor(C_TEXT,C_BG);
+  tft.drawCentreString(tb,120,72,6);
+  tft.setTextColor(C_TEAL,C_BG);
+  if(linked){ char sb[4]; snprintf(sb,sizeof(sb),"%02d",s); tft.drawCentreString(sb,120,138,4); }
+  tft.setTextColor(C_DIM,C_BG);
+  if(!chronosOn) tft.drawCentreString("nyalakan Chronos",120,176,2);
+  else if(!linked) tft.drawCentreString("menunggu HP",120,176,2);
+  else tft.drawCentreString(watch.getTimeDate().c_str(),120,176,2);
+  tft.drawCentreString("ketuk 2x = menu",120,214,1);
+}
 void bootMark(){
   tft.fillScreen(C_BG); tft.fillRoundRect(20,80,200,80,16,C_BAR);
   tft.setTextColor(TFT_BLACK,C_BAR); tft.drawCentreString("Mochi",120,96,4); tft.drawCentreString(MOCHI_BRAND,120,128,2); waitMs(400);
@@ -341,9 +363,10 @@ void applyMenu(){
   else if(menuRow==9){soundOn=!soundOn; savePrefs(); showInfo("suara",soundOn?"ON":"BISU");}
   else if(menuRow==10){rot=(rot+1)&3; tft.setRotation(rot); savePrefs();}
   else if(menuRow==11){chronosOn=!chronosOn; savePrefs(); chronosApply(); showInfo("Chronos",chronosOn?(chronoConn?"ON linked":"ON pair app"):"OFF");}
-  else if(menuRow==12){showWm=!showWm; savePrefs();}
-  else if(menuRow==13){showInfo(MOCHI_AP_NAME, MOCHI_AP_PASS);}
-  else if(menuRow==14){bootMark();}
+  else if(menuRow==12){clockOn=!clockOn; if(clockOn && !chronosOn){ chronosOn=true; chronosApply(); } clockDrawn=-1; savePrefs(); showInfo("jam HP", clockOn?(chronoConn?"waktu HP":"menunggu HP"):"GIF");}
+  else if(menuRow==13){showWm=!showWm; savePrefs();}
+  else if(menuRow==14){showInfo(MOCHI_AP_NAME, MOCHI_AP_PASS);}
+  else if(menuRow==15){bootMark();}
   else ui=UI_PLAY;
 }
 void finishTaps(){
@@ -351,7 +374,7 @@ void finishTaps(){
   if(ui==UI_MENU){ if(taps==1) menuRow=(menuRow+1)%NMENU; else applyMenu(); menuDirty=true; }
   else {
     if(taps>=2){ ui=UI_MENU; menuRow=0; menuTop=0; taps=0; drawMenu(); menuDirty=false; return; }
-    if(taps==1) playReactGif();
+    if(taps==1 && !clockOn) playReactGif();
   }
   taps=0;
 }
@@ -405,6 +428,7 @@ void handleStatus(){
   d["chronos_conn"]=chronosOn && watch.isRunning() && watch.isConnected();
   d["chronos_run"]=chronosOn && watch.isRunning();
   d["chronos_nav"]=chronosNav;
+  d["clock"]=clockOn;
   d["nav_active"]=navActive && !navHide;
   if(chronosOn && watch.isRunning()){
     d["chronos_mac"]=watch.getAddress();
@@ -439,6 +463,7 @@ void handleSettings(){
   if(d["sound"].is<bool>()) soundOn=d["sound"];
   if(d["chronos"].is<bool>()){ chronosOn=d["chronos"]; chronosApply(); }
   if(d["chronos_nav"].is<bool>()){ chronosNav=d["chronos_nav"]; }
+  if(d["clock"].is<bool>()){ clockOn=d["clock"]; if(clockOn && !chronosOn){ chronosOn=true; chronosApply(); } }
   if(d["watermark"].is<bool>()) showWm=d["watermark"];
   if(d["storage"].is<const char*>()) useSd=(String((const char*)d["storage"])=="sd");
   if(d["def"].is<int>()){ defIdx=d["def"]; if(defIdx<0||defIdx>=DEFAULT_GIF_COUNT) defIdx=0; }
@@ -582,6 +607,17 @@ void loop(){
     prevDown=down; delay(30); return;
   }
   chronosPreempt=false;
+  if(clockOn){
+    drawClock();
+    bool down=digitalRead(MOCHI_PIN_TOUCH)==HIGH;
+    if(down&&!prevDown) downAt=millis();
+    if(!down&&prevDown){
+      uint32_t held=millis()-downAt;
+      if(held>=900){ soundOn=!soundOn; savePrefs(); }
+      else { taps++; lastTap=millis(); }
+    }
+    prevDown=down; finishTaps(); delay(30); return;
+  }
   bool down=digitalRead(MOCHI_PIN_TOUCH)==HIGH;
   if(ui==UI_MENU){
     if(down&&!prevDown) downAt=millis();

@@ -1,6 +1,6 @@
 # Library tema Mochi rzmong
 
-Firmware / konstanta: **v0.5.2** — salinan `firmware/include/MochiRzmong.h`.
+Firmware / konstanta: **v0.5.3** — salinan `firmware/include/MochiRzmong.h`.
 
 Katalog: `themes.json`
 

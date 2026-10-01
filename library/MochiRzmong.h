@@ -5,8 +5,8 @@
 #ifndef MOCHI_AP_PASS  /* override: build_flags = -DMOCHI_AP_PASS=\"sandibaru123\" */
 #define MOCHI_AP_PASS "rzmong123"
 #endif
-#define MOCHI_VERSION "0.5.2"
-/* v0.5.2: same constants as firmware/include/MochiRzmong.h
+#define MOCHI_VERSION "0.5.3"
+/* v0.5.3: same constants as firmware/include/MochiRzmong.h
  */
 #define MOCHI_PIN_TOUCH 1
 #define MOCHI_PIN_SD_SCK 4

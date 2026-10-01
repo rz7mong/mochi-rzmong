@@ -1,6 +1,14 @@
 # Changelog
 
+## [0.5.3] — 2026-10-01
+
+### Added
+- **Jam HP**: menu menampilkan waktu dari aplikasi Chronos (waktu HP). Notifikasi, panggilan, dan navigasi tetap mengalahkan layar jam. Ketuk 2x kembali ke menu.
+
 ## [0.5.2] — 2026-10-01
+# Changelog
+
+## [0.5.3] — 2026-10-01
 
 ### Fixed
 - **GIF**: palet RGB565 big-endian, piksel transparan dilewati, posisi dari ukuran kanvas.

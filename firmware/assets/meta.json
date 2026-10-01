@@ -1,6 +1,6 @@
 {
   "brand": "rzmong",
-  "version": "0.5.2",
+  "version": "0.5.3",
   "sample_rate": 8000,
   "reacts": [
     ["GIF_YELLING", "wajah", "yelling"],
