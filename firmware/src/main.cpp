@@ -12,6 +12,7 @@
 #include <ArduinoJson.h>
 #include <ChronosESP32.h>
 #include "driver/i2s.h"
+#include "MochiDfPlayer.h"
 #include "MochiRzmong.h"
 #include "defaults_gif.h"
 #include "jingle.h"
@@ -129,27 +130,40 @@ int32_t gifRead(GIFFILE *p,uint8_t *buf,int32_t len){int n=gifFile.read(buf,len)
 int32_t gifSeek(GIFFILE *p,int32_t pos){gifFile.seek(pos); p->iPos=gifFile.position(); return p->iPos;}
 
 void audioInit(){
+#if defined(MOCHI_AUDIO_DFPLAYER)
+  dfAudioInit(); i2sOk=true; return;
+#else
   i2s_config_t cfg={.mode=(i2s_mode_t)(I2S_MODE_MASTER|I2S_MODE_TX),.sample_rate=JINGLE_SR,.bits_per_sample=I2S_BITS_PER_SAMPLE_16BIT,.channel_format=I2S_CHANNEL_FMT_ONLY_LEFT,.communication_format=I2S_COMM_FORMAT_STAND_I2S,.intr_alloc_flags=0,.dma_buf_count=8,.dma_buf_len=256,.use_apll=false,.tx_desc_auto_clear=true,.fixed_mclk=0};
   if(i2s_driver_install(I2S_NUM_0,&cfg,0,NULL)!=ESP_OK)return;
   i2s_pin_config_t pins={.mck_io_num=I2S_PIN_NO_CHANGE,.bck_io_num=MOCHI_PIN_I2S_BCLK,.ws_io_num=MOCHI_PIN_I2S_LRC,.data_out_num=MOCHI_PIN_I2S_DIN,.data_in_num=I2S_PIN_NO_CHANGE};
   if(i2s_set_pin(I2S_NUM_0,&pins)!=ESP_OK)return; i2sOk=true;
+#endif
 }
 
 // WAV dimuat sekali ke buffer yang dipakai ulang (maks 48 KB) supaya heap C3 tidak terpecah.
 static int16_t *sfxBuf=nullptr; static size_t sfxCap=0, sfxSamples=0, sfxPos=0; static bool sfxRun=false;
 static const size_t SFX_MAX=48*1024;
 static const int16_t *sfxSrc=nullptr;   // sfxBuf (SD WAV) atau PCM PROGMEM (built-in), tanpa salin ke heap
-void stopSfx(){ sfxRun=false; sfxPos=sfxSamples; }
+void stopSfx(){ sfxRun=false; sfxPos=sfxSamples; dfStop(); }
 static bool playBuiltinSfx(int i){
+#if defined(MOCHI_AUDIO_DFPLAYER)
+  if(!soundOn) return false;
+  dfSetVolume(volume, true);
+  return dfPlayFace(i);
+#else
   if(!soundOn||!i2sOk||i<0||i>=DEFAULT_GIF_COUNT||!DEFAULT_GIFS[i].pcm||DEFAULT_GIFS[i].pcmSamples<1) return false;
   stopSfx(); sfxSrc=DEFAULT_GIFS[i].pcm; sfxSamples=DEFAULT_GIFS[i].pcmSamples; sfxPos=0; sfxRun=true;
   i2s_set_sample_rates(I2S_NUM_0, DEFAULT_GIFS[i].pcmRate); return true;
+#endif
 }
 static int findBuiltin(const char *theme,const char *stem){
   for(int i=0;i<DEFAULT_GIF_COUNT;i++) if(strcmp(DEFAULT_GIFS[i].stem,stem)==0 && (!theme||strcmp(DEFAULT_GIFS[i].theme,theme)==0)) return i;
   return -1;
 }
 void serviceSfx(){
+#if defined(MOCHI_AUDIO_DFPLAYER)
+  return;
+#endif
   if(!sfxRun||!i2sOk||!soundOn||!sfxSrc) return;
   if(sfxPos>=sfxSamples){ sfxRun=false; return; }
   int16_t buf[128]; size_t n=sfxSamples-sfxPos; if(n>128) n=128;
@@ -172,6 +186,9 @@ static bool takeSfx(const int16_t *pcm, size_t samples, uint32_t rate){
   return true;
 }
 void startJingleMs(int ms){
+#if defined(MOCHI_AUDIO_DFPLAYER)
+  (void)ms; dfSetVolume(volume, soundOn); return;
+#endif
   if(!soundOn||!i2sOk) return;
   int bytes=JINGLE_SR*2*ms/1000; if(bytes>JINGLE_PCM_LEN) bytes=JINGLE_PCM_LEN; if(bytes<2) bytes=2;
   takeSfx((int16_t*)JINGLE_PCM, (size_t)bytes/2, JINGLE_SR);
@@ -220,6 +237,12 @@ static bool preloadWav(const char *path){
 }
 
 bool playSfxForReact(int r){
+#if defined(MOCHI_AUDIO_DFPLAYER)
+  if(!soundOn) return false;
+  dfSetVolume(volume, true);
+  if(dfPlayReact(r)) return true;
+  return dfPlayFace(0);
+#endif
   if(!soundOn||!i2sOk) return false;
   if(r<0||r>=MOCHI_REACT_COUNT) r=0;
   const char *themeR=MOCHI_REACT[r].theme; const char *stem=MOCHI_REACT[r].stem; const char *name=MOCHI_REACT[r].name;
@@ -236,6 +259,11 @@ bool playSfxForReact(int r){
   startJingleMs(220); return true;
 }
 bool playSfxForGifPath(const char *gifPath){
+#if defined(MOCHI_AUDIO_DFPLAYER)
+  if(!soundOn||!gifPath) return false;
+  dfSetVolume(volume, true);
+  return dfPlayGif(gifPath);
+#endif
   if(!soundOn||!i2sOk||!sdOk||!gifPath) return false;
   String p=gifPath;
   if(!p.startsWith("/gif/")) return false;
@@ -269,7 +297,7 @@ static bool frameWait(int delayMs, uint32_t t0, uint32_t maxMs){
     if(down&&!prevDown) downAt=millis();
     if(!down&&prevDown){
       uint32_t held=millis()-downAt;
-      if(held>=900){ soundOn=!soundOn; savePrefs(); menuDirty=true; }
+      if(held>=900){ soundOn=!soundOn; if(!soundOn) stopSfx(); else dfSetVolume(volume, true); savePrefs(); menuDirty=true; }
       else { taps++; lastTap=millis(); }
       prevDown=down; return true;
     }
@@ -430,7 +458,7 @@ void applyMenu(){
   }
   else if(menuRow==7){if(volume<21)volume++; savePrefs(); showInfo("volume",String(volume).c_str()); startJingleMs(120);}
   else if(menuRow==8){if(volume>0)volume--; savePrefs(); showInfo("volume",String(volume).c_str()); startJingleMs(120);}
-  else if(menuRow==9){soundOn=!soundOn; savePrefs(); showInfo("suara",soundOn?"ON":"BISU");}
+  else if(menuRow==9){soundOn=!soundOn; if(!soundOn) stopSfx(); else dfSetVolume(volume, true); savePrefs(); showInfo("suara",soundOn?"ON":"BISU");}
   else if(menuRow==10){rot=(rot+1)&3; tft.setRotation(rot); savePrefs();}
   else if(menuRow==11){chronosOn=!chronosOn; savePrefs(); chronosApply(); showInfo("Chronos",chronosOn?(chronoConn?"ON linked":"ON pair app"):"OFF");}
   else if(menuRow==12){clockOn=!clockOn; if(clockOn && !chronosOn){ chronosOn=true; chronosApply(); } clockDrawn=-1; savePrefs(); showInfo("jam HP", clockOn?(chronoConn?"waktu HP":"menunggu HP"):"GIF");}
@@ -498,7 +526,12 @@ void handleStatus(){
   d["react_idx"]=reactIdx;
   d["react_gif"]=String("/gif/")+MOCHI_REACT[reactIdx].theme+"/"+MOCHI_REACT[reactIdx].stem+".gif";
   d["sound"]=soundOn; d["vol"]=volume; d["rot"]=rot; d["storage"]=(useSd&&sdOk)?"sd":"flash"; d["sd"]=sdOk;
-  d["sfx"]="wav_ram_or_jingle"; d["def"]=defIdx; d["gif_count"]=nparts;
+#if defined(MOCHI_AUDIO_DFPLAYER)
+  d["sfx"]="dfplayer_mp3";
+#else
+  d["sfx"]="wav_ram_or_jingle";
+#endif
+  d["def"]=defIdx; d["gif_count"]=nparts;
   d["ap_ssid"]=MOCHI_AP_NAME; d["sd_busy"]=sdBusy;
   d["chronos"]=chronosOn;
   d["chronos_conn"]=chronosOn && watch.isRunning() && watch.isConnected();
@@ -713,7 +746,7 @@ void loop(){
     if(down&&!prevDown) downAt=millis();
     if(!down&&prevDown){
       uint32_t held=millis()-downAt;
-      if(held>=900){ soundOn=!soundOn; savePrefs(); }
+      if(held>=900){ soundOn=!soundOn; if(!soundOn) stopSfx(); else dfSetVolume(volume, true); savePrefs(); }
       else { taps++; lastTap=millis(); }
     }
     prevDown=down; finishTaps(); delay(10); return;
@@ -723,7 +756,7 @@ void loop(){
     if(down&&!prevDown) downAt=millis();
     if(!down&&prevDown){
       uint32_t held=millis()-downAt;
-      if(held>=900){ soundOn=!soundOn; savePrefs(); menuDirty=true; }
+      if(held>=900){ soundOn=!soundOn; if(!soundOn) stopSfx(); else dfSetVolume(volume, true); savePrefs(); menuDirty=true; }
       else { taps++; lastTap=millis(); }
     }
     prevDown=down; finishTaps(); if(menuDirty){ drawMenu(); menuDirty=false; } delay(35); return;
@@ -732,7 +765,7 @@ void loop(){
     if(down&&!prevDown) downAt=millis();
     if(!down&&prevDown){
       uint32_t held=millis()-downAt;
-      if(held>=900){ soundOn=!soundOn; savePrefs(); }
+      if(held>=900){ soundOn=!soundOn; if(!soundOn) stopSfx(); else dfSetVolume(volume, true); savePrefs(); }
       else { taps++; lastTap=millis(); }
     }
     prevDown=down; finishTaps(); delay(10); return;

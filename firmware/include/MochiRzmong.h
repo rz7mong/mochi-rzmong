@@ -24,6 +24,12 @@
 #define MOCHI_PIN_I2S_BCLK 21
 #define MOCHI_PIN_I2S_LRC 20
 #define MOCHI_PIN_I2S_DIN 8
+/* Varian DFPlayer memakai GPIO20/21 sebagai UART, bukan I2S. Jangan pasang MAX98357 bersamaan. */
+#define MOCHI_PIN_DF_RX 21
+#define MOCHI_PIN_DF_TX 20
+#define MOCHI_DF_VOLUME_MAX 30
+#define MOCHI_DF_FOLDER_REACT 1
+#define MOCHI_DF_FOLDER_FACE 2
 struct MochiPart { const char *theme; const char *stem; };
 struct MochiReact { const char *name; const char *theme; const char *stem; };
 static const MochiReact MOCHI_REACT[] = {
