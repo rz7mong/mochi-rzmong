@@ -659,10 +659,10 @@ void loop(){
   if(!clockOn && clockGifOn){ gif.close(); clockGifOn=false; sdBusy=false; }
   if(clockOn){
     if(!clockGifOn){
-      const char *path="/gif/wajah/distracted_2.gif";
+      const char *path="/gif/wajah/default.gif";
       bool ok=false;
       if(sdOk && !sdBusy && SD.exists(path)){ sdBusy=true; ok=playOpen(NULL,0,path); if(!ok) sdBusy=false; }
-      if(!ok){ for(int i=0;i<DEFAULT_GIF_COUNT;i++){ if(strcmp(DEFAULT_GIFS[i].stem,"distracted_2")==0){ ok=playOpen(DEFAULT_GIFS[i].data,DEFAULT_GIFS[i].len,NULL); break; } } }
+      if(!ok){ for(int i=0;i<DEFAULT_GIF_COUNT;i++){ if(strcmp(DEFAULT_GIFS[i].stem,"default")==0){ ok=playOpen(DEFAULT_GIFS[i].data,DEFAULT_GIFS[i].len,NULL); break; } } }
       clockGifOn=ok;
     }
     if(clockGifOn){
