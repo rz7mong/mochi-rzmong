@@ -1,0 +1,142 @@
+{
+ "esp32c3_supermini_on_headers": {
+  "name": "esp32c3_supermini_on_headers",
+  "lo": [
+   -9.0,
+   10.0,
+   -13.6
+  ],
+  "hi": [
+   9.0,
+   34.0,
+   -6.8
+  ],
+  "fixed": true
+ },
+ "switch_rightangle_rear": {
+  "name": "switch_rightangle_rear",
+  "lo": [
+   7.5,
+   30.0,
+   -13.6
+  ],
+  "hi": [
+   16.3,
+   34.0,
+   -9.6
+  ],
+  "fixed": true
+ },
+ "lcd_pad_row_7pin": {
+  "name": "lcd_pad_row_7pin",
+  "lo": [
+   -9.0,
+   -2.5,
+   -13.6
+  ],
+  "hi": [
+   9.0,
+   0.5,
+   -11.6
+  ],
+  "fixed": true
+ },
+ "tp4056_on_floor": {
+  "name": "tp4056_on_floor",
+  "lo": [
+   -8.5,
+   -3.0,
+   -26.73
+  ],
+  "hi": [
+   8.8,
+   25.0,
+   -21.33
+  ],
+  "fixed": true
+ },
+ "sd_wemos_edge": {
+  "name": "sd_wemos_edge",
+  "lo": [
+   -19.5,
+   1.5,
+   -13.0
+  ],
+  "hi": [
+   8.6,
+   7.5,
+   15.0
+  ],
+  "dims": [
+   28.1,
+   6.0,
+   28.0
+  ],
+  "connector": null,
+  "thickness_axis": "y",
+  "score": -19.2
+ },
+ "max98357a_edge": {
+  "name": "max98357a_edge",
+  "lo": [
+   13.5,
+   -2.5,
+   -13.0
+  ],
+  "hi": [
+   17.5,
+   16.9,
+   7.3
+  ],
+  "dims": [
+   4.0,
+   19.4,
+   20.3
+  ],
+  "connector": null,
+  "thickness_axis": "x",
+  "score": -13.75
+ },
+ "cap_470uF_upright": {
+  "name": "cap_470uF_upright",
+  "lo": [
+   -18.5,
+   8.5,
+   -13.0
+  ],
+  "hi": [
+   -11.7,
+   15.3,
+   0.0
+  ],
+  "dims": [
+   6.8,
+   6.8,
+   13.0
+  ],
+  "connector": null,
+  "thickness_axis": "z",
+  "score": -0.755
+ },
+ "ttp223_red_15x11": {
+  "name": "ttp223_red_15x11",
+  "lo": [
+   -22.0,
+   -12.5,
+   -12.0
+  ],
+  "hi": [
+   -19.0,
+   -1.5,
+   4.5
+  ],
+  "dims": [
+   3.0,
+   11.0,
+   16.5
+  ],
+  "connector": null,
+  "thickness_axis": "x",
+  "score": 0.522392777895548
+ }
+}

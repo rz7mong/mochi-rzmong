@@ -5,10 +5,15 @@
 #ifndef MOCHI_AP_PASS  /* override: build_flags = -DMOCHI_AP_PASS=\"sandibaru123\" */
 #define MOCHI_AP_PASS "rzmong123"
 #endif
-#define MOCHI_VERSION "0.5.3"
-/* v0.5.3: GIF RGB565 + canvas, tap window, Chronos preempt, SFX from reused RAM buffer.
+#define MOCHI_VERSION "0.5.4"
+/* v0.5.4: default rotation 2 (180 deg) for the GMT130 LCD mounted pins-down in case/tatakan_GMT130_fit.stl.
+ * v0.5.3: GIF RGB565 + canvas, tap window, Chronos preempt, SFX from reused RAM buffer.
  * AP name/pass unchanged. Override pass via build_flags only.
  */
+#ifndef MOCHI_DEFAULT_ROTATION  /* 2 = LCD pin di bawah (tatakan GMT130). Tatakan lama / pin di atas: build_flags = -DMOCHI_DEFAULT_ROTATION=0 */
+#define MOCHI_DEFAULT_ROTATION 2
+#endif
+#define MOCHI_ROT_LAYOUT 1  /* versi arah pasang LCD di NVS ("rotv"); naikkan jika default rotasi berubah lagi */
 #define MOCHI_PIN_TOUCH 1
 #define MOCHI_PIN_SD_SCK 4
 #define MOCHI_PIN_SD_MISO 3

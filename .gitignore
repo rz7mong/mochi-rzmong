@@ -7,3 +7,6 @@ firmware/include/jingle.h
 __pycache__/
 *.pyc
 .DS_Store
+# hasil perantara skrip fit / render PCB
+case/scripts/pcb_fit/*.npz
+pcb/v3/copper_check.png

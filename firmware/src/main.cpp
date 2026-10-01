@@ -1,4 +1,4 @@
-// Mochi rzmong 0.5.3 — palet/kanvas GIF, ketukan tanpa putar ulang, Chronos memotong GIF, SFX dari RAM
+// Mochi rzmong 0.5.4 — rotasi default 2 (LCD GMT130 pin di bawah); 0.5.3: palet/kanvas GIF, ketukan tanpa putar ulang, Chronos memotong GIF, SFX dari RAM
 // Nama AP dan sandi tetap MOCHI_AP_NAME / MOCHI_AP_PASS. Aset GIF tidak diubah.
 #include <Arduino.h>
 #include <TFT_eSPI.h>
@@ -27,7 +27,7 @@ bool soundOn=true, useSd=false, chronosOn=false, showWm=true, clockOn=false;
 bool chronoConn=false, ringerOn=false, chronosNav=true;
 String notifApp, notifTitle, notifMsg, ringerName;
 uint32_t notifUntil=0;
-int defIdx=0, reactIdx=0, volume=12, rot=0, menuRow=0, menuTop=0;
+int defIdx=0, reactIdx=0, volume=12, rot=MOCHI_DEFAULT_ROTATION, menuRow=0, menuTop=0;
 String parts[32]; int nparts=0, idx=0; File gifFile; bool sdOk=false, i2sOk=false, sdBusy=false;
 enum Ui { UI_PLAY, UI_MENU }; Ui ui=UI_PLAY;
 uint32_t downAt=0,lastTap=0; int taps=0; bool prevDown=false; bool menuDirty=true;
@@ -64,7 +64,13 @@ void loadPrefs(){
   theme=prefs.getString("theme","wajah"); playMode=prefs.getString("mode","kategori");
   reactMode=prefs.getString("rmode","acak"); soundOn=prefs.getBool("sound",true);
   useSd=prefs.getBool("usesd",false); chronosOn=prefs.getBool("chrono",false); chronosNav=prefs.getBool("chrono_nav",true); showWm=prefs.getBool("wm",true); clockOn=prefs.getBool("clock",false);
-  defIdx=prefs.getInt("def",0); reactIdx=prefs.getInt("react",0); volume=prefs.getInt("vol",12); rot=prefs.getInt("rot",0);
+  defIdx=prefs.getInt("def",0); reactIdx=prefs.getInt("react",0); volume=prefs.getInt("vol",12); rot=prefs.getInt("rot",MOCHI_DEFAULT_ROTATION)&3;
+  // 0.5.4: LCD sekarang dipasang pin di bawah (putar 180°). NVS dari firmware lama (belum ada "rotv")
+  // yang sudah menyimpan "rot" digeser sekali sebesar default baru (default lama = 0), setelan lain tidak disentuh.
+  if(prefs.getUChar("rotv",0)<MOCHI_ROT_LAYOUT){
+    if(prefs.isKey("rot")){ rot=(rot+MOCHI_DEFAULT_ROTATION)&3; prefs.putInt("rot",rot); }
+    prefs.putUChar("rotv",MOCHI_ROT_LAYOUT);
+  }
   if(defIdx<0||defIdx>=DEFAULT_GIF_COUNT)defIdx=0;
   if(reactIdx<0||reactIdx>=MOCHI_REACT_COUNT)reactIdx=0;
   if(volume<0)volume=0; if(volume>21)volume=21;
@@ -470,7 +476,7 @@ void handleStatus(){
   d["mode"]=playMode; d["react_mode"]=reactMode; d["react"]=MOCHI_REACT[reactIdx].name;
   d["react_idx"]=reactIdx;
   d["react_gif"]=String("/gif/")+MOCHI_REACT[reactIdx].theme+"/"+MOCHI_REACT[reactIdx].stem+".gif";
-  d["sound"]=soundOn; d["vol"]=volume; d["storage"]=(useSd&&sdOk)?"sd":"flash"; d["sd"]=sdOk;
+  d["sound"]=soundOn; d["vol"]=volume; d["rot"]=rot; d["storage"]=(useSd&&sdOk)?"sd":"flash"; d["sd"]=sdOk;
   d["sfx"]="wav_ram_or_jingle"; d["def"]=defIdx; d["gif_count"]=nparts;
   d["ap_ssid"]=MOCHI_AP_NAME; d["sd_busy"]=sdBusy;
   d["chronos"]=chronosOn;
