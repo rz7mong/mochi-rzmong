@@ -291,26 +291,51 @@ void playReactGif(){
 }
 void brandMark(){if(!showWm)return; tft.setTextColor(C_DIM,TFT_BLACK); tft.drawString(MOCHI_BRAND,168,226,1);}
 static int clockDrawn=-1;
+static void clockHand(int deg, int len, uint16_t col, float w){
+  float r=deg*0.0174533f;
+  int x=120+(int)(sinf(r)*len);
+  int y=118-(int)(cosf(r)*len);
+  tft.drawWideLine(120,118,x,y,w,col,TFT_BLACK);
+}
 void drawClock(){
   bool linked=chronosOn && watch.isRunning() && watch.isConnected();
-  int h=linked?watch.getHourC():0, m=linked?watch.getMinute():0, s=linked?watch.getSecond():-1;
+  int h=linked?watch.getHourC():0, m=linked?watch.getMinute():0, s=linked?watch.getSecond():0;
   int sig=linked?(h*3600+m*60+s):-2;
   if(sig==clockDrawn) return;
   clockDrawn=sig;
-  tft.fillScreen(C_BG);
-  tft.fillRect(0,0,240,28,C_TEAL);
-  tft.setTextColor(TFT_BLACK,C_TEAL);
-  tft.drawCentreString("Jam HP",120,6,2);
+  const uint16_t CY=0x07FF, MG=0xF81F, DK=0x18E3;
+  tft.fillScreen(TFT_BLACK);
+  tft.drawSmoothCircle(120,118,108,DK,TFT_BLACK);
+  tft.drawSmoothCircle(120,118,100,CY,TFT_BLACK);
+  tft.drawSmoothCircle(120,118,78,0x0210,TFT_BLACK);
+  for(int i=0;i<60;i++){
+    float r=i*6*0.0174533f;
+    int o=(i%5==0)?92:96, inn=(i%5==0)?84:90;
+    tft.drawWideLine(120+(int)(sinf(r)*inn),118-(int)(cosf(r)*inn),120+(int)(sinf(r)*o),118-(int)(cosf(r)*o), i%5==0?2.2f:1.0f, i%5==0?CY:0x4A69, TFT_BLACK);
+  }
+  if(linked){
+    int secArc=s*6; if(secArc<1) secArc=1;
+    int a0=180, a1=180+secArc;
+    if(a1<=360) tft.drawArc(120,118,104,99,a0,a1,MG,TFT_BLACK,false);
+    else { tft.drawArc(120,118,104,99,a0,360,MG,TFT_BLACK,false); tft.drawArc(120,118,104,99,0,a1-360,MG,TFT_BLACK,false); }
+    clockHand((h%12)*30+m/2, 46, CY, 3.2f);
+    clockHand(m*6+s/10, 64, 0xC618, 2.2f);
+    clockHand(s*6, 70, MG, 1.2f);
+    tft.fillSmoothCircle(120,118,4,CY,TFT_BLACK);
+    tft.fillCircle(120,118,2,TFT_BLACK);
+  }
   char tb[8]; snprintf(tb,sizeof(tb), linked?"%02d:%02d":"--:--", h, m);
-  tft.setTextColor(C_TEXT,C_BG);
-  tft.drawCentreString(tb,120,72,6);
-  tft.setTextColor(C_TEAL,C_BG);
-  if(linked){ char sb[4]; snprintf(sb,sizeof(sb),"%02d",s); tft.drawCentreString(sb,120,138,4); }
-  tft.setTextColor(C_DIM,C_BG);
-  if(!chronosOn) tft.drawCentreString("nyalakan Chronos",120,176,2);
-  else if(!linked) tft.drawCentreString("menunggu HP",120,176,2);
-  else tft.drawCentreString(watch.getTimeDate().c_str(),120,176,2);
-  tft.drawCentreString("ketuk 2x = menu",120,214,1);
+  tft.setTextColor(CY,TFT_BLACK);
+  tft.drawCentreString(tb,120,150,4);
+  tft.setTextColor(0x4A69,TFT_BLACK);
+  if(!chronosOn) tft.drawCentreString("CHRONOS OFF",120,178,1);
+  else if(!linked) tft.drawCentreString("MENUNGGU HP",120,178,1);
+  else {
+    String td=watch.getTimeDate(); if(td.length()>18) td=td.substring(0,18);
+    tft.drawCentreString(td,120,178,1);
+  }
+  tft.setTextColor(DK,TFT_BLACK);
+  tft.drawCentreString("2x MENU",120,214,1);
 }
 void bootMark(){
   tft.fillScreen(C_BG); tft.fillRoundRect(20,80,200,80,16,C_BAR);
